@@ -1,6 +1,6 @@
 import express from 'express';
 
-import healthRoute from './routes/healthRoute';
+import healthRoute from './routes/health.route';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
