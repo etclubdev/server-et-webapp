@@ -5,6 +5,10 @@ import healthRoute from './routes/healthRoute';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.get('/', (req, res) => {
+    res.send('THIS IS A TEST');
+});
+
 app.use('/health', healthRoute);
 
 app.listen(PORT, () => {
