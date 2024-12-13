@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Map container port 8080 to host port 8080
+    volumes:
+      - .:/app         # Mount the current directory for live file access
+      - /app/node_modules # Prevent overwriting node_modules
+      - /app/dist        # Prevent overwriting the dist directory
+    environment:
+      NODE_ENV: production # Set production environment variable
+    command: sh -c "npm run build && npm start" # Build first, then start
