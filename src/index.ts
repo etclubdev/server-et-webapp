@@ -9,6 +9,10 @@ app.get('/', (req, res) => {
     res.send('THIS IS A TEST');
 });
 
+app.get('/', (req, res) => {
+    res.send('THIS IS A TEST');
+});
+
 app.use('/health', healthRoute);
 
 app.listen(PORT, () => {
