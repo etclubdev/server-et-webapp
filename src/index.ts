@@ -1,4 +1,5 @@
 import express from 'express';
+
 import healthRoute from './routes/healthRoute';
 
 const app = express();

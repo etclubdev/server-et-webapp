@@ -9,8 +9,7 @@
     "start": "node dist/index.js",
     "build": "tsc",
     "dev": "nodemon src/index.ts",
-    "lint": "eslint src/**/*.{ts,tsx} --fix",
-    "lint:check": "eslint src/**/*.{ts,tsx}"
+    "lint": "eslint src/**/*.{ts,tsx}"
   },
   "author": "et-members",
   "license": "ISC",
@@ -21,11 +20,10 @@
     "@eslint/js": "^9.16.0",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.2",
-    "@typescript-eslint/eslint-plugin": "^8.18.0",
-    "@typescript-eslint/parser": "^8.18.0",
-    "eslint": "^9.16.0",
+    "eslint": "^8.21.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.37.2",
     "globals": "^15.13.0",
     "husky": "^9.1.7",
@@ -39,5 +37,4 @@
     "*.ts": "eslint --fix",
     "*.tsx": "eslint --fix"
   }
-
 }
