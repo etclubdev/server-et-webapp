@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use('/health', healthRoute);
-app.use(etNewsRoute);
+app.use('/api/v1/et-news',etNewsRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
