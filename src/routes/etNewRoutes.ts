@@ -1,9 +1,9 @@
 import express, { Router } from 'express';
 
-import { createEtNews } from '../controllers/etNewsController';
+import etNewsController from '../controllers/etNewsController';
 
 const router: Router = express.Router();
 
-router.post('/api/v1/et-news', createEtNews);
+router.post('/', etNewsController.createEtNews);
 
 export default router;
