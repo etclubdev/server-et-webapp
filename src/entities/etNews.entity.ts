@@ -4,13 +4,14 @@ import KnexConfig from '../utils/database';
 
 /**
  * Represents the data structure for a news item.
+ * I use publishdate instead of publishDate because when i get name for it is publishDate, it becomes publishdate and i can't fix
  * @typedef {Object} NewsData
  */
 export interface NewsData {
     title: string;
     content: string;
     author: string;
-    publishDate: string;
+    publishdate: string;
 }
 
 /**

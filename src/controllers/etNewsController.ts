@@ -1,42 +1,59 @@
 import { Request, Response } from 'express';
+import dotenv from 'dotenv';
 
-import { EtNews} from '../entities/etNewsModel';
+import EtNews from '../services/etNewServices';
+import isValidDate from '../utils/checkValiday';
 
+dotenv.config(); // Use environment variables from the .env file
 
+/**
+ * Controller to handle the creation of a new ET News item.
+ * @async
+ * @function createEtNews
+ * @param {Request} req - Express request object, containing the body with `title`, `content`, `author`, and `publishDate`.
+ * @param {Response} res - Express response object, used to send a response back to the client.
+ * @returns {Promise<void>} A promise that resolves when the response is sent.
+ */
+const createEtNews = async (req: Request, res: Response): Promise<void> => {
+    const { title, content, author, publishdate } = req.body;
 
-export const createEtNews = async (req: Request, res: Response): Promise<void> => {
-    const { title, content, author, publishDate: providedPublishDate } = req.body;
-    
-
-    if (!title || title.length > 100) {
+    // Validate the title
+    if (!title || title.length > process.env.MAX_ET_NEWS_TITLE_LENGTH) {
         res.status(400).json({ message: 'Title is required and must be less than 100 characters.' });
         return;
     }
+    // Validate the content
     if (!content) {
         res.status(400).json({ message: 'Content is required.' });
         return;
     }
+    // Validate the author
     if (typeof author !== 'string' || author.length === 0) {
         res.status(400).json({ message: 'Author is required and must be a valid string.' });
         return;
     }
-    const isValidDate = (dateString: string): boolean => {
-        const date = new Date(dateString);
-        return !isNaN(date.getTime()) && date.toISOString() === dateString;
-    };
-    if (!providedPublishDate || !isValidDate(providedPublishDate)) {
-        res.status(400).json({ message: 'PublishDate is required and must be a valid iso 8601 date.' });
+    // Validate the publish date
+    if (!publishdate || !isValidDate(publishdate)) {
+        res.status(400).json({ message: 'PublishDate is required and must be a valid timestamp.' });
         return;
     }
-
     try {
-        const newNewsItem = await EtNews.create({ title, content, author, publishDate: providedPublishDate });
+        // Create a new ET News item
+        const newNewsItem = await EtNews.create({ title, content, author, publishdate });
         res.status(201).json({
             message: 'ET News item created successfully',
             data: newNewsItem,
         });
     } catch (error) {
-        console.error('Error creating news:', error); 
-        res.status(500).json({ message: 'An error occurred while creating the ET News item.', error });
+        if (error.code === 'ETIMEOUT') {
+            // Handle database connection timeout
+            res.status(500).json({ message: 'Database connection timeout. Please try again later.' });
+        } else {
+            // Handle other unexpected errors
+            res.status(500).json({ message: 'An unexpected error occurred.', error });
+        }
+        console.error('Error creating news:', error);
     }
 };
+
+export default { createEtNews };
