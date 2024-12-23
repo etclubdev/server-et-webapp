@@ -6,7 +6,7 @@
  * @returns {boolean} `true` if the timestamp is a positive integer; otherwise, `false`.
  */
 const isValidDate = (timestamp: number): boolean => {
-    return Number.isInteger(timestamp) && timestamp > 0; // Check if the timestamp is a positive integer.
+    return Number.isInteger(timestamp) && timestamp > 0; 
 };
 
 export default isValidDate;
