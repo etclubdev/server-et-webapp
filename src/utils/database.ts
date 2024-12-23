@@ -1,7 +1,39 @@
+import dotenv from 'dotenv';
 import knex, { Knex } from 'knex';
 
-import config from './knexfile';
+import { KnexConfig } from '../entities/etNews.entity';
 
-const db: Knex = knex(config.development);
+/**
+ * Load environment variables from the .env file.
+ */
+dotenv.config(); 
+
+/**
+ * Configuration for the database connection.
+ *
+ * @type {KnexConfig}
+ * @property {object} development - The development environment configuration.
+
+ */
+const knexConfig: KnexConfig = {
+  development: {
+    client: 'pg',
+    connection: {
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      port: 5432,
+    },
+      pool: { min: 0, max: 10 }, // Limit the number of connections
+    },
+  };
+
+/**
+ * Initializes and exports a Knex instance for database operations.
+ *
+ * @type {Knex}
+ */
+const db: Knex = knex(knexConfig.development);
 
 export default db;
