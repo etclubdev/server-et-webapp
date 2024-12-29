@@ -11,19 +11,20 @@ const activitiesController = {
         const id = req.id;
         const updateData = req.updateData;
 
-        try {
-            const updateActivity = await activitiesService.updateActivity({ id, updateData })
-            res.status(201).json({
-                message: 'The activity updated successfully',
-                data: updateActivity
-            })
-
-        } catch (error) {
-            res.status(500).json({ 
-                message: 'An error occurred while updating the activity.', 
-                error: error.message 
-            });
-        }
+        try {  
+            const updateActivity = await activitiesService.updateActivity({ id, updateData });  
+            res.status(201).json({  
+                message: 'The activity updated successfully',  
+                data: updateActivity  
+            });  
+        } catch (error) {  
+            if (!res.headersSent) { // Check if headers have been sent  
+                res.status(500).json({   
+                    message: 'An error occurred while updating the activity.',   
+                    error: error.message   
+                });  
+            }  
+        } 
     }
 }
 
