@@ -1,17 +1,17 @@
-import pool from '../database/migarations/db'
-import knex from 'knex'
+import db from '../database/migarations/db'
 
-const db = knex(pool.development);
+
+
 
 interface ETNews {
     id: number;
-    tilte: string;
+    title: string;
     category: string;
     shortDescription: string;
     content: string;
     source: string;
     visible: boolean;
-    createAt: Date;
+    createdAt: Date;
 }
 
 //Query posts by ID
