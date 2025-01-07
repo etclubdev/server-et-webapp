@@ -1,13 +1,21 @@
 import express from 'express';
-
-import healthRoute from './routes/health.route';
+import dotenv from 'dotenv';
+import etNewsRoutes from './routes/etNews.route';
+import { errorHandler } from './utils/errorHandler.util';
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+app.use(express.json());
 
-app.use('/health', healthRoute);
+// Routes
+app.use(etNewsRoutes);
 
+// Middleware xử lý lỗi
+app.use(errorHandler);
+
+// Khởi động server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
