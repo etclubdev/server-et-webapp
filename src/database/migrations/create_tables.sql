@@ -64,6 +64,41 @@ CREATE TABLE IF NOT EXISTS Users (
     PRIMARY KEY (UserID)
 );
 
+CREATE SEQUENCE IF NOT EXISTS user_id_seq START 1;
+
+CREATE OR REPLACE FUNCTION generate_user_id()
+RETURNS TRIGGER AS $$
+DECLARE
+    role_prefix VARCHAR(2);
+    ordinal_number VARCHAR(3);
+BEGIN
+    CASE NEW.Department
+        WHEN 'Administrator' THEN role_prefix := '01';
+        WHEN 'Head of Technical Department' THEN role_prefix := '02';
+        WHEN 'Head of HR Department' THEN role_prefix := '03';
+        WHEN 'Head of PR Department' THEN role_prefix := '04';
+        WHEN 'Head of FER Department' THEN role_prefix := '05';
+        WHEN 'Head of Event Department' THEN role_prefix := '06';
+        WHEN 'Collaborator' THEN role_prefix := '07';
+        ELSE
+            RAISE EXCEPTION 'Invalid department: %', NEW.Department;
+    END CASE;
+
+    ordinal_number := LPAD(nextval('user_id_seq')::TEXT, 3, '0');
+
+    NEW.UserID := 'USER' || role_prefix || ordinal_number;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_user_id
+BEFORE INSERT ON Users
+FOR EACH ROW
+WHEN (NEW.UserID IS NULL) -- Chỉ tạo nếu UserID chưa được cung cấp
+EXECUTE FUNCTION generate_user_id();
+
+
 -- Create Posts Table
 CREATE TABLE IF NOT EXISTS Posts (
     PostID VARCHAR(10) NOT NULL UNIQUE, -- Format: ENXXX
@@ -79,6 +114,11 @@ CREATE TABLE IF NOT EXISTS Posts (
     ViewCount INT DEFAULT 0, -- Optional, starts at 0
     PRIMARY KEY (PostID)
 );
+
+CREATE SEQUENCE IF NOT EXISTS post_id_seq START 1;
+
+ALTER TABLE posts
+    ALTER COLUMN postid SET DEFAULT 'EN' || LPAD(nextval('post_id_seq')::TEXT, 3, '0');
 
 -- Create Activities Table
 CREATE TABLE IF NOT EXISTS Activities (
@@ -96,3 +136,8 @@ CREATE TABLE IF NOT EXISTS Activities (
     Scale INT DEFAULT NULL, -- Optional
     PRIMARY KEY (ActivityID)
 );
+
+CREATE SEQUENCE IF NOT EXISTS activity_id_seq START 1;
+
+ALTER TABLE Activities
+    ALTER COLUMN ActivityID SET DEFAULT 'AC' || LPAD(nextval('activity_id_seq')::TEXT, 3, '0');
