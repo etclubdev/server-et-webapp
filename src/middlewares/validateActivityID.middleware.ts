@@ -8,6 +8,11 @@ const validateActivityID = (req: Request, res: Response, next: NextFunction) => 
         return;
     }
 
+    const regex = /^AC\d{3}$/;
+    if (!regex.test(activityid)) {
+        res.status(400).json({ message: "Activity ID must follow the format ACXXX, where X is a digit."});
+    };
+
     next();
 };
 
