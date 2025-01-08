@@ -1,5 +1,4 @@
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Create ENUM types for Gender, Department, Post Category, Activity Type, Status, Visibility
 DO $$ 
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'gender_enum') THEN
@@ -48,79 +47,58 @@ END $$;
 
 -- Create Users Table
 CREATE TABLE IF NOT EXISTS Users (
-    UserID VARCHAR(15) NOT NULL UNIQUE,
-    Name VARCHAR(50) NOT NULL CHECK (Name NOT LIKE '%[^a-zA-Z ]%'),
-    Email VARCHAR(100) NOT NULL UNIQUE CHECK (Email LIKE '%@%'),
+    UserID VARCHAR(15) NOT NULL UNIQUE, -- Format USERXXYYY
+    Name VARCHAR(50) NOT NULL CHECK (Name NOT LIKE '%[^a-zA-Z ]%'), -- No numbers or special characters
+    Email VARCHAR(100) NOT NULL UNIQUE CHECK (Email LIKE '%@%'), -- Must contain "@"
     Address VARCHAR(200) NOT NULL,
-    ContactNumber VARCHAR(12) NOT NULL CHECK (ContactNumber LIKE '0%' OR ContactNumber LIKE '+84%'),
-    ProfilePictureURL VARCHAR(255),
-    DOB DATE NOT NULL DEFAULT '1990-01-01',
-    Gender gender_enum NOT NULL,
-    Department department_enum NOT NULL,
+    ContactNumber VARCHAR(12) NOT NULL CHECK (ContactNumber LIKE '0%' OR ContactNumber LIKE '+84%'), -- Must begin with '0' or '+84'
+    ProfilePictureURL VARCHAR(255), -- Optional URL for profile picture
+    DOB DATE NOT NULL DEFAULT '1990-01-01', -- Mandatory with default value
+    Gender gender_enum NOT NULL, -- ENUM for gender
+    Department department_enum NOT NULL, -- ENUM for department
     StudentID VARCHAR(50) NOT NULL,
-    Major VARCHAR(100) NOT NULL CHECK (Major NOT LIKE '%[^a-zA-Z ]%'),
+    Major VARCHAR(100) NOT NULL CHECK (Major NOT LIKE '%[^a-zA-Z ]%'), -- No numbers or special characters
     Class VARCHAR(50) NOT NULL,
     Password VARCHAR(100) NOT NULL,
-    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- For tracking creation date
     PRIMARY KEY (UserID)
 );
 
 -- Create Posts Table
 CREATE TABLE IF NOT EXISTS Posts (
-    PostID VARCHAR(10) NOT NULL UNIQUE,
-    Title VARCHAR(50) NOT NULL,
-    Category post_category_enum DEFAULT NULL,
-    ShortDescription VARCHAR(100) NOT NULL,
-    Content TEXT NOT NULL,
-    ThumbnailImageURL VARCHAR(255),
-    CreatedDate DATE NOT NULL DEFAULT CURRENT_DATE,
-    UpdatedDate DATE DEFAULT NULL,
-    Source VARCHAR(255) NOT NULL,
-    Visible visibility_enum NOT NULL DEFAULT 'No',
-    ViewCount INT DEFAULT 0,
+    PostID VARCHAR(10) NOT NULL UNIQUE, -- Format: ENXXX
+    Title VARCHAR(50) NOT NULL, -- Max 50 characters
+Category post_category_enum DEFAULT NULL, -- Optional, ENUM for category
+    ShortDescription VARCHAR(100) NOT NULL, -- Max 100 characters
+    Content TEXT NOT NULL, -- Multiple lines of text
+    ThumbnailImageURL VARCHAR(255), -- Optional, URL for thumbnail image
+    CreatedDate DATE NOT NULL DEFAULT CURRENT_DATE, -- Mandatory, defaults to current date
+    UpdatedDate DATE DEFAULT NULL, -- Optional, for tracking updates
+    Source VARCHAR(255) NOT NULL, -- Mandatory
+    Visible visibility_enum NOT NULL DEFAULT 'No', -- ENUM for visibility, defaults to "No"
+    ViewCount INT DEFAULT 0, -- Optional, starts at 0
     PRIMARY KEY (PostID)
 );
 
 -- Create Activities Table
 CREATE TABLE IF NOT EXISTS Activities (
-    ActivityID VARCHAR(50) NOT NULL UNIQUE, -- Format: AC + UUID
-    ActivityName VARCHAR(300) NOT NULL,
-    ActivityType activity_type_enum NOT NULL,
-    Description VARCHAR(500),
-    Status activity_status_enum NOT NULL,
-    ThumbnailImageURL VARCHAR(255) NOT NULL,
-    StartDate DATE NOT NULL DEFAULT CURRENT_DATE,
-    EndDate DATE NOT NULL DEFAULT CURRENT_DATE,
-    Visible BOOLEAN NOT NULL DEFAULT FALSE,
-    SponsoredBudget INT DEFAULT NULL,
-    ActualExpenses INT DEFAULT NULL,
-    Scale INT DEFAULT NULL,
-    PRIMARY KEY (ActivityID)
+    ActivityID VARCHAR(10) NOT NULL UNIQUE PRIMARY KEY, -- Format: ACXXX
+    ActivityName VARCHAR(300) NOT NULL, -- Max 300 characters
+    ActivityType activity_type_enum NOT NULL, -- ENUM for activity type
+    Description VARCHAR(500), -- Optional
+    Status activity_status_enum NOT NULL, -- ENUM for activity status
+    ThumbnailImageURL VARCHAR(255) NOT NULL, -- Mandatory URL for thumbnail image
+    StartDate DATE NOT NULL DEFAULT CURRENT_DATE, -- Mandatory, defaults to today
+    EndDate DATE NOT NULL DEFAULT CURRENT_DATE, -- Mandatory, defaults to today
+    Visible BOOLEAN NOT NULL DEFAULT FALSE, -- Mandatory, defaults to "No"
+    SponsoredBudget INT DEFAULT NULL, -- Optional
+    ActualExpenses INT DEFAULT NULL, -- Optional
+    Scale INT DEFAULT NULL -- Optional
 );
 
-ALTER TABLE activities ADD COLUMN activityid SERIAL PRIMARY KEY ;
-ALTER TABLE activities DROP COLUMN activityid;
-
-CREATE OR REPLACE FUNCTION add_prefix_to_serial_id()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.activityid := 'AC' || LPAD(NEW.activityid::TEXT, 3, '0');
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER add_prefix_to_activityid
-BEFORE INSERT ON activities
-FOR EACH ROW
-EXECUTE FUNCTION add_prefix_to_serial_id();
 -- 1. Tạo Sequence để tự động tăng giá trị
 CREATE SEQUENCE activity_id_seq START 1;
 
--- 2. Chỉnh sửa cột `ActivityID` để sử dụng sequence
-ALTER TABLE Activities
-    ALTER COLUMN ActivityID SET DATA TYPE VARCHAR(50);
-
--- 3. Đặt mặc định cho `ActivityID` bằng cách kết hợp tiền tố "AC" và giá trị từ sequence
+-- 2. Đặt mặc định cho `ActivityID` bằng cách kết hợp tiền tố "AC" và giá trị từ sequence
 ALTER TABLE Activities
     ALTER COLUMN ActivityID SET DEFAULT 'AC' || LPAD(nextval('activity_id_seq')::TEXT, 3, '0');
-
