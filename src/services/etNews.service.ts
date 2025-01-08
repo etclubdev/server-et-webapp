@@ -1,29 +1,32 @@
-import db from '../database/migarations/db'
-
-
-
+import db from '../utils/db.util';
 
 interface ETNews {
-    id: number;
+    postid?: string;
     title: string;
     category: string;
-    shortDescription: string;
+    shortdescription: string;
     content: string;
+    thumbnailimageurl?: string;
+    createddate: Date,
+    updateddate: Date,
     source: string;
-    visible: boolean;
-    createdAt: Date;
+    visible: string;
+    viewcount?: number;
 }
 
-//Query posts by ID
+
 class ETNewsService {
-    // Truy vấn bài viết theo ID
-    async getETNewsById(id: number): Promise<ETNews | null> {
+    async getETNewsById(id: string): Promise<ETNews | null> {
         try {
-            const [news] = await db<ETNews>('et_news').where({ id }).select('*');
+            const [news] = await db<ETNews>('posts')
+                .where({ postid: id })
+                .select('*');
+
             return news || null;
         } catch (error) {
-            throw new Error('Error retrieving ET News by ID: ' + error.message);
+            throw new Error('Error retrieving ET News post: ' + error.message);
         }
     }
 }
+
 export default ETNewsService;
