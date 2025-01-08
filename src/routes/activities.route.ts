@@ -1,5 +1,5 @@
 import express from 'express';
-import selectActivitybyID from '../controllers/selectActivity.controller';
+import selectActivitybyID from '../controllers/activities.controller';
 import validateActivityID from '../middlewares/validateActivityID.middleware';
 const router = express.Router();
 

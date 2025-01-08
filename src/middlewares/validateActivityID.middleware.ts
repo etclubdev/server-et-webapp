@@ -8,7 +8,7 @@ const validateActivityID = (req: Request, res: Response, next: NextFunction) => 
         return;
     }
 
-    next(); // Tiếp tục xử lý nếu `activityid` tồn tại
+    next();
 };
 
 export default validateActivityID;
