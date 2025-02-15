@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+
 import selectActivityService from '../services/activities.service';
 
 const selectActivitybyID = async (req: Request, res: Response) => {
