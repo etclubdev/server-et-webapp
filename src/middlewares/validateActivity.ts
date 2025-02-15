@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction} from 'express';
 import Ajv, { ErrorObject } from 'ajv';
 import addFormats from 'ajv-formats';
+
 import activitySchema from '../schema/activity.schema';
 
 const ajv = new Ajv({ allErrors: true });

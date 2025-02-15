@@ -1,5 +1,6 @@
 // src/controllers/activityController.ts
 import { Request, Response} from 'express';
+
 import createActivityService from '../services/activities.service';
 
 const createactivity = new createActivityService();

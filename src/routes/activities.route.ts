@@ -1,4 +1,5 @@
-import express, { Request, Response, NextFunction} from 'express';
+import express from 'express';
+
 import createActivity  from '../controllers/activities.controller';
 import validateActivityMiddleware from '../middlewares/validateActivity';
 const router = express.Router();
