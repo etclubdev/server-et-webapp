@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 
-app.use('/v1/et-news', etNewsRoutes);
+app.use('/et-news', etNewsRoutes);
 app.use('/health', healthRoute);
 
 app.listen(PORT, () => {
