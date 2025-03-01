@@ -1,11 +1,12 @@
 import express from 'express';
-
+import activityRoutes from "./routes/activity.routes"
 import healthRoute from './routes/health.route';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-
+app.use(express.json());
+app.use("/activities", activityRoutes)
 app.use('/health', healthRoute);
 
 app.listen(PORT, () => {
