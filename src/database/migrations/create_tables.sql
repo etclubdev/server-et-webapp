@@ -1,18 +1,8 @@
---Create ENUM types for CV_type, major, faculty, personel_type, system_role, post_category, post_topic, department/applied_department, faqs_category, personel_position
+--Create ENUM types
 DO $$ 
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'cv_type_enum') THEN
-        CREATE TYPE cv_type_enum AS ENUM ('CV mẫu', 'CV tự thiết kế');
-    END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'personnel_type_enum') THEN
-        CREATE TYPE personnel_type_enum AS ENUM (
-            'Đang hoạt động',
-            'Cựu thành viên',
-            'Ứng viên'
-        );
-    END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'system_role_enum') THEN
-        CREATE TYPE system_role_enum AS ENUM (
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'sysrole_enum') THEN
+        CREATE TYPE sysrole_enum AS ENUM (
             'Quản trị viên',
             'Trưởng ban Tech',
             'Trưởng ban PR',
@@ -22,6 +12,17 @@ BEGIN
             'CTV/TV'
             );
     END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'cv_type_enum') THEN
+        CREATE TYPE cv_type_enum AS ENUM ('CV mẫu', 'CV tự thiết kế');
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'personnel_status_enum') THEN
+        CREATE TYPE personnel_status_enum AS ENUM (
+            'Đang hoạt động',
+            'Cựu thành viên',
+            'Ứng viên'
+        );
+    END IF;
+    
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'activity_category_enum') THEN
         CREATE TYPE activity_category_enum AS ENUM (
             'Talkshow/Workshop',
@@ -39,8 +40,8 @@ BEGIN
             'Khác'
         );
     END IF;    
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'faqs_category_enum') THEN
-        CREATE TYPE faqs_category_enum AS ENUM (
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'faq_category_enum') THEN
+        CREATE TYPE faq_category_enum AS ENUM (
             'Về ET Club',
             'Về hoạt động và sự kiện',
             'Về quy trình tham gia',
@@ -56,8 +57,8 @@ BEGIN
             'Ban Tài chính - Đối ngoại'
         );
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'personnel_position_enum') THEN
-        CREATE TYPE personnel_position_enum AS ENUM (
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'position_enum') THEN
+        CREATE TYPE position_enum AS ENUM (
             'Chủ nhiệm',
             'Phó chủ nhiệm',
             'Thành viên ban chủ nhiệm',
@@ -67,8 +68,8 @@ BEGIN
             'Cộng tác viên'
         );
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'genders_enum') THEN
-        CREATE TYPE genders_enum AS ENUM (
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'gender_enum') THEN
+        CREATE TYPE gender_enum AS ENUM (
             'Nam',
             'Nữ',
             'Khác'
@@ -84,238 +85,232 @@ BEGIN
 END $$;
 
 --Create tables
-CREATE TABLE IF NOT EXISTS system_roles (
-    sysroleID CHAR(6) NOT NULL PRIMARY KEY,
-    system_role system_role_enum NOT NULL
+CREATE TABLE IF NOT EXISTS system_role (
+    sysrole_id CHAR(7) NOT NULL PRIMARY KEY,
+    sysrole_name sysrole_enum NOT NULL DEFAULT 'CTV/TV'
 );
 
-CREATE TABLE IF NOT EXISTS accounts (
-    accountID CHAR(6) PRIMARY KEY,
-    sysroleID CHAR(6) NOT NULL REFERENCES system_roles(sysroleID),
+CREATE TABLE IF NOT EXISTS account (
+    account_id CHAR(7) PRIMARY KEY,
+    sysrole_id CHAR(7) NOT NULL REFERENCES system_role(sysrole_id),
     username VARCHAR(30) UNIQUE NOT NULL,
     password TEXT NOT NULL,
     created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_modified_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS profiles (
-    profileID CHAR(7) PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS profile (
+    profile_id CHAR(7) PRIMARY KEY,
     profile_name VARCHAR(30) NOT NULL CHECK (profile_name !~ '[0-9]'),
-    phone_number VARCHAR(10) CHECK (phone_number ~ '^0[0-9]{9}$'),
-    email VARCHAR(320) CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'),
-    DOB DATE NOT NULL,
-    gender genders_enum NOT NULL,
+    phone_number VARCHAR(10) CHECK (phone_number ~ '^0[0-9]{9}$'), 
+    email VARCHAR(320) NOT NULL CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'),
+    dob DATE NOT NULL,
+    gender gender_enum NOT NULL,
     address VARCHAR(263),
-    studentID VARCHAR(20) NOT NULL,
-    major VARCHAR(100) NOT NULL,
-    class VARCHAR(10),
-    accountID CHAR(6) NOT NULL REFERENCES accounts(accountID)
-);
-
-CREATE TABLE IF NOT EXISTS personnel_positions (
-    positionID CHAR(6) PRIMARY KEY,
-    position personnel_position_enum NOT NULL
-);
-CREATE TABLE IF NOT EXISTS departments (
-    departmentID CHAR(6) PRIMARY KEY,
-    department_name VARCHAR(40) NOT NULL CHECK (department_name !~ '[0-9]') --CHECK
-);
-CREATE TABLE IF NOT EXISTS personnel (
-    personnelID CHAR(6) PRIMARY KEY,
-    personnel_name VARCHAR(30) NOT NULL CHECK (personnel_name !~ '[0-9]'),
-    phone_number VARCHAR(10) CHECK (phone_number ~ '^0[0-9]{9}$'),
-    positionID CHAR(6) NOT NULL REFERENCES personnel_positions(positionID),
-    personnel_type personnel_type_enum NOT NULL,
-    email VARCHAR(320) CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'),
-    DOB DATE NOT NULL,
-    gender genders_enum NOT NULL,
-    address VARCHAR(263),
-    student_ID VARCHAR(20) NOT NULL,
-    university VARCHAR(50) NOT NULL,
-    faculty VARCHAR(100) NOT NULL,
+    student_id VARCHAR(20) NOT NULL,
     major VARCHAR(100) NOT NULL,
     class VARCHAR(10) NOT NULL,
-    departmentID CHAR(6) REFERENCES departments(departmentID),
+    account_id CHAR(10) NOT NULL REFERENCES account(account_id)
+);
+
+CREATE TABLE IF NOT EXISTS course (
+    course_id CHAR(7) PRIMARY KEY,
+    course_name VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS personnel (
+    personnel_id CHAR(7) PRIMARY KEY,
+    personnel_name VARCHAR(30) NOT NULL CHECK (personnel_name !~ '[0-9]'),
+    phone_number VARCHAR(10) CHECK (phone_number ~ '^0[0-9]{9}$'),
+    email VARCHAR(320) NOT NULL CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'),
+    dob DATE NOT NULL,
+    gender gender_enum NOT NULL,
+    address VARCHAR(263),
+    student_id VARCHAR(20) NOT NULL,
+    university VARCHAR(50) NOT NULL DEFAULT 'Đại học Kinh tế TP.HCM',
+    faculty VARCHAR(100) NOT NULL DEFAULT 'Công nghệ thông tin kinh doanh',
+    major VARCHAR(100) NOT NULL,
+    class VARCHAR(10) NOT NULL,
     cv_type cv_type_enum,
-    cv_file TEXT
+    cv_link TEXT,
+    course_id char(7) NOT NULL REFERENCES course(course_id)
 );
-CREATE TABLE IF NOT EXISTS courses (
-    courseID CHAR(6) PRIMARY KEY,
-    course_name VARCHAR(10) NOT NULL CHECK (course_name !~ '[0-9]')
-);
+
 CREATE TABLE IF NOT EXISTS term (
-    termID CHAR(6) PRIMARY KEY,
-    term_name VARCHAR(20) NOT NULL CHECK (term_name !~ '[0-9]')
+    term_id CHAR(7) PRIMARY KEY,
+    term_name VARCHAR(20) NOT NULL,
+    start_date DATE, 
+    end_date DATE
 ); 
-CREATE TABLE IF NOT EXISTS active_in (
-    termID CHAR(6) NOT NULL REFERENCES term(termID),
-    personnelID CHAR(6) NOT NULL,
-    departmentID CHAR(6) REFERENCES departments(departmentID),
-    positionID CHAR(6) REFERENCES personnel_positions(positionID),
-    start_date DATE,
-    end_date DATE,
-    PRIMARY KEY (termID, personnelID)
-); --CHECK
-CREATE TABLE IF NOT EXISTS achievements (
-    achievementID CHAR(6) PRIMARY KEY,
-    achievement_name VARCHAR(30) NOT NULL CHECK (achievement_name !~ '[0-9]'),
+
+CREATE TABLE IF NOT EXISTS position (
+    position_id CHAR(7) PRIMARY KEY,
+    position_name position_enum NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS department (
+    department_id CHAR(7) PRIMARY KEY,
+    department_name department_enum NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS personnel_status (
+    term_id CHAR(7) NOT NULL REFERENCES term(term_id),
+    personnel_id CHAR(7) NOT NULL,
+    department_id CHAR(7) REFERENCES department(department_id),
+    position_id CHAR(7) REFERENCES position(position_id),
+    personnel_status personnel_status_enum NOT NULL, 
+    PRIMARY KEY (term_id, personnel_id)
+);
+
+CREATE TABLE IF NOT EXISTS banner (
+    banner_id CHAR(7) PRIMARY KEY,
+    banner_name VARCHAR(30) NOT NULL,
+    image_url TEXT NOT NULL,
+    visible BOOLEAN NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS achievement (
+    achievement_id CHAR(7) PRIMARY KEY,
+    achievement_name VARCHAR(30) NOT NULL,
     highlight_number VARCHAR(10) NOT NULL,
     visible BOOLEAN NOT NULL
 );
-CREATE TABLE IF NOT EXISTS banners (
-    bannerID TEXT PRIMARY KEY,
-    banner_name VARCHAR(30) NOT NULL,
-    image TEXT NOT NULL,
-    visible BOOLEAN NOT NULL
-);
-CREATE TABLE IF NOT EXISTS faqs (
-    faqsID CHAR(10) PRIMARY KEY,
-    faqs_category faqs_category_enum NOT NULL,
+
+CREATE TABLE IF NOT EXISTS faq (
+    faq_id CHAR(7) PRIMARY KEY,
+    faq_category faq_category_enum NOT NULL,
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     visible BOOLEAN NOT NULL
 );
-CREATE TABLE IF NOT EXISTS activities (
-    activityID CHAR(6) PRIMARY KEY,
-    title VARCHAR(100) NOT NULL CHECK (title !~ '^[0-9]'),
+CREATE TABLE IF NOT EXISTS activity (
+    activity_id CHAR(7) PRIMARY KEY,
+    title VARCHAR(60) NOT NULL CHECK (title ~ '^[A-Za-z].*'),
     activity_category activity_category_enum NOT NULL,
-    meta_description TEXT,
-    content TEXT NOT NULL CHECK (length(content) >= 50),
-    thumbnail_image TEXT NOT NULL,
+    meta_description VARCHAR(160),
+    thumbnail_image_url TEXT NOT NULL,
     start_date DATE NOT NULL DEFAULT CURRENT_DATE,
     end_date DATE NOT NULL DEFAULT CURRENT_DATE,
-    register_number INT NOT NULL DEFAULT 0,
-    participated_number INT NOT NULL DEFAULT 0,
-    expense_money DECIMAL(10,2) NOT NULL DEFAULT 0,
+    register_number INT DEFAULT 0,
+    participated_number INT DEFAULT 0,
+    expense_money DECIMAL(10,2) DEFAULT 0,
     visible BOOLEAN NOT NULL,
+    content TEXT NOT NULL CHECK (length(content) >= 50),
     view_count INT NOT NULL DEFAULT 0,
     last_modified_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE IF NOT EXISTS blogs (
-    blogID CHAR(6) PRIMARY KEY,
-    title VARCHAR(60) NOT NULL,
-    meta_description TEXT NOT NULL,
-    content TEXT NOT NULL CHECK (length(content) >= 50),
-    thumbnail_image TEXT NOT NULL,
-    blog_author VARCHAR(60) NOT NULL,
-    visible BOOLEAN NOT NULL,
-    view_count INT DEFAULT 0,
-    last_modified_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TABLE IF NOT EXISTS collaborators (
-    collaboratorID CHAR(6) PRIMARY KEY,
-    collaborator_name VARCHAR(30) NOT NULL CHECK (collaborator_name !~ '[0-9]'),
-    email VARCHAR(320) CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'),
-    phone_number VARCHAR(15) NOT NULL CHECK (phone_number ~ '^0[0-9]{9,14}$'),
-    university VARCHAR(50) NOT NULL,
-    student_ID VARCHAR(20) NOT NULL,
-    course VARCHAR(10) NOT NULL,
-    faculty VARCHAR(100) NOT NULL,
-    major_class VARCHAR(50) NOT NULL,
-    applied_department department_enum NOT NULL,
-    cv_type cv_type_enum NOT NULL,
-    cv_file TEXT NOT NULL
-);
-CREATE TABLE IF NOT EXISTS partner_category (
-    partner_categoryID CHAR(6) PRIMARY KEY, 
-    partner_category_name partner_category_enum NOT NULL
-);
-CREATE TABLE IF NOT EXISTS partners (
-    partnerID CHAR(8) PRIMARY KEY,
-    partner_name VARCHAR(100) NOT NULL,
-    partner_categoryID CHAR(6) NOT NULL REFERENCES partner_category(partner_categoryID),
-    avatar TEXT,
-    short_description VARCHAR(50),
-    email VARCHAR(320) CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'),
-    phone_number VARCHAR(10) CHECK (phone_number ~ '^0[0-9]{9}$'),
-    visible BOOLEAN NOT NULL,
-    note TEXT,
-    last_modified_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TABLE etnews (
-    etnewsID CHAR(6) PRIMARY KEY,
+
+CREATE TABLE IF NOT EXISTS et_news (
+    etnews_id CHAR(7) PRIMARY KEY,
     title VARCHAR(60) NOT NULL,
     etnews_category etnews_category_enum NOT NULL,
-    thumbnail_image TEXT NOT NULL,
-    created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    meta_description VARCHAR(160),
+    thumbnail_image_url TEXT NOT NULL,
     source TEXT NOT NULL,
     visible BOOLEAN NOT NULL DEFAULT TRUE,
-    view_count INT DEFAULT 0,
     content TEXT NOT NULL CHECK (LENGTH(content) >= 50),
+    view_count INT DEFAULT 0,
+    created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_modified_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---Create sequences
-CREATE SEQUENCE IF NOT EXISTS account_id_seq START 1;
-ALTER TABLE accounts
-    ALTER COLUMN accountID SET DEFAULT 'ACC' || LPAD(nextval('account_id_seq')::TEXT, 3, '0');
+CREATE TABLE IF NOT EXISTS et_blog (
+    blog_id CHAR(7) PRIMARY KEY,
+    title VARCHAR(60) NOT NULL,
+    thumbnail_image_url TEXT NOT NULL,
+    blog_author VARCHAR(60) NOT NULL,
+    meta_description TEXT NOT NULL,
+    visible BOOLEAN NOT NULL,
+    content TEXT NOT NULL CHECK (length(content) >= 50),
+    view_count INT DEFAULT 0,
+    created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_modified_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS partner_category (
+    partner_category_id CHAR(7) PRIMARY KEY, 
+    partner_category_name partner_category_enum NOT NULL
+);
+CREATE TABLE IF NOT EXISTS partner (
+    partner_id CHAR(7) PRIMARY KEY,
+    partner_name VARCHAR(100) NOT NULL,
+    partner_category_id CHAR(7) NOT NULL REFERENCES partner_category(partner_category_id),
+    avatar_url TEXT,
+    short_description VARCHAR(50),
+    email VARCHAR(320) NOT NULL CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'),
+    phone_number VARCHAR(10) CHECK (phone_number ~ '^0[0-9]{9}$'),
+    visible BOOLEAN NOT NULL,
+    note TEXT,
+    created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_modified_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE SEQUENCE IF NOT EXISTS department_id_seq START 1;
-ALTER TABLE departments
-    ALTER COLUMN departmentID SET DEFAULT 'DEPT' || LPAD(nextval('department_id_seq')::TEXT, 2, '0');
+
+--Create sequences
+CREATE SEQUENCE IF NOT EXISTS system_role_id_seq START 1;
+ALTER TABLE system_role
+    ALTER COLUMN sysrole_id SET DEFAULT 'SRLE' || LPAD(nextval('system_role_id_seq')::TEXT, 3, '0');
+
+CREATE SEQUENCE IF NOT EXISTS account_id_seq START 1;
+ALTER TABLE account
+    ALTER COLUMN account_id SET DEFAULT 'ACCT' || LPAD(nextval('account_id_seq')::TEXT, 3, '0');
+
+CREATE SEQUENCE IF NOT EXISTS profile_id_seq START 1;
+ALTER TABLE profile
+    ALTER COLUMN profile_id SET DEFAULT 'PROF' || LPAD(nextval('profile_id_seq')::TEXT, 3, '0');
 
 CREATE SEQUENCE IF NOT EXISTS personnel_id_seq START 1;
 ALTER TABLE personnel
-    ALTER COLUMN personnelID SET DEFAULT 'MEM' || LPAD(nextval('personnel_id_seq')::TEXT, 3, '0');
+    ALTER COLUMN personnel_id SET DEFAULT 'PERS' || LPAD(nextval('personnel_id_seq')::TEXT, 3, '0');
+
+CREATE SEQUENCE IF NOT EXISTS course_id_seq START 1;
+ALTER TABLE course
+    ALTER COLUMN course_id SET DEFAULT 'CORS' || LPAD(nextval('course_id_seq')::TEXT, 3, '0');
 
 CREATE SEQUENCE IF NOT EXISTS term_id_seq START 1;
 ALTER TABLE term
-    ALTER COLUMN termID SET DEFAULT 'TERM' || LPAD(nextval('term_id_seq')::TEXT, 2, '0');
+    ALTER COLUMN term_id SET DEFAULT 'TERM' || LPAD(nextval('term_id_seq')::TEXT, 3, '0');
 
-CREATE SEQUENCE IF NOT EXISTS course_id_seq START 1;
-ALTER TABLE courses
-    ALTER COLUMN courseID SET DEFAULT 'COURSE' || LPAD(nextval('course_id_seq')::TEXT, 3, '0');
+CREATE SEQUENCE IF NOT EXISTS position_id_seq START 1;
+ALTER TABLE position
+    ALTER COLUMN position_id SET DEFAULT 'PSTN' || LPAD(nextval('position_id_seq')::TEXT, 3, '0');
 
-CREATE SEQUENCE IF NOT EXISTS achievement_id_seq START 1;
-ALTER TABLE achievements
-    ALTER COLUMN achievementID SET DEFAULT 'ACHV' || LPAD(nextval('achievement_id_seq')::TEXT, 3, '0');
+CREATE SEQUENCE IF NOT EXISTS department_id_seq START 1;
+ALTER TABLE department
+    ALTER COLUMN department_id SET DEFAULT 'DEPT' || LPAD(nextval('department_id_seq')::TEXT, 3, '0');
 
 CREATE SEQUENCE IF NOT EXISTS banner_id_seq START 1;
-ALTER TABLE banners
-    ALTER COLUMN bannerID SET DEFAULT 'BRN' || LPAD(nextval('banner_id_seq')::TEXT, 3, '0');
+ALTER TABLE banner
+    ALTER COLUMN banner_id SET DEFAULT 'BANR' || LPAD(nextval('banner_id_seq')::TEXT, 3, '0');
 
-CREATE SEQUENCE IF NOT EXISTS faqs_id_seq START 1;
-ALTER TABLE faqs
-    ALTER COLUMN faqsID SET DEFAULT 'QUEST' || LPAD(nextval('faqs_id_seq')::TEXT, 3, '0');
+CREATE SEQUENCE IF NOT EXISTS achievement_id_seq START 1;
+ALTER TABLE achievement
+    ALTER COLUMN achievement_id SET DEFAULT 'ACHV' || LPAD(nextval('achievement_id_seq')::TEXT, 3, '0');
+
+CREATE SEQUENCE IF NOT EXISTS faq_id_seq START 1;
+ALTER TABLE faq
+    ALTER COLUMN faq_id SET DEFAULT 'FAQS' || LPAD(nextval('faq_id_seq')::TEXT, 3, '0');
 
 CREATE SEQUENCE IF NOT EXISTS activity_id_seq START 1;
-ALTER TABLE activities
-    ALTER COLUMN activityID SET DEFAULT 'ACT' || LPAD(nextval('activity_id_seq')::TEXT, 3, '0');
+ALTER TABLE activity
+    ALTER COLUMN activity_id SET DEFAULT 'ACTI' || LPAD(nextval('activity_id_seq')::TEXT, 3, '0');
 
 CREATE SEQUENCE IF NOT EXISTS etnews_id_seq START 1;
-ALTER TABLE etnews
-    ALTER COLUMN etnewsID SET DEFAULT 'EN' || LPAD(nextval('etnews_id_seq')::TEXT, 3, '0');
+ALTER TABLE et_news
+    ALTER COLUMN etnews_id SET DEFAULT 'ENEW' || LPAD(nextval('etnews_id_seq')::TEXT, 3, '0');
 
 CREATE SEQUENCE IF NOT EXISTS blog_id_seq START 1;
-ALTER TABLE blogs
-    ALTER COLUMN blogID SET DEFAULT 'EBLG' || LPAD(nextval('blog_id_seq')::TEXT, 3, '0');
 
-CREATE SEQUENCE IF NOT EXISTS collaborator_id_seq START 1;
-ALTER TABLE collaborators
-    ALTER COLUMN collaboratorID SET DEFAULT 'COLLAB' || LPAD(nextval('collaborator_id_seq')::TEXT, 3, '0');
+ALTER TABLE et_blog 
+    ALTER COLUMN blog_id SET DEFAULT 'EBLG' || LPAD(nextval('blog_id_seq')::TEXT, 3, '0');
 
 CREATE SEQUENCE IF NOT EXISTS partner_id_seq START 1;
-ALTER TABLE partners
-    ALTER COLUMN partnerID SET DEFAULT 'PRTNR' || LPAD(nextval('partner_id_seq')::TEXT, 3, '0');
+ALTER TABLE partner
+    ALTER COLUMN partner_id SET DEFAULT 'PTNR' || LPAD(nextval('partner_id_seq')::TEXT, 3, '0');
 
 CREATE SEQUENCE IF NOT EXISTS partner_category_id_seq START 1;
 ALTER TABLE partner_category
-    ALTER COLUMN partner_categoryID SET DEFAULT 'PC' || LPAD(nextval('partner_category_id_seq')::TEXT, 3, '0');
-
-CREATE SEQUENCE IF NOT EXISTS system_role_id_seq START 1;
-ALTER TABLE system_roles
-    ALTER COLUMN sysroleID SET DEFAULT 'SR' || LPAD(nextval('system_role_id_seq')::TEXT, 3, '0');
-
-CREATE SEQUENCE IF NOT EXISTS profile_id_seq START 1;
-ALTER TABLE profiles
-    ALTER COLUMN profileID SET DEFAULT 'PF' || LPAD(nextval('profile_id_seq')::TEXT, 3, '0');
-
-CREATE SEQUENCE IF NOT EXISTS position_id_seq START 1;
-ALTER TABLE personnel_positions
-    ALTER COLUMN positionID SET DEFAULT 'PO' || LPAD(nextval('position_id_seq')::TEXT, 3, '0');
+    ALTER COLUMN partner_category_id SET DEFAULT 'PNCT' || LPAD(nextval('partner_category_id_seq')::TEXT, 3, '0');
 
 --Create trigger
 CREATE OR REPLACE FUNCTION update_last_modified_column()
@@ -327,26 +322,26 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER update_last_modified_on
-BEFORE UPDATE ON partners
+BEFORE UPDATE ON partner
 FOR EACH ROW
 EXECUTE FUNCTION update_last_modified_column();
 
 CREATE TRIGGER update_last_modified_on
-BEFORE UPDATE ON blogs
+BEFORE UPDATE ON et_blog
 FOR EACH ROW
 EXECUTE FUNCTION update_last_modified_column();
 
 CREATE TRIGGER update_last_modified_on
-BEFORE UPDATE ON accounts
+BEFORE UPDATE ON account
 FOR EACH ROW
 EXECUTE FUNCTION update_last_modified_column();
  
 CREATE TRIGGER update_last_modified_on
-BEFORE UPDATE ON etnews
+BEFORE UPDATE ON et_news
 FOR EACH ROW
 EXECUTE FUNCTION update_last_modified_column();
 
 CREATE TRIGGER update_last_modified_on
-BEFORE UPDATE ON activities
+BEFORE UPDATE ON activity
 FOR EACH ROW
 EXECUTE FUNCTION update_last_modified_column();
