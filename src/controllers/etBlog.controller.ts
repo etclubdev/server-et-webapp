@@ -1,9 +1,35 @@
 import { Request, Response } from "express";
 
-import etBlogService from "../services/etBlog.service";
 import EtBlogService from '../services/etBlog.service';
 
 export default {
+    deleteEtBlog: async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        try {
+            const deletedBlog = await EtBlogService.deleteEtBlog(id);
+
+            if (deletedBlog === 0){
+                res.status(404).json({
+                    msg: "The blog is not found"
+                })
+                return;
+            }
+
+            res.status(200).json({
+                msg: "The blog is deleted successfully",
+                affected: deletedBlog
+            })
+            return;
+
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                msg: 'Internal Server Error'
+            })
+            return;
+        }
+    },
     updateEtBlog: async (req: Request, res: Response) => {
         const { id } = req.params;
         const blog = req.body;
@@ -56,7 +82,7 @@ export default {
         try {
             const { id } = req.params;
 
-            const blog = await etBlogService.getEtBlogById(id);
+            const blog = await EtBlogService.getEtBlogById(id);
 
             if (blog === null) {
                 res.status(404).json({ error: "The blog does not exist" });
@@ -74,7 +100,7 @@ export default {
     },
     getAllEtBlogs: async (req: Request, res: Response) : Promise<void> => {
         try {
-            const blogs = await etBlogService.getAllEtBlogs();
+            const blogs = await EtBlogService.getAllEtBlogs();
 
             if (!blogs) {
                 res.status(404).json({ 
