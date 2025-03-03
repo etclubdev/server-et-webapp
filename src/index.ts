@@ -4,6 +4,8 @@ import healthRoute from './routes/health.route';
 import etBlogRoute from './routes/etBlog.route';
 
 const app = express();
+app.use(express.json());
+
 const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
