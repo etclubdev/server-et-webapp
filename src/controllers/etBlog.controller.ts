@@ -10,7 +10,7 @@ export default {
         try {
             const updatedBlog = await EtBlogService.updateEtBlog(id, blog);
 
-            if (updatedBlog === 0) {
+            if (!updatedBlog) {
                 res.status(404).json({ 
                     msg: "Blog not found or no changes applied" 
                 });
