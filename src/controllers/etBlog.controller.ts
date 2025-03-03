@@ -11,6 +11,7 @@ export default {
 
             res.status(200).json({
                 msg: "The blog is created successfully",
+                data: createdBlog
             })
             return;
 
