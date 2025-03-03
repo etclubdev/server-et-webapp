@@ -1,6 +1,11 @@
 import db from '../utils/db.util';
 
 export default {
+    createEtBlog: async (entity) => {
+        return db('et_blog')
+                .insert(entity)
+                .returning("*");
+    },
     getEtBlogById: async( id ) => {
         const blog = await db('et_blog')
                 .select('blog_id', 'title', 'blog_author', 'visible', 'content', 'created_on')
