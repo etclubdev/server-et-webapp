@@ -1,22 +1,20 @@
 import db from "../utils/db.util";
-import { Activity } from "../entities/activity.entities";
+import { Activity } from "../types/activity";
 
 class GetActivityService {
-    async getActivityById(activityId: string): Promise<Activity | null> {
-        try {
-            const activity = await db("activity_posts").where({ activityId }).first();
+    async getActivityById(id: string): Promise<Activity | null> {
+        const activity = await db("activity")
+            .select(
 
-            if (!activity) {
-                return null;
-            }
-            if (!activity.visible) {
-                throw new Error("Requested range not satisfiable. Activity is not visible.");
-            }
-            return activity;
-        } catch (error) {
-            throw new Error("Error fetching activity: " + error.message);
+                "title", "meta_description", "start_date", "end_date", "visible"
+            )
+            .where("activity_id", id);
+
+        if (activity.length === 0) {
+            return null;
         }
+        return activity[0];
     }
 }
 
-export default GetActivityService; 
+export default GetActivityService;
