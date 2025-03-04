@@ -1,17 +1,21 @@
 import { Request, Response } from "express";
-import CreateActivityService from "../services/activities.service";
-
-const createActivityService = new CreateActivityService();
+import activityService from "../services/activities.service";
 
 const createActivity = async (req: Request, res: Response): Promise<void> => {
+    const activity = req.body;
     try {
-        const newActivity = await createActivityService.createActivity(req.body);
-        res.status(200).json({ mesage: "Successfully", data: newActivity });
-    } catch (error: unknown) {
-        res.status(500).json({
-            message: "An internal server error occurred",
-            error: error instanceof Error ? error.message : "Unknown error",
+        const createdActivity = await activityService.createActivity(activity);
+        res.status(200).json({
+            msg: "The activity is created successfully",
+            data: createdActivity
         });
+        return;
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: "Internal Server Error"
+        });
+        return;
     }
 };
 

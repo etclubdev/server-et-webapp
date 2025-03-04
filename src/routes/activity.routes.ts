@@ -1,9 +1,11 @@
 import express from "express";
 import createActivity from "../controllers/activities.controller";
-import validateActivityMiddleware from "../middlewares/validateActivity";
+import validate from "../middlewares/validate.mdw";
+import { createActivitySchema } from "../schema/activity.schema";
+
 
 const router = express.Router();
 
-router.post("/", validateActivityMiddleware, createActivity);
+router.post("/", validate(createActivitySchema), createActivity);
 
 export default router; 

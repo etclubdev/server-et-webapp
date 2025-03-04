@@ -1,13 +1,17 @@
 export interface Activity {
-    activityId?: string; //Auto generated ID (ACT-XXXXXX)
+    activity_id?: string;
     title: string;
-    category: "Workshop" | "Guide" | "Startup" | "Tech News" | "Others";
-    metaDescription?: string;
-    thumbnailImage?: string;
-    startDate: Date;
-    endDate: Date;
+    activity_category: "Talkshow/Workshop" | "Cuộc thi" | "Game" | "Hoạt động truyền thông" | "Hoạt động nội bộ";
+    meta_description?: string;
+    thumbnail_image_url: string;
+    start_date: Date;
+    end_date: Date;
+    register_number?: number;
+    participated_number?: number;
+    expense_money?: number;
     visible: boolean;
     content: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    view_count?: number;
+    created_on?: Date;
+    last_modified_on?: Date;
 }
