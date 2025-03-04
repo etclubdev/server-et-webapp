@@ -1,24 +1,30 @@
 import { Request, Response } from "express";
 import DeleteActivityService from "../services/activity.service";
 
-const deleteActivityService = new DeleteActivityService();
-
 const deleteActivity = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
-        const deleted = await deleteActivityService.deleteActivityById(id)
+    const { id } = req.params;
 
-        if (!deleted) {
-            res.status(404).json({ message: "Activity post not found" });
+    try {
+        const deletedActivity = await DeleteActivityService.deleteActivityById(id);
+
+        if (deletedActivity === 0) {
+            res.status(404).json({
+                msg: "The activity post is not found"
+            });
             return;
         }
 
-        res.status(200).json({ message: "Activity post deleted successfully" });
-    } catch (error) {
-        res.status(500).json({
-            message: "An internal server error occurred",
-            error: error instanceof Error ? error.message : "Unknown error",
+        res.status(200).json({
+            msg: "The activity post is deleted successfully",
+            affected: deletedActivity
         });
+        return;
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            msg: "Internal Server Error"
+        });
+        return;
     }
 };
 
