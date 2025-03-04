@@ -5,16 +5,16 @@ class ActivityService {
     async getAllActivities(): Promise<{ ongoing: Activity[]; completed: Activity[] }> {
         const now = new Date();
 
-        const ongoing = await db("activities")
-            .select("id", "tiltle", "metaDescription", "category", "thumbnail", "startDate", "endDate", "content")
+        const ongoing = await db("activity")
+            .select("activity_id", "title", "meta_description", "activity_category", "thumbnail_image_url", "start_date", "end_date", "content")
             .where("visible", true)
-            .where("startDate", "<=", now)
-            .where("endDAte", ">=", now);
+            .where("start_date", "<=", now)
+            .where("end_date", ">=", now);
 
-        const completed = await db("activities")
-            .select("id", "tiltle", "metaDescription", "category", "thumbnail", "startDate", "endDate", "content")
+        const completed = await db("activity")
+            .select("activity_id", "title", "meta_description", "activity_category", "thumbnail_image_url", "start_date", "end_date", "content")
             .where("visible", true)
-            .where("endDAte", "<", now);
+            .where("end_date", "<", now);
 
         return { ongoing, completed };
     }

@@ -4,13 +4,28 @@ import ActivityService from "../services/activities.service";
 const getAllActivities = async (req: Request, res: Response): Promise<void> => {
     try {
         const activities = await ActivityService.getAllActivities();
-        res.status(200).json({ message: "Successfully retrieved", data: activities });
-    } catch (error: unknown) {
-        res.status(500).json({
-            message: "An internal server error occured",
-            error: error instanceof Error ? error.message : "Unknown error",
-        })
+
+        if (!activities || (activities.ongoing.length === 0 && activities.completed.length === 0)) {
+            res.status(404).json({
+                msg: "No activities found",
+                ongoing: [],
+                completed: []
+            });
+            return;
+        }
+
+        res.status(200).json({
+            success: true,
+            msg: "Activities retrieved successfully",
+            ...activities
+        });
+        return;
+
+    } catch (error) {
+        console.error("Error retrieving activities:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+        return;
     }
 };
 
-export default getAllActivities; 
+export default getAllActivities;
