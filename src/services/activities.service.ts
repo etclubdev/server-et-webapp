@@ -1,5 +1,5 @@
 import db from "../utils/db.util";
-import { Activity } from "../entities/activity.entities"
+import { Activity } from "../types/activity"
 
 class ActivityService {
     async getAllActivities(): Promise<{ ongoing: Activity[]; completed: Activity[] }> {
