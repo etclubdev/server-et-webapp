@@ -1,17 +1,18 @@
 import express from "express";
 import activityRoutes from "./routes/activity.routes";
+import etBlogRoute from './routes/etBlog.route';
+import healthRoute from './routes/health.route';
 
 const app = express();
-
-// Middleware để parse JSON
-app.use(express.json());
 
 
 app.use(express.json());
 app.use("/activities", activityRoutes);
-
+app.use('/et-blog', etBlogRoute);
+app.use('/health', healthRoute);
 
 const PORT = process.env.PORT || 8080;
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

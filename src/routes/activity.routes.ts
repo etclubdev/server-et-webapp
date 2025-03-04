@@ -1,9 +1,11 @@
 import express from "express";
 import updateActivity from "../controllers/activity.controller";
-import validateUpdateActivityMiddleware from "../middlewares/validateUpdateActivity";
+import validate from "../middlewares/validate.mdw";
+import { updateActivitySchema } from "../entities/activity.schema";
+
 
 const router = express.Router();
 
-router.put("/:id", validateUpdateActivityMiddleware, updateActivity);
+router.put("/:id", validate(updateActivitySchema), updateActivity);
 
-export default router;
+export default router; 

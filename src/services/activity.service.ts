@@ -1,27 +1,14 @@
 import db from "../utils/db.util";
-import { Activity } from "../entities/activity.entity";
+import { Activity } from "../types/activity";
 
-class UpdateActivityService {
-    async updateActivity(activityId: string, updates: Partial<Activity>) {
-        try {
-            const existingActivity = await db("activity_posts")
-                .where({ activityId })
-                .first();
-            if (!existingActivity) {
-                throw new Error("Activity not found");
-            }
+export default {
+    async updateActivity(id: string, activity: Partial<Activity>) {
+        const updatedActivity = await db("activity")
+            .where("activity_id", id)
+            .update(activity)
+            .returning("*");
 
-            // Update only provided fields
-            const updatedActivity = await db("activity_posts")
-                .where({ activityId })
-                .update({ ...updates, updateAt: new Date() })
-                .returning("*");
-
-            return updatedActivity;
-        } catch (error) {
-            throw new Error("Error updating activity: " + error.message);
-        }
+        if (updatedActivity.length === 0) return null;
+        return updatedActivity;
     }
-}
-
-export default UpdateActivityService; 
+};

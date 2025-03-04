@@ -1,25 +1,32 @@
 import { Request, Response } from "express";
-import UpdateActivityService from "../services/activity.service";
-
-
-const updateActivityService = new UpdateActivityService();
+import ActivityService from "../services/activity.service";
 
 const updateActivity = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const activityData = req.body;
+
     try {
-        const { id } = req.params;
-        const updatedActivity = await updateActivityService.updateActivity(id, req.body);
+        const updatedActivity = await ActivityService.updateActivity(id, activityData);
 
         if (!updatedActivity) {
-            res.status(404).json({ message: "Activity not found" });
+            res.status(404).json({
+                msg: "Activity not found or no changes applied"
+            });
             return;
         }
 
-        res.status(200).json({ message: "Successfully updated", data: updatedActivity });
-    } catch (error) {
-        res.status(500).json({
-            message: "An internal server error occurred",
-            error: error instanceof Error ? error.message : "Unknown error",
+        res.status(200).json({
+            msg: "The activity is updated successfully",
+            affected: updatedActivity
         });
+        return;
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            msg: "Internal Server Error"
+        });
+        return;
     }
 };
 
