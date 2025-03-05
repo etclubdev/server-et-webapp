@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 
-import etnewsService from "../services/etnews.service";
+import etNewsService from "../services/etNews.service";
 
 export default {
   deleteETNews: async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-      const deletedNews = await etnewsService.deleteETNews(id);
+      const deletedNews = await etNewsService.deleteETNews(id);
 
       if (!deletedNews) {
         res.status(404).json({ message: "News not found!" });
