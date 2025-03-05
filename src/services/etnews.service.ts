@@ -1,5 +1,5 @@
 import db from '../utils/db.util';
-import { ETNews } from '../types/etnews';
+import { ETNews } from '../types/etNews';
 
 export default {
     async updateETNews(id: string, news: ETNews) {
