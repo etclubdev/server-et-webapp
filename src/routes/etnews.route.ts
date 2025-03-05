@@ -1,11 +1,11 @@
 import express from 'express';
 
-import etnewsController from '../controllers/etnews.controller';
+import etNewsController from '../controllers/etNews.controller';
 import validate from '../middlewares/validate.mdw';
-import { createNewsSchema } from '../entities/etnews.entity';
+import { createNewsSchema } from '../entities/etNews.entity';
 
 const router = express.Router();
 
-router.post('/', validate(createNewsSchema), etnewsController.createETNews);
+router.post('/', validate(createNewsSchema), etNewsController.createETNews);
 
 export default router;

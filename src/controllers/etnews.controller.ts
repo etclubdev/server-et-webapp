@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import etnewsService from "../services/etnews.service";
+import etnewsService from "../services/etNews.service";
 
 export default {
   createETNews: async (req: Request, res: Response) => {
