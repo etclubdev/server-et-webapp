@@ -24,6 +24,7 @@ export default {
 
             return { groupedNews, latestNews };
         } catch (error) {
+            console.log(error);
             throw new Error('Error getting etnews: ' + error.message);
         }
     }
