@@ -15,6 +15,7 @@ export default {
       return;
       
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: "Internal Server Error " + error.message });
       return;
     }
