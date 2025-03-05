@@ -5,6 +5,6 @@ import etnewsController from '../controllers/etnews.controller';
 
 const router = express.Router();
 
-router.delete('/:etnews_id', etnewsController.deleteETNews);
+router.delete('/:id', etnewsController.deleteETNews);
 
 export default router;

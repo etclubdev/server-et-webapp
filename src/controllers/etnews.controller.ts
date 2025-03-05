@@ -4,9 +4,9 @@ import etnewsService from "../services/etnews.service";
 
 export default {
   deleteETNews: async (req: Request, res: Response) => {
-    const { etnews_id } = req.params;
+    const { id } = req.params;
     try {
-      const deletedNews = await etnewsService.deleteETNews(etnews_id);
+      const deletedNews = await etnewsService.deleteETNews(id);
 
       if (!deletedNews) {
         res.status(404).json({ message: "News not found!" });
@@ -19,6 +19,7 @@ export default {
       });
       return;
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: "Internal Server Error " + error.message });
       return;
     }
