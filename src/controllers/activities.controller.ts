@@ -8,16 +8,19 @@ const getAllActivities = async (req: Request, res: Response): Promise<void> => {
         if (!activities || (activities.ongoing.length === 0 && activities.completed.length === 0)) {
             res.status(404).json({
                 msg: "No activities found",
-                ongoing: [],
-                completed: []
+                data: {
+                    ongoing: [],
+                    completed: []
+                }
             });
+
             return;
         }
 
         res.status(200).json({
             success: true,
             msg: "Activities retrieved successfully",
-            ...activities
+            data: { ...activities }
         });
         return;
 
