@@ -1,9 +1,9 @@
 import express from 'express';
 
-import etnewsController from '../controllers/etnews.controller';
+import etNewsController from '../controllers/etNews.controller';
 
 const router = express.Router();
 
-router.get('/:id', etnewsController.getETNewsbyIDController);
+router.get('/:id', etNewsController.getETNewsbyIDController);
 
 export default router;
