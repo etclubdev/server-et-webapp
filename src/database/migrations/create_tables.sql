@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS department (
 
 CREATE TABLE IF NOT EXISTS personnel_status (
     term_id CHAR(7) NOT NULL REFERENCES term(term_id),
-    personnel_id CHAR(7) NOT NULL,
+    personnel_id CHAR(7) NOT NULL REFERENCES personnel(personnel_id),
     department_id CHAR(7) REFERENCES department(department_id),
     position_id CHAR(7) REFERENCES position(position_id),
     personnel_status personnel_status_enum NOT NULL, 
@@ -316,7 +316,7 @@ ALTER TABLE partner_category
 CREATE OR REPLACE FUNCTION update_last_modified_column()
 RETURNS TRIGGER AS $$
 BEGIN
-    NEW.last_modified_on = NOW();
+    NEW.last_modified_on = CURRENT_TIMESTAMP;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
