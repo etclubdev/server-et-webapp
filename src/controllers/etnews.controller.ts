@@ -11,10 +11,14 @@ export default {
         return;
       }
 
-      res.status(200).json(news);
+      res.status(200).json({
+        message: "Successfully",
+        data: news,
+      });
       return;
 
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: "Internal Server Error" + error.message });
       return;
     }
