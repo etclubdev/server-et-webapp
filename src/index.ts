@@ -1,5 +1,5 @@
 import express from 'express';
-
+import faqRoute from './routes/faq.route'
 import healthRoute from './routes/health.route';
 import etBlogRoute from './routes/etBlog.route';
 
@@ -9,7 +9,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
-
+app.use('/faqs', faqRoute);
 app.use('/health', healthRoute);
 app.use('/et-blog', etBlogRoute);
 
