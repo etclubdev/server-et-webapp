@@ -1,5 +1,5 @@
 import db from "../utils/db.util";
-import { Activity } from "../entities/activity.entity";
+import { Activity } from "../types/activity";
 
 export default {
     createActivity: async (activity: Activity) => {

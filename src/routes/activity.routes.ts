@@ -1,7 +1,7 @@
 import express from "express";
 import createActivity from "../controllers/activities.controller";
 import validate from "../middlewares/validate.mdw";
-import { createActivitySchema } from "../schema/activity.schema";
+import { createActivitySchema } from "../entities/activity.entity";
 
 
 const router = express.Router();
