@@ -1,8 +1,8 @@
 import express from "express";
-import getActivityById from "../controllers/activity.controller";
+import activitiesController from "../controllers/activity.controller";
 
 const router = express.Router();
 
-router.get("/:id", getActivityById);
+router.get("/:id", activitiesController.getActivityById);
 
 export default router; 
