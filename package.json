@@ -15,8 +15,11 @@
   "author": "et-members",
   "license": "ISC",
   "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "express": "^4.21.2",
-    "knex": "^3.1.0"
+    "knex": "^3.1.0",
+    "pg": "^8.13.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.16.0",
