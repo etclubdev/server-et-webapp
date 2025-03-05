@@ -12,11 +12,6 @@ export default {
         return;
       }
 
-      if (!news.visible) {
-        res.status(416).json({ message: " Requested range not satisfiable" });
-        return;
-      }
-
       res.status(200).json({
         message: "Successfully",
         data: news,
