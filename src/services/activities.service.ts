@@ -22,7 +22,7 @@ export default {
             return { ongoing, completed };
         } catch (error) {
             console.log(error);
-            throw new Error('Error getting etnews: ' + error.message);
+            throw new Error('Error getting activities: ' + error.message);
         }
     }
 };
