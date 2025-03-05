@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import ActivityService from "../services/activity.service";
+import activityService from "../services/activity.service";
 
 const updateActivity = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     const activityData = req.body;
 
     try {
-        const updatedActivity = await ActivityService.updateActivity(id, activityData);
+        const updatedActivity = await activityService.updateActivity(id, activityData);
 
         if (!updatedActivity) {
             res.status(404).json({
