@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import DeleteActivityService from "../services/activity.service";
+import deleteActivityService from "../services/activity.service";
 
 const deleteActivity = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
 
     try {
-        const deletedActivity = await DeleteActivityService.deleteActivityById(id);
+        const deletedActivity = await deleteActivityService.deleteActivityById(id);
 
         if (deletedActivity === 0) {
             res.status(404).json({
