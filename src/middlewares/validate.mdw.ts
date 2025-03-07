@@ -1,6 +1,6 @@
 import Ajv from "ajv";
 import addFormats from 'ajv-formats';
-import express, { Response, Request, NextFunction } from "express";
+import { Response, Request, NextFunction } from "express";
 
 export default function (schema) {
     return function validate(req: Request, res: Response, next: NextFunction) : Promise<void>{
