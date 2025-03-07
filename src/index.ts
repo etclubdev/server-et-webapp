@@ -1,10 +1,9 @@
 import express from "express";
-import activityRoutes from "./routes/activity.routes";
+import activityRoutes from "./routes/activity.route";
 import etBlogRoute from './routes/etBlog.route';
 import healthRoute from './routes/health.route';
 
 const app = express();
-
 
 app.use(express.json());
 app.use("/activities", activityRoutes);
