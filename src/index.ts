@@ -2,7 +2,7 @@ import express from 'express';
 
 import healthRoute from './routes/health.route';
 import etBlogRoute from './routes/etBlog.route';
-import etNewsRoute from './routes/etnews.route';
+import etNewsRoute from './routes/etNews.route';
 
 const app = express();
 app.use(express.json());

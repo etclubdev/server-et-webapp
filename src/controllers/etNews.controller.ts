@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 
-import etnewsService from "../services/etnews.service";
+import etNewsService from "../services/etNews.service";
 export default {
   updateETNewsController: async (req: Request, res: Response) => {
     const { id } = req.params;
     const news = req.body;
     
     try {
-        const updatedNews = await etnewsService.updateETNews(id, news);
+        const updatedNews = await etNewsService.updateETNews(id, news);
 
         if (!updatedNews) {
             res.status(404).json({ message: "News not found" });
