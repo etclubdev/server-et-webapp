@@ -1,7 +1,15 @@
 import db from '../utils/db.util';
-import { ETNews } from '../types/etNews';
+import { ETNews } from '../types/etnews';
 
 export default {
+    getETNewsbyID: async(id: string) => {
+        const news = await db("et_news").select("title", "thumbnail_image_url", "source", "content", "created_on", "visible")
+            .where('etnews_id', id)
+
+        if (news.length === 0) return null;
+        return news[0];
+    },
+
     getAllNews: async () => {
         try {
             // Get all news
