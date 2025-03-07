@@ -1,7 +1,13 @@
 import db from '../utils/db.util';
-import { ETNews } from '../types/etnews';
+import { ETNews } from '../types/etNews';
 
 export default {
+    createNews: async(news: ETNews) => {
+        return db('et_news')
+        .insert(news)
+        .returning('*');
+    },
+
     getETNewsbyID: async(id: string) => {
         const news = await db("et_news").select("title", "thumbnail_image_url", "source", "content", "created_on", "visible")
             .where('etnews_id', id)

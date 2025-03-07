@@ -1,8 +1,26 @@
 import { Request, Response } from "express";
 
 import etNewsService from "../services/etNews.service";
+
 export default {
-  getETNewsbyIDController: async (req: Request, res: Response): Promise<void> => {
+  createETNews: async (req: Request, res: Response) => {
+    const news = req.body;
+    try {
+      const createdNews = await etNewsService.createNews(news);
+
+      res.status(201).json({
+        message: "Successfully",
+        data: createdNews,
+      })
+      return;
+
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal Server Error " + error.message });
+      return;
+    }
+  },
+  getETNewsbyID: async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
       const news = await etNewsService.getETNewsbyID(id);
@@ -17,6 +35,7 @@ export default {
         data: news,
       });
       return;
+
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: "Internal Server Error " + error.message });
