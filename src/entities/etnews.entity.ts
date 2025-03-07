@@ -77,7 +77,7 @@ const updateNewsSchema: Schema = {
         },
         "etnews_category": {
             "type": "string",
-            "enum": ["Công Nghệ Việt Nam", "Công Nghệ thế giới", "Chính phủ số", "Khác"],
+            "enum": ["Công nghệ Việt Nam", "Công nghệ thế giới", "Chính phủ số", "Khác"],
             "description": "Category must be one of: Công Nghệ Việt Nam, Công Nghệ thế giới, Chính phủ số, Khác."
         },
         "meta_description": {
