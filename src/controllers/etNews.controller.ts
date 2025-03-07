@@ -3,7 +3,29 @@ import { Request, Response } from "express";
 import etNewsService from "../services/etNews.service";
 
 export default {
-  updateETNewsController: async (req: Request, res: Response) => {
+  deleteETNews: async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const deletedNews = await etNewsService.deleteETNews(id);
+
+      if (!deletedNews) {
+        res.status(404).json({ message: "News not found!" });
+        return;
+      }
+
+      res.status(200).json({
+        message: "Successfully",
+        data: deletedNews,
+      });
+      return;
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal Server Error " + error.message });
+      return;
+    }
+  },
+
+  updateETNews: async (req: Request, res: Response) => {
     const { id } = req.params;
     const news = req.body;
 
@@ -26,6 +48,7 @@ export default {
       return;
     }
   },
+
   createETNews: async (req: Request, res: Response) => {
     const news = req.body;
     try {
@@ -42,6 +65,7 @@ export default {
       return;
     }
   },
+
   getETNewsbyID: async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
@@ -64,6 +88,7 @@ export default {
       return;
     }
   },
+  
   getAllETNews: async (req: Request, res: Response) => {
     try {
       const news = await etNewsService.getAllNews();

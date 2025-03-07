@@ -2,6 +2,12 @@ import db from '../utils/db.util';
 import { ETNews } from '../types/etNews';
 
 export default {
+    deleteETNews: async ( id: string ) => {
+        return db('et_news')
+            .where('etnews_id', id)
+            .del()
+    },
+
     updateETNews: async (id: string, news: ETNews) => {
         const updatedNews = await db("et_news")
             .where('etnews_id', id)
@@ -11,6 +17,7 @@ export default {
         if (updatedNews.length === 0) return null;
         return updatedNews;
     },
+
     createNews: async(news: ETNews) => {
         return db('et_news')
         .insert(news)
