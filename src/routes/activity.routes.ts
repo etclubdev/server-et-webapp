@@ -1,11 +1,13 @@
 import express from "express";
-import createActivity from "../controllers/activities.controller";
+
+import activityController from "../controllers/activity.controller";
 import validate from "../middlewares/validate.mdw";
-import { createActivitySchema } from "../entities/activity.entity";
+import { updateActivitySchema, createActivitySchema } from "../entities/activity.entity";
 
 
 const router = express.Router();
 
-router.post("/", validate(createActivitySchema), createActivity);
+router.put("/:id", validate(updateActivitySchema), activityController.updateActivity);
+router.post("/", validate(createActivitySchema), activityController.createActivity);
 
 export default router; 
