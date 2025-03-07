@@ -2,6 +2,12 @@ import db from "../utils/db.util";
 import { Activity } from "../types/activity";
 
 export default {
+    deleteActivityById: async (id: string) => {
+        return db("activity")
+            .where("activity_id", id)
+            .del();
+    },
+
     updateActivity: async (id: string, activity: Activity) => {
         const updatedActivity = await db("activity")
             .where("activity_id", id)
