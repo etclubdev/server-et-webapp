@@ -6,6 +6,7 @@ import { createPartnerSchema } from '../entities/partner.entity';
 
 const router = Router();
 
+router.get('/', partnerController.getAllPartner);
 router.post('/', validate(createPartnerSchema), partnerController.createPartner);
 
 export default router;

@@ -3,7 +3,7 @@ import express from "express";
 import activityRoute from "./routes/activity.route";
 import etNewsRoute from './routes/etNews.route';
 import etBlogRoute from './routes/etBlog.route';
-import partnerRoute from './routes/partner.route';  
+import partnerRoute from './routes/partner.route';
 import healthRoute from './routes/health.route';
 
 const app = express();
