@@ -1,7 +1,6 @@
 import express from 'express';
 
 import etNewsController from '../controllers/etNews.controller';
-
 import validate from '../middlewares/validate.mdw';
 import { createNewsSchema, updateNewsSchema } from '../entities/etnews.entity';
 
