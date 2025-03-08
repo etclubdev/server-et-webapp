@@ -15,7 +15,6 @@ app.use("/activities", activityRoute);
 app.use('/et-news', etNewsRoute);
 app.use('/et-blog', etBlogRoute);
 app.use('/partners', partnerRoute);
-app.use('/health', healthRoute);
 
 const PORT = process.env.PORT || 8080;
 
