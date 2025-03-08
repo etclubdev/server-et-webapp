@@ -10,5 +10,6 @@ router.get('/:id', partnerController.getPartnerByID);
 router.get('/', partnerController.getAllPartner);
 router.post('/', validate(createPartnerSchema), partnerController.createPartner);
 router.put('/:id', validate(updatePartnerSchema), partnerController.updatePartner);
+router.delete('/:id', partnerController.deletePartner);
 
 export default router;  

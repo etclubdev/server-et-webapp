@@ -2,6 +2,11 @@ import db from '../utils/db.util';
 import { Partner } from '../types/partner'
 
 export default {
+    deletePartner: async (id: string) => {
+        return db('partner')
+            .where('partner_id', id)
+            .del();
+    },
     updatePartner: async (id: string, partner: Partner) => {
         const updatedPartner = await db('partner')
             .where('partner_id', id)
@@ -37,4 +42,3 @@ export default {
             .returning("*");
     },
 }
-
