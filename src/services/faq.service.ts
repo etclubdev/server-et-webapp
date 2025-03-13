@@ -5,8 +5,7 @@ export default {
     getAllFAQs: async (): Promise<FAQ[]> => {
         try {
             const faqs = await db("faq")
-                .select("faq_id", "faq_category", "question", "answer", "visible")
-                .where("visible", true);
+                .select("faq_id", "faq_category", "question", "answer", "visible");
 
             return faqs;
         } catch (error) {
