@@ -2,6 +2,7 @@ import db from "../utils/db.util";
 import { FAQ } from "../types/faq";
 
 export default {
+
     getFAQById: async (id: string): Promise<FAQ | null> => {
         try {
             const faq = await db("faq")
@@ -13,5 +14,26 @@ export default {
             console.error("Error getting FAQ by ID:", error);
             throw new Error("Error getting FAQ by ID: " + error.message);
         }
-    }
+    },
+
+
+    getAllFAQs: async (): Promise<FAQ[]> => {
+        try {
+            const faqs = await db("faq")
+                .select("faq_id", "faq_category", "question", "answer", "visible");
+
+            return faqs;
+        } catch (error) {
+            console.error("Error getting FAQs:", error);
+            throw new Error("Error getting FAQs: " + error.message);
+        }
+    },
+
+    createFAQ: async (faq: FAQ) => {
+        return db("faq")
+            .insert(faq)
+            .returning("*");
+    },
+
+
 };
