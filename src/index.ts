@@ -1,4 +1,5 @@
 import express from 'express';
+
 import faqRoute from './routes/faq.route'
 import healthRoute from './routes/health.route';
 import activityRoute from "./routes/activity.route";

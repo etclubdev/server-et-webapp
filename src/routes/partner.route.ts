@@ -7,7 +7,7 @@ import { createPartnerSchema, updatePartnerSchema } from '../entities/partner.en
 const router = Router();
 
 router.get('/:id', partnerController.getPartnerByID);
-router.get('/', partnerController.getAllPartner);
+router.get('/', partnerController.getPartner);
 router.post('/', validate(createPartnerSchema), partnerController.createPartner);
 router.put('/:id', validate(updatePartnerSchema), partnerController.updatePartner);
 router.delete('/:id', partnerController.deletePartner);

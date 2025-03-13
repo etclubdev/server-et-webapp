@@ -9,6 +9,12 @@ export default {
         try {
             const deletedPartner = await partnerService.deletePartner(id);
 
+            if (!deletedPartner) {
+                res.status(404).json({
+                    msg: "Partner not found"
+                })
+                return;
+            }
             res.status(201).json({
                 msg: "Successfully",
                 data: deletedPartner
@@ -55,7 +61,7 @@ export default {
         try {
             const partner = await partnerService.getPartnerByID(id);
 
-            if(!partner) {
+            if (!partner) {
                 res.status(404).json({
                     msg: 'Partner not found'
                 });
@@ -70,13 +76,15 @@ export default {
             console.log(err);
             res.status(500).json({
                 msg: 'Internal Server Error' + err.message
-            })  
+            })
             return;
         }
     },
-    getAllPartner: async (req: Request, res: Response) => {
+    getPartner: async (req: Request, res: Response) => {
         try {
-            const partners = await partnerService.getAllPartner();
+
+            const categoryId = req.query.categoryId as string;
+            const partners = categoryId ? await partnerService.getPartnerByCategory(categoryId) : await partnerService.getAllPartner();
 
             if (!partners) {
                 res.status(404).json({
@@ -94,9 +102,10 @@ export default {
             console.log(err);
             res.status(500).json({
                 msg: 'Internal Server Error' + err.message
-            })  
+            })
             return;
         }
+
     },
     createPartner: async (req: Request, res: Response) => {
         const partner = req.body;
