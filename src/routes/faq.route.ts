@@ -10,9 +10,11 @@ router.get("/:id", faqController.getFAQById);
 router.get("/", faqController.getAllFAQs);
 router.post("/", validate(createFAQSchema), faqController.createFAQ);
 router.put("/:id", validate(updateFAQSchema), faqController.updateFAQ);
+router.delete("/:id", faqController.deleteFAQ);
 
 
 
 export default router;
+
 
 

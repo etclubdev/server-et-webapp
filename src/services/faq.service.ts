@@ -43,7 +43,12 @@ export default {
 
         if (updatedFAQ.length === 0) return null;
         return updatedFAQ;
-    }
+    },
+    deleteFAQById: async (id: string) => {
+        return db("faq")
+            .where("faq_id", id)
+            .del();
+    },
 
 
 
