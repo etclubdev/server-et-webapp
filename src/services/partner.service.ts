@@ -12,6 +12,21 @@ export default {
             }
             return partners;
     },
+    deletePartner: async (id: string) => {
+        return db('partner')
+            .where('partner_id', id)
+            .del();
+    },
+    updatePartner: async (id: string, partner: Partner) => {
+        const updatedPartner = await db('partner')
+            .where('partner_id', id)
+            .update(partner)
+            .returning("*");
+
+        if (updatedPartner.length === 0)
+            return null;
+        return updatedPartner;
+    },
     getPartnerByID: async(id: string) => {
         const partner = await db('partner')
                 .select('*')
