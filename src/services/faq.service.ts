@@ -2,6 +2,7 @@ import db from "../utils/db.util";
 import { FAQ } from "../types/faq";
 
 export default {
+
     getAllFAQs: async (): Promise<FAQ[]> => {
         try {
             const faqs = await db("faq")
@@ -12,5 +13,12 @@ export default {
             console.error("Error getting FAQs:", error);
             throw new Error("Error getting FAQs: " + error.message);
         }
-    }
+    },
+
+    createFAQ: async (faq: FAQ) => {
+        return db("faq")
+            .insert(faq)
+            .returning("*");
+    },
+
 };
