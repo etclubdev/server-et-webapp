@@ -1,11 +1,11 @@
 import express from "express";
-import createFAQ from "../controllers/faq.controller";
 import validate from "../middlewares/validate.mdw";
+import faqController from "../controllers/faq.controller";
 import { createFAQSchema } from "../entities/faq.entity";
 
-
 const router = express.Router();
+router.get("/", faqController.getAllFAQs);
+router.post("/", validate(createFAQSchema), faqController.createFAQ);
 
-router.post("/", validate(createFAQSchema), createFAQ);
+export default router;
 
-export default router; 
