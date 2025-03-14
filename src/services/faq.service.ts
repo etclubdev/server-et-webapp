@@ -17,12 +17,37 @@ export default {
     },
 
 
-    getAllFAQs: async (): Promise<FAQ[]> => {
+    getAllFAQs: async (): Promise<Record<string, FAQ[]>> => {
         try {
-            const faqs = await db("faq")
-                .select("faq_id", "faq_category", "question", "answer", "visible");
 
-            return faqs;
+            const faqs = await db("faq").select("faq_id", "faq_category", "question", "answer", "visible");
+
+
+            const groupedFAQs = {
+                aboutETClub: [] as FAQ[],
+                aboutActivities: [] as FAQ[],
+                aboutMembership: [] as FAQ[],
+                others: [] as FAQ[]
+            };
+
+            faqs.forEach((faq) => {
+                switch (faq.faq_category) {
+                    case "Về ET Club":
+                        groupedFAQs.aboutETClub.push(faq);
+                        break;
+                    case "Về hoạt động và sự kiện":
+                        groupedFAQs.aboutActivities.push(faq);
+                        break;
+                    case "Về quy trình tham gia":
+                        groupedFAQs.aboutMembership.push(faq);
+                        break;
+                    default:
+                        groupedFAQs.others.push(faq);
+                        break;
+                }
+            });
+
+            return groupedFAQs;
         } catch (error) {
             console.error("Error getting FAQs:", error);
             throw new Error("Error getting FAQs: " + error.message);
