@@ -16,7 +16,7 @@ export default {
             throw new Error('Error getting activities: ' + error.message);
         }
     },
-    getAllActivities: async (): Promise<{ ongoing: Activity[]; completed: Activity[] }> => {
+    getAllActivities: async (): Promise<{ ongoing: Activity[]; completed: Record<string, Activity[]> }> => {
         try {
             const now = new Date();
 
@@ -26,10 +26,20 @@ export default {
                 .where("start_date", "<=", now)
                 .where("end_date", ">=", now);
 
-            const completed = await db("activity")
+            const completedRaw = await db("activity")
                 .select("activity_id", "title", "meta_description", "activity_category", "thumbnail_image_url", "start_date", "end_date", "content")
                 .where("visible", true)
                 .where("end_date", "<", now);
+
+
+            const completed: Record<string, Activity[]> = completedRaw.reduce((acc, activity) => {
+                const category = activity.activity_category;
+                if (!acc[category]) {
+                    acc[category] = [];
+                }
+                acc[category].push(activity);
+                return acc;
+            }, {} as Record<string, Activity[]>);
 
             return { ongoing, completed };
         } catch (error) {
@@ -37,7 +47,7 @@ export default {
             throw new Error('Error getting activities: ' + error.message);
         }
     },
-    
+
     deleteActivityById: async (id: string) => {
         return db("activity")
             .where("activity_id", id)
