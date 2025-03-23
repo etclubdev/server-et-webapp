@@ -126,4 +126,30 @@ export default {
             return;
         }
     },
+    updateVisible: async (req: Request, res: Response) => {
+        try {
+            const {partners} = req.body; 
+            
+            if (!partners || !Array.isArray(partners) || partners.length === 0) {
+                res.status(400).json({
+                    message: "Invalid Data"
+                });
+                return;
+            }
+
+            await partnerService.updateVisible(partners);
+
+            res.status(200).json({
+                msg: "Successfully",
+                updatedCount: partners.length
+            })
+            return;
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                message: "Internal Server Error" + error.message
+            });
+            return;
+        }
+    },
 }
