@@ -1,23 +1,28 @@
-import { Request, Response } from "express";
+import { Request, Response, RequestHandler } from "express";
 import faqService from "../services/faq.service";
 
 
 export default {
-    getAllFAQs: async (req: Request, res: Response) => {
+    getAllFAQs: (async (req: Request, res: Response): Promise<void> => {
         try {
-            const faqs = await faqService.getAllFAQs();
+            const groupedFAQs = await faqService.getAllFAQs();
 
-            if (!faqs || faqs.length === 0) {
+            if (
+                groupedFAQs.aboutETClub.length === 0 &&
+                groupedFAQs.aboutActivities.length === 0 &&
+                groupedFAQs.aboutMembership.length === 0 &&
+                groupedFAQs.others.length === 0
+            ) {
                 res.status(404).json({
                     message: "No FAQs found!",
-                    data: []
+                    data: groupedFAQs
                 });
                 return;
             }
 
             res.status(200).json({
                 message: "Successfully retrieved FAQs",
-                data: faqs
+                data: groupedFAQs
             });
             return;
 
@@ -28,7 +33,7 @@ export default {
             });
             return;
         }
-    },
+    }) as RequestHandler,
 
 
     createFAQ: async (req: Request, res: Response) => {
