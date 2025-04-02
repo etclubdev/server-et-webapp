@@ -12,7 +12,7 @@ export interface Personnel {
     class: string;
     cv_type?: "CV Mẫu" | "CV Tự thiết kế";
     cv_link?: string;
-    course_name?: string;
+    cohort_name?: string;
     created_on?: Date;
     last_modified_on?: Date;
 }

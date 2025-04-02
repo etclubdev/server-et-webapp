@@ -16,7 +16,7 @@ const createPersonnelWithStatusSchema = {
                 "class": { "type": "string", "maxLength": 10 },
                 "cv_type": { "type": "string", "enum": ["CV mẫu", "CV tự thiết kế"] },
                 "cv_link": { "type": "string", "format": "uri" },
-                "course_name": {
+                "cohort_name": {
                     "type": "string",
                     "pattern": "^K([1-9]?[0-9])$",
                     "description": "Must match format K0 to K99"
