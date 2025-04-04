@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get("/:id", activityController.getActivityById);
 router.get("/", activityController.getAllActivities);
+router.delete("/bulk-delete", activityController.deleteActivities);
 router.delete("/:id", activityController.deleteActivity);
 router.put("/:id", validate(updateActivitySchema), activityController.updateActivity);
 router.post("/", validate(createActivitySchema), activityController.createActivity);
