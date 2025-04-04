@@ -8,6 +8,24 @@ export default {
             .del()
     },
 
+    deleteMultipleEtNews: async (etNews: string[]) => {
+        if (!etNews || !Array.isArray(etNews) || etNews.length === 0) {
+            throw new Error("Invalid Data");
+        }
+                
+        return db.transaction(async (trx) => {
+            let affectedRows = 0;
+            for (const etNewsId of etNews) {
+                const deletedEtNews = await trx("et_news")
+                    .where('etnews_id', etNewsId)
+                    .del();
+                affectedRows += deletedEtNews;
+            }
+
+            return affectedRows;
+        });
+    },
+
     updateETNews: async (id: string, news: ETNews) => {
         const updatedNews = await db("et_news")
             .where('etnews_id', id)

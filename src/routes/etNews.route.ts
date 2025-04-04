@@ -6,6 +6,7 @@ import { createNewsSchema, updateNewsSchema } from '../entities/etnews.entity';
 
 const router = express.Router();
 
+router.delete('/bulk-delete', etNewsController.deleteMultipleEtNews);
 router.delete('/:id', etNewsController.deleteETNews);
 router.put('/:id', validate(updateNewsSchema),etNewsController.updateETNews);
 router.post('/', validate(createNewsSchema), etNewsController.createETNews);
