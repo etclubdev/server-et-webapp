@@ -10,6 +10,7 @@ router.get("/:id", etBlogController.getEtBlogById);
 router.get("/", etBlogController.getAllEtBlogs);
 router.post('/', validate(createBlogSchema), etBlogController.createEtBlog);
 router.put('/:id', validate(updateBlogSchema), etBlogController.updateEtBlog);
+router.delete('/bulk-delete', etBlogController.deleteEtBlogs);
 router.delete('/:id', etBlogController.deleteEtBlog);
 
 export default router;
