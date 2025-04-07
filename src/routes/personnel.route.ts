@@ -7,4 +7,5 @@ const router = express.Router();
 
 router.get("/", personnelController.getAllPersonnels);
 
-export default router; 
+export default router;
+
