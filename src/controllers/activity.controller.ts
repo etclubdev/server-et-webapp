@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+
 import activityService from "../services/activity.service";
 
 export default {
@@ -16,10 +17,7 @@ export default {
                 return;
             }
 
-            res.status(200).json({
-                message: "Successfully",
-                data: activity
-            });
+            res.status(204).json()
             return;
 
         } catch (error) {
@@ -86,34 +84,62 @@ export default {
             return;
         }
     },
-    updateActivity: async (req: Request, res: Response): Promise<void> => {
-        const { id } = req.params;
-        const activityData = req.body;
+
+    deleteActivities: async (req: Request, res: Response): Promise<void> => {
+        const { activities } = req.body;
 
         try {
-            const updatedActivity = await activityService.updateActivity(id, activityData);
+            const deletedActivities = await activityService.deleteActivities(activities);
 
-            if (!updatedActivity) {
+            if (!activities || !Array.isArray(activities) || activities.length === 0) {
                 res.status(404).json({
-                    msg: "Activity not found or no changes applied"
-                });
+                    msg: "Not found"
+                })
                 return;
             }
 
             res.status(200).json({
-                msg: "The activity is updated successfully",
-                affected: updatedActivity
+                msg: "The activities are deleted successfully",
+                affected: deletedActivities
             });
             return;
+        } catch(error) {
+        console.error(error);
+        res.status(500).json({
+            msg: "Internal Server Error" + error.message
+        });
+        return;
+    }
+},
 
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({
-                msg: "Internal Server Error"
+updateActivity: async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const activityData = req.body;
+
+    try {
+        const updatedActivity = await activityService.updateActivity(id, activityData);
+
+        if (!updatedActivity) {
+            res.status(404).json({
+                msg: "Activity not found or no changes applied"
             });
             return;
         }
-    },
+
+        res.status(200).json({
+            msg: "The activity is updated successfully",
+            affected: updatedActivity
+        });
+        return;
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            msg: "Internal Server Error"
+        });
+        return;
+    }
+},
 
     createActivity: async (req: Request, res: Response): Promise<void> => {
         const activity = req.body;

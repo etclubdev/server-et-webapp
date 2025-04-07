@@ -28,6 +28,31 @@ export default {
             return;
         }
     },
+
+    deletePartners: async (req: Request, res: Response) => {
+        const { partners } = req.body;
+
+        try {
+            const deletedPartners = await partnerService.deletePartners(partners);
+
+            if (!deletedPartners) {
+                res.status(404).json({
+                    msg: "Not found"
+                })
+                return;
+            }
+            res.status(204).json()
+            return;
+
+        }catch (err) {
+            console.log(err);
+            res.status(500).json({
+                msg: 'Internal Server Error' + err.message
+            })
+            return;
+        }
+    },
+
     updatePartner: async (req: Request, res: Response) => {
         const { id } = req.params;
         const partner = req.body;

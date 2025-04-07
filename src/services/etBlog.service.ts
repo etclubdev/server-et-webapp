@@ -6,6 +6,25 @@ export default {
             .where('blog_id', id)
             .del()
     },
+
+    deleteEtBlogs: async (etBlogs: string[]) => {
+        if (!etBlogs || !Array.isArray(etBlogs) || etBlogs.length === 0) {
+            throw new Error("Invalid Data");
+        }
+                
+        return db.transaction(async (trx) => {
+            let affectedRows = 0;
+            for (const etBlogId of etBlogs) {
+                const deletedEtBlogs = await trx("et_blog")
+                    .where('blog_id', etBlogId)
+                    .del();
+                affectedRows += deletedEtBlogs;
+            }
+
+            return affectedRows;
+        });
+    },
+
     updateEtBlog: async (id, entity) => {
         const updatedBlog = await db('et_blog')
                                     .where('blog_id', id)

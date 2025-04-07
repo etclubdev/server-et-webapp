@@ -17,6 +17,25 @@ export default {
             .where('partner_id', id)
             .del();
     },
+
+    deletePartners: async (partners: string[]) => {
+        if (!partners || !Array.isArray(partners) || partners.length === 0) {
+            throw new Error("Invalid Data");
+        }
+
+        return db.transaction(async (trx) => {
+            let affectedRows = 0;
+            for (const partnerId of partners) {
+                const deletedPartner = await trx("partner")
+                    .where('partner_id', partnerId)
+                    .del();
+                affectedRows += deletedPartner;
+            }
+
+            return affectedRows;
+        });
+    },
+
     updatePartner: async (id: string, partner: Partner) => {
         const updatedPartner = await db('partner')
             .where('partner_id', id)
