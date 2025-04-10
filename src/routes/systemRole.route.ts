@@ -4,6 +4,6 @@ import systemRoleController from "../controllers/systemRole.controller";
 
 const router = Router();
 
-router.get("/", systemRoleController.getSystemRoleIdByName);
+router.get("/", systemRoleController.getAllSystemRole);
 
 export default router;

@@ -3,11 +3,9 @@ import { Request, Response } from "express";
 import systemRoleService from "../services/systemRole.service";
 
 export default {
-    getSystemRoleIdByName: async (req: Request, res: Response) => {
-        const { sysrole_name } = req.body;
-
+    getAllSystemRole: async (req: Request, res: Response) => {
         try {
-            const systemRole = await systemRoleService.getSystemRoleIdByName(sysrole_name);
+            const systemRole = await systemRoleService.getAllSystemRole();
 
             if (!systemRole) {
                 res.status(404).json({
