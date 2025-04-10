@@ -15,9 +15,8 @@ export default {
             }
 
             res.status(200).json({
-                success: true,
                 msg: "Successfully",
-                ...accounts
+                data: accounts
             });
             return;
         } catch (error) {
