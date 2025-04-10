@@ -6,6 +6,7 @@ import { createPartnerSchema, updatePartnerSchema } from '../entities/partner.en
 
 const router = Router();
 
+router.put('/bulk-update', partnerController.updateVisible);
 router.get('/:id', partnerController.getPartnerByID);
 router.get('/', partnerController.getPartner);
 router.post('/', validate(createPartnerSchema), partnerController.createPartner);
