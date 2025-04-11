@@ -6,7 +6,7 @@ export default {
     getFAQById: async (id: string): Promise<FAQ | null> => {
         try {
             const faq = await db("faq")
-                .select("faq_id", "faq_category", "question", "answer", "visible")
+                .select("*")
                 .where("faq_id", id);
 
             return faq.length > 0 ? faq[0] : null;
@@ -17,12 +17,22 @@ export default {
     },
 
 
-    getAllFAQs: async (): Promise<FAQ[]> => {
+    getAllFAQs: async (): Promise<Record<string, FAQ[]>> => {
         try {
-            const faqs = await db("faq")
-                .select("faq_id", "faq_category", "question", "answer", "visible");
 
-            return faqs;
+            const faqs = await db("faq").select("*");
+
+            const groupedFAQs: Record<string, FAQ[]> = {};
+
+            faqs.forEach((faq) => {
+                const category = faq.faq_category || "Khác";
+                if (!groupedFAQs[category]) {
+                    groupedFAQs[category] = [];
+                }
+                groupedFAQs[category].push(faq);
+            });
+
+            return groupedFAQs;
         } catch (error) {
             console.error("Error getting FAQs:", error);
             throw new Error("Error getting FAQs: " + error.message);

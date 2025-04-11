@@ -1,23 +1,25 @@
-import { Request, Response } from "express";
+import { Request, Response, RequestHandler } from "express";
 import faqService from "../services/faq.service";
 
 
 export default {
-    getAllFAQs: async (req: Request, res: Response) => {
+    getAllFAQs: (async (req: Request, res: Response): Promise<void> => {
         try {
-            const faqs = await faqService.getAllFAQs();
+            const groupedFAQs = await faqService.getAllFAQs();
 
-            if (!faqs || faqs.length === 0) {
+            const allEmpty = Object.values(groupedFAQs).every((group) => group.length === 0);
+
+            if (allEmpty) {
                 res.status(404).json({
                     message: "No FAQs found!",
-                    data: []
+                    data: groupedFAQs
                 });
                 return;
             }
 
             res.status(200).json({
                 message: "Successfully retrieved FAQs",
-                data: faqs
+                data: groupedFAQs
             });
             return;
 
@@ -28,14 +30,14 @@ export default {
             });
             return;
         }
-    },
+    }) as RequestHandler,
 
 
     createFAQ: async (req: Request, res: Response) => {
         const faq = req.body;
         try {
             const createdFAQ = await faqService.createFAQ(faq);
-            res.status(200).json({
+            res.status(201).json({
                 msg: "The FAQ is created successfully",
                 data: createdFAQ
             });
@@ -116,10 +118,7 @@ export default {
                 return;
             }
 
-            res.status(200).json({
-                msg: "The FAQ is deleted successfully",
-                affected: deletedFAQ
-            });
+            res.status(204).json();
             return;
         } catch (error) {
             console.error(error);
