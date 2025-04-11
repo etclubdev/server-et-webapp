@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 
 import faqRoute from './routes/faq.route'
 import healthRoute from './routes/health.route';
@@ -8,6 +9,11 @@ import etBlogRoute from './routes/etBlog.route';
 import partnerRoute from './routes/partner.route';
 
 const app = express();
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+  }));
 
 app.use(express.json());
 app.use('/faqs', faqRoute);
