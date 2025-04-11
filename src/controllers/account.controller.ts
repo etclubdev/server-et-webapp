@@ -54,4 +54,31 @@ export default {
             return;
         }
     },
+    updateAccount: async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { sysrole_id } = req.body;
+
+        try {
+            const updatedAccount = await accountService.updateAccount(id, sysrole_id);
+
+            if (!updatedAccount) {
+                res.status(404).json({
+                    msg: "Account not found or no changes applied"
+                })
+                return;
+            }
+
+            res.status(200).json({
+                msg: "Successfully",
+                data: updatedAccount
+            })
+            return;
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                msg: 'Internal Server Error' + err.message
+            })
+            return;
+        }
+    },
 }
