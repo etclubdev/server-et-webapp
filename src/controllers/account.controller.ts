@@ -134,12 +134,7 @@ export default {
     updatePassword: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { oldPassword, newPassword, confirmPassword } = req.body;
-
-            if(confirmPassword !== newPassword) {
-                res.status(400).json({ success: false, message: "Confirm password does not match" });
-                return;
-            }
+            const { oldPassword, newPassword } = req.body;
 
             const result = await accountService.updatePassword(id, oldPassword, newPassword);
 
