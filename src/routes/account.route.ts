@@ -6,4 +6,6 @@ const router = Router();
 
 router.get('/:id', accountController.getAccountById);
 
+router.get('/', accountController.getAllAccount);
+
 export default router;

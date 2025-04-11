@@ -25,7 +25,7 @@ export default {
     },
 
     getETNewsbyID: async(id: string) => {
-        const news = await db("et_news").select("title", "thumbnail_image_url", "source", "content", "created_on", "visible")
+        const news = await db("et_news").select("*")
             .where('etnews_id', id)
 
         if (news.length === 0) return null;
@@ -35,7 +35,7 @@ export default {
     getAllNews: async () => {
         try {
             // Get all news
-            const news = await db("et_news").select("etnews_id", "title", "etnews_category", "thumbnail_image_url", "created_on");
+            const news = await db("et_news").select("*");
 
             // Group news by category
             const groupedNews = news.reduce((acc, item) => {
