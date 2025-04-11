@@ -7,4 +7,13 @@ export default {
             .insert(banner)
             .returning('*');
     },
+    getAllBanners: async () => {
+        const banners = await db('banner')
+            .select('*')
+
+        if (banners.length === 0) {
+            return null;
+        }
+        return banners;
+    },
 }
