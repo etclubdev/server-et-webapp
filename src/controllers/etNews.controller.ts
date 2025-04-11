@@ -13,10 +13,7 @@ export default {
         return;
       }
 
-      res.status(200).json({
-        message: "Successfully",
-        data: deletedNews,
-      });
+      res.status(204).json();
       return;
     } catch (error) {
       console.log(error);

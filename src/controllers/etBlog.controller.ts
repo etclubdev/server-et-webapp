@@ -11,21 +11,18 @@ export default {
 
             if (deletedBlog === 0){
                 res.status(404).json({
-                    msg: "The blog is not found"
+                    message: "The blog is not found"
                 })
                 return;
             }
 
-            res.status(200).json({
-                msg: "The blog is deleted successfully",
-                affected: deletedBlog
-            })
+            res.status(204).json();
             return;
 
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                msg: 'Internal Server Error'
+                message: 'Internal Server Error'
             })
             return;
         }
@@ -65,13 +62,13 @@ export default {
 
             if (!updatedBlog) {
                 res.status(404).json({ 
-                    msg: "Blog not found or no changes applied" 
+                    message: "Blog not found or no changes applied" 
                 });
                 return;
             }
 
             res.status(200).json({
-                msg: "The blog is updated successfully",
+                message: "The blog is updated successfully",
                 affected: updatedBlog
             })
             return;
@@ -79,7 +76,7 @@ export default {
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                msg: 'Internal Server Error'
+                message: 'Internal Server Error'
             })
             return;
         }
@@ -90,8 +87,8 @@ export default {
         try {
             const createdBlog = await EtBlogService.createEtBlog(blog);
 
-            res.status(200).json({
-                msg: "The blog is created successfully",
+            res.status(201).json({
+                message: "The blog is created successfully",
                 data: createdBlog
             })
             return;
@@ -99,7 +96,7 @@ export default {
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                msg: 'Internal Server Error'
+                message: 'Internal Server Error'
             })
             return;
         }
@@ -130,16 +127,19 @@ export default {
 
             if (!blogs) {
                 res.status(404).json({ 
-                    msg: "No blogs found", 
-                    highlighted: [], 
-                    alldata: [] 
+                    message: "No blogs found", 
+                    data: {
+                        highlighted: [], 
+                        all: [] 
+                    }
                 })
+                return;
             }
 
             res.status(200).json({ 
                 success: true, 
-                msg: "Blogs retrieved successfully",
-                ...blogs
+                message: "Blogs retrieved successfully",
+                data: blogs
             });
             return;
 

@@ -6,7 +6,7 @@ export default {
     getFAQById: async (id: string): Promise<FAQ | null> => {
         try {
             const faq = await db("faq")
-                .select("faq_id", "faq_category", "question", "answer", "visible")
+                .select("*")
                 .where("faq_id", id);
 
             return faq.length > 0 ? faq[0] : null;
@@ -20,31 +20,16 @@ export default {
     getAllFAQs: async (): Promise<Record<string, FAQ[]>> => {
         try {
 
-            const faqs = await db("faq").select("faq_id", "faq_category", "question", "answer", "visible");
+            const faqs = await db("faq").select("*");
 
-
-            const groupedFAQs = {
-                aboutETClub: [] as FAQ[],
-                aboutActivities: [] as FAQ[],
-                aboutMembership: [] as FAQ[],
-                others: [] as FAQ[]
-            };
+            const groupedFAQs: Record<string, FAQ[]> = {};
 
             faqs.forEach((faq) => {
-                switch (faq.faq_category) {
-                    case "Về ET Club":
-                        groupedFAQs.aboutETClub.push(faq);
-                        break;
-                    case "Về hoạt động và sự kiện":
-                        groupedFAQs.aboutActivities.push(faq);
-                        break;
-                    case "Về quy trình tham gia":
-                        groupedFAQs.aboutMembership.push(faq);
-                        break;
-                    default:
-                        groupedFAQs.others.push(faq);
-                        break;
+                const category = faq.faq_category || "Khác";
+                if (!groupedFAQs[category]) {
+                    groupedFAQs[category] = [];
                 }
+                groupedFAQs[category].push(faq);
             });
 
             return groupedFAQs;

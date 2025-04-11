@@ -11,19 +11,16 @@ export default {
 
             if (!deletedPartner) {
                 res.status(404).json({
-                    msg: "Partner not found"
+                    message: "Partner not found"
                 })
                 return;
             }
-            res.status(201).json({
-                msg: "Successfully",
-                data: deletedPartner
-            })
+            res.status(204).json();
             return;
         } catch (err) {
             console.log(err);
             res.status(500).json({
-                msg: 'Internal Server Error' + err.message
+                message: 'Internal Server Error' + err.message
             })
             return;
         }
@@ -62,20 +59,20 @@ export default {
 
             if (!updatedPartner) {
                 res.status(404).json({
-                    msg: "Partner not found or no changes applied"
+                    message: "Partner not found or no changes applied"
                 })
                 return;
             }
 
             res.status(201).json({
-                msg: "Successfully",
+                message: "Successfully",
                 data: updatedPartner
             })
             return;
         } catch (err) {
             console.log(err);
             res.status(500).json({
-                msg: 'Internal Server Error' + err.message
+                message: 'Internal Server Error' + err.message
             })
             return;
         }
@@ -88,19 +85,19 @@ export default {
 
             if (!partner) {
                 res.status(404).json({
-                    msg: 'Partner not found'
+                    message: 'Partner not found'
                 });
                 return;
             }
             res.status(200).json({
-                msg: "Successfully",
+                message: "Successfully",
                 data: partner
             })
             return;
         } catch (err) {
             console.log(err);
             res.status(500).json({
-                msg: 'Internal Server Error' + err.message
+                message: 'Internal Server Error' + err.message
             })
             return;
         }
@@ -113,20 +110,20 @@ export default {
 
             if (!partners) {
                 res.status(404).json({
-                    msg: "Partners not found"
+                    message: "Partners not found"
                 })
                 return;
             }
 
             res.status(200).json({
-                msg: "Successfully",
+                message: "Successfully",
                 data: partners
             })
             return;
         } catch (err) {
             console.log(err);
             res.status(500).json({
-                msg: 'Internal Server Error' + err.message
+                message: 'Internal Server Error' + err.message
             })
             return;
         }
@@ -139,15 +136,41 @@ export default {
             const createdPartner = await partnerService.createPartner(partner);
 
             res.status(201).json({
-                msg: "Partner is created successfully",
+                message: "Partner is created successfully",
                 data: createdPartner
             })
             return;
         } catch (err) {
             console.log(err);
             res.status(500).json({
-                msg: 'Internal Server Error' + err.message
+                message: 'Internal Server Error' + err.message
             })
+            return;
+        }
+    },
+    updateVisible: async (req: Request, res: Response) => {
+        try {
+            const {partners} = req.body; 
+            
+            if (!partners || !Array.isArray(partners) || partners.length === 0) {
+                res.status(400).json({
+                    message: "Invalid Data"
+                });
+                return;
+            }
+
+            await partnerService.updateVisible(partners);
+
+            res.status(200).json({
+                msg: "Successfully",
+                updatedCount: partners.length
+            })
+            return;
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                message: "Internal Server Error" + error.message
+            });
             return;
         }
     },
