@@ -60,7 +60,23 @@ export default {
             .del();
     },
 
+    deleteFAQs: async (faqs: string[]) => {
+        if (!faqs || !Array.isArray(faqs) || faqs.length === 0) {
+            throw new Error("Invalid Data");
+        }
 
+        return db.transaction(async (trx) => {
+            let affectedRows = 0;
+            for (const faqId of faqs) {
+                const deletedFAQs = await trx("faq")
+                    .where('faq_id', faqId)
+                    .del();
+                affectedRows += deletedFAQs;
+            }
+
+            return affectedRows;
+        });
+    }
 
 
 };

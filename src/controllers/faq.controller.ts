@@ -1,4 +1,5 @@
 import { Request, Response, RequestHandler } from "express";
+
 import faqService from "../services/faq.service";
 
 
@@ -127,6 +128,38 @@ export default {
             });
             return;
         }
+    },
+
+    deleteFAQs: async (req: Request, res: Response) => { 
+        const { faqs } = req.body;
+
+        if (!faqs || !Array.isArray(faqs) || faqs.length === 0) {
+            res.status(400).json({
+                msg: "Invalid Data"
+            });
+            return;
+        }
+
+        try {
+            const deletedFAQs = await faqService.deleteFAQs(faqs);
+
+            if (deletedFAQs === 0) {
+                res.status(404).json({
+                    msg: "Not found"
+                });
+                return;
+            }
+
+            res.status(204).json()
+            return;
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                msg: "Internal Server Error" + error.message
+            });
+            return;
+        }
+
     }
 
 };

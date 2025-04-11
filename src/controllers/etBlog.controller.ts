@@ -27,6 +27,32 @@ export default {
             return;
         }
     },
+
+    deleteEtBlogs: async (req: Request, res: Response) => {
+        const { etBlogs } = req.body;
+
+        try {
+            const deletedBlogs = await EtBlogService.deleteEtBlogs(etBlogs);
+
+            if (deletedBlogs === 0){
+                res.status(404).json({
+                    msg: "Not found"
+                })
+                return;
+            }
+
+            res.status(204).json()
+            return;
+
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                msg: 'Internal Server Error' + error.message
+            })
+            return;
+        }
+    },
+
     updateEtBlog: async (req: Request, res: Response) => {
         const { id } = req.params;
         const blog = req.body;

@@ -49,6 +49,24 @@ export default {
             .del();
     },
 
+    deleteActivities: async (activities: string[]) => {
+        if (!activities || !Array.isArray(activities) || activities.length === 0) {
+            throw new Error("Invalid Data");
+        }
+                
+        return db.transaction(async (trx) => {
+            let affectedRows = 0;
+            for (const activityId of activities) {
+                const deletedActivities = await trx("activity")
+                    .where('activity_id', activityId)
+                    .del();
+                affectedRows += deletedActivities;
+            }
+
+            return affectedRows;
+        });
+    },
+    
     updateActivity: async (id: string, activity: Activity) => {
         const updatedActivity = await db("activity")
             .where("activity_id", id)

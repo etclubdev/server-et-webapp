@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+
 import activityService from "../services/activity.service";
 
 export default {
@@ -83,6 +84,29 @@ export default {
             return;
         }
     },
+    deleteActivities: async (req: Request, res: Response): Promise<void> => {
+        const { activities } = req.body;
+
+        try {
+            const deletedActivities = await activityService.deleteActivities(activities);
+
+            if (deletedActivities === 0) {
+                res.status(404).json({
+                    message: "Activity not found"
+                });
+                return;
+            }
+
+            res.status(204).json();
+            return;
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                message: "Internal Server Error" + error.message
+            });
+            return;
+        }
+    },
     updateActivity: async (req: Request, res: Response): Promise<void> => {
         const { id } = req.params;
         const activityData = req.body;
@@ -130,4 +154,3 @@ export default {
         }
     },
 }
-
