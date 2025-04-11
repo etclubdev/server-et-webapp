@@ -22,4 +22,10 @@ export default {
             .where('banner_id', id)
             .first();
     },
+    updateBanner: async (id: string, banner: Banner) => {
+        return await db('banner')
+            .where('banner_id', id)
+            .update(banner)
+            .returning("*");
+    },
 }
