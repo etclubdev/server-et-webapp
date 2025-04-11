@@ -16,4 +16,10 @@ export default {
         }
         return banners;
     },
+    getBannerById: async (id: string) => {
+        return await db('banner')
+            .select('*')
+            .where('banner_id', id)
+            .first();
+    },
 }
