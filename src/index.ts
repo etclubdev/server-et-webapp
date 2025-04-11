@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 
 import faqRoute from './routes/faq.route'
 import healthRoute from './routes/health.route';
@@ -7,8 +8,14 @@ import etNewsRoute from './routes/etNews.route';
 import etBlogRoute from './routes/etBlog.route';
 import partnerRoute from './routes/partner.route';
 import bannerRoute from './routes/banner.route';
+import accountRoute from './routes/account.route'
 
 const app = express();
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+  }));
 
 app.use(express.json());
 app.use('/faqs', faqRoute);
@@ -18,6 +25,7 @@ app.use('/et-news', etNewsRoute);
 app.use('/et-blog', etBlogRoute);
 app.use('/partners', partnerRoute);
 app.use('/banners', bannerRoute);
+app.use('/accounts', accountRoute)
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

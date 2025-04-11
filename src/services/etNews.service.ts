@@ -8,6 +8,24 @@ export default {
             .del()
     },
 
+    deleteMultipleEtNews: async (etNews: string[]) => {
+        if (!etNews || !Array.isArray(etNews) || etNews.length === 0) {
+            throw new Error("Invalid Data");
+        }
+                
+        return db.transaction(async (trx) => {
+            let affectedRows = 0;
+            for (const etNewsId of etNews) {
+                const deletedEtNews = await trx("et_news")
+                    .where('etnews_id', etNewsId)
+                    .del();
+                affectedRows += deletedEtNews;
+            }
+
+            return affectedRows;
+        });
+    },
+
     updateETNews: async (id: string, news: ETNews) => {
         const updatedNews = await db("et_news")
             .where('etnews_id', id)
@@ -25,7 +43,7 @@ export default {
     },
 
     getETNewsbyID: async(id: string) => {
-        const news = await db("et_news").select("title", "thumbnail_image_url", "source", "content", "created_on", "visible")
+        const news = await db("et_news").select("*")
             .where('etnews_id', id)
 
         if (news.length === 0) return null;
@@ -35,7 +53,7 @@ export default {
     getAllNews: async () => {
         try {
             // Get all news
-            const news = await db("et_news").select("etnews_id", "title", "etnews_category", "thumbnail_image_url", "created_on");
+            const news = await db("et_news").select("*");
 
             // Group news by category
             const groupedNews = news.reduce((acc, item) => {
