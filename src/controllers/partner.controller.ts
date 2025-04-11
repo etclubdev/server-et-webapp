@@ -15,10 +15,7 @@ export default {
                 })
                 return;
             }
-            res.status(201).json({
-                message: "Successfully",
-                data: deletedPartner
-            })
+            res.status(204).json();
             return;
         } catch (err) {
             console.log(err);

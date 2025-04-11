@@ -61,7 +61,7 @@ export default {
         try {
             const createdBlog = await EtBlogService.createEtBlog(blog);
 
-            res.status(200).json({
+            res.status(201).json({
                 message: "The blog is created successfully",
                 data: createdBlog
             })

@@ -73,10 +73,7 @@ export default {
                 return;
             }
 
-            res.status(200).json({
-                message: "The activity post is deleted successfully",
-                affected: deletedActivity
-            });
+            res.status(204).json();
             return;
         } catch (error) {
             console.error(error);
@@ -119,7 +116,7 @@ export default {
         const activity = req.body;
         try {
             const createdActivity = await activityService.createActivity(activity);
-            res.status(200).json({
+            res.status(201).json({
                 message: "The activity is created successfully",
                 data: createdActivity
             });

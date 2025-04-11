@@ -37,7 +37,7 @@ export default {
         const faq = req.body;
         try {
             const createdFAQ = await faqService.createFAQ(faq);
-            res.status(200).json({
+            res.status(201).json({
                 msg: "The FAQ is created successfully",
                 data: createdFAQ
             });
@@ -118,10 +118,7 @@ export default {
                 return;
             }
 
-            res.status(200).json({
-                msg: "The FAQ is deleted successfully",
-                affected: deletedFAQ
-            });
+            res.status(204).json();
             return;
         } catch (error) {
             console.error(error);
