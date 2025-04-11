@@ -68,20 +68,17 @@ export default {
 
             if (deletedActivity === 0) {
                 res.status(404).json({
-                    msg: "The activity post is not found"
+                    message: "The activity post is not found"
                 });
                 return;
             }
 
-            res.status(200).json({
-                msg: "The activity post is deleted successfully",
-                affected: deletedActivity
-            });
+            res.status(204).json();
             return;
         } catch (error) {
             console.error(error);
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
             });
             return;
         }
@@ -95,13 +92,13 @@ export default {
 
             if (!updatedActivity) {
                 res.status(404).json({
-                    msg: "Activity not found or no changes applied"
+                    message: "Activity not found or no changes applied"
                 });
                 return;
             }
 
             res.status(200).json({
-                msg: "The activity is updated successfully",
+                message: "The activity is updated successfully",
                 affected: updatedActivity
             });
             return;
@@ -109,7 +106,7 @@ export default {
         } catch (error) {
             console.error(error);
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
             });
             return;
         }
@@ -119,15 +116,15 @@ export default {
         const activity = req.body;
         try {
             const createdActivity = await activityService.createActivity(activity);
-            res.status(200).json({
-                msg: "The activity is created successfully",
+            res.status(201).json({
+                message: "The activity is created successfully",
                 data: createdActivity
             });
             return;
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
             });
             return;
         }

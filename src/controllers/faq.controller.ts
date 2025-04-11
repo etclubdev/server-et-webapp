@@ -7,12 +7,9 @@ export default {
         try {
             const groupedFAQs = await faqService.getAllFAQs();
 
-            if (
-                groupedFAQs.aboutETClub.length === 0 &&
-                groupedFAQs.aboutActivities.length === 0 &&
-                groupedFAQs.aboutMembership.length === 0 &&
-                groupedFAQs.others.length === 0
-            ) {
+            const allEmpty = Object.values(groupedFAQs).every((group) => group.length === 0);
+
+            if (allEmpty) {
                 res.status(404).json({
                     message: "No FAQs found!",
                     data: groupedFAQs
@@ -40,7 +37,7 @@ export default {
         const faq = req.body;
         try {
             const createdFAQ = await faqService.createFAQ(faq);
-            res.status(200).json({
+            res.status(201).json({
                 msg: "The FAQ is created successfully",
                 data: createdFAQ
             });
@@ -121,10 +118,7 @@ export default {
                 return;
             }
 
-            res.status(200).json({
-                msg: "The FAQ is deleted successfully",
-                affected: deletedFAQ
-            });
+            res.status(204).json();
             return;
         } catch (error) {
             console.error(error);
