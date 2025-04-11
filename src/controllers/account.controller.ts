@@ -56,10 +56,10 @@ export default {
     },
     updateAccount: async (req: Request, res: Response) => {
         const { id } = req.params;
-        const account = req.body;
+        const { sysrole_id } = req.body;
 
         try {
-            const updatedAccount = await accountService.updateAccount(id, account);
+            const updatedAccount = await accountService.updateAccount(id, sysrole_id);
 
             if (!updatedAccount) {
                 res.status(404).json({

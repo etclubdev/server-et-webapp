@@ -25,10 +25,10 @@ export default {
 
         return accounts;
     },
-    updateAccount: async (id: string, account: Account) => {
+    updateAccount: async (id: string, sysrole_id: string) => {
         const updatedAccount = await db('account')
         .where('account_id', id)
-        .update(account)
+        .update('sysrole_id', sysrole_id)
         .returning(['account_id', 'sysrole_id', 'personnel_id', 'created_on', 'last_modified_on']);
 
         if(updatedAccount.length === 0) 
