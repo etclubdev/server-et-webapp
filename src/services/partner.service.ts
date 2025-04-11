@@ -58,4 +58,18 @@ export default {
             .insert(partner)
             .returning("*");
     },
+    updateVisible: async (partners: { partner_id: string; visible: boolean }[]) => {
+        if (!partners || !Array.isArray(partners) || partners.length === 0) {
+            throw new Error("Invalid Data");
+        }
+        console.log(partners);
+        
+        return db.transaction(async (trx) => {
+            for (const partner of partners) {
+                await trx("partner")
+                    .where('partner_id', partner.partner_id)
+                    .update('visible', partner.visible)
+            }
+        });
+    }
 }
