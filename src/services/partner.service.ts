@@ -6,11 +6,11 @@ export default {
         const partners = await db('partner')
             .select('*')
             .where('partner_category_id', categoryId);
-        
-            if (partners.length === 0) {
-                return null;
-            }
-            return partners;
+
+        if (partners.length === 0) {
+            return null;
+        }
+        return partners;
     },
     deletePartner: async (id: string) => {
         return db('partner')
@@ -27,10 +27,10 @@ export default {
             return null;
         return updatedPartner;
     },
-    getPartnerByID: async(id: string) => {
+    getPartnerByID: async (id: string) => {
         const partner = await db('partner')
-                .select('*')
-                .where('partner_id', id);
+            .select('*')
+            .where('partner_id', id);
 
         if (partner.length === 0) {
             return null;
@@ -41,14 +41,35 @@ export default {
         const partners = await db('partner')
             .select('*');
 
-        if (partners.length === 0) {
-            return null;
-        }
-        return partners;
+        const groupedPartners: Record<string, Partner[]> = {};
+
+        partners.forEach((partner) => {
+            const category = partner.partner_category_name || "Khác";
+            if (!groupedPartners[category]) {
+                groupedPartners[category] = [];
+            }
+            groupedPartners[category].push(partner);
+        });
+
+        return groupedPartners;
     },
     createPartner: async (partner: Partner) => {
         return db('partner')
             .insert(partner)
             .returning("*");
     },
+    updateVisible: async (partners: { partner_id: string; visible: boolean }[]) => {
+        if (!partners || !Array.isArray(partners) || partners.length === 0) {
+            throw new Error("Invalid Data");
+        }
+        console.log(partners);
+        
+        return db.transaction(async (trx) => {
+            for (const partner of partners) {
+                await trx("partner")
+                    .where('partner_id', partner.partner_id)
+                    .update('visible', partner.visible)
+            }
+        });
+    }
 }
