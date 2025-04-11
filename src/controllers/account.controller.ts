@@ -130,5 +130,30 @@ export default {
             })
             return;
         }
-    }
+    },
+    updatePassword: async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const { oldPassword, newPassword } = req.body;
+
+            const result = await accountService.updatePassword(id, oldPassword, newPassword);
+
+            if (!result) {
+                res.status(404).json({ message: "Not found" });
+                return
+            }
+
+            if (result.success === false) {
+                res.status(401).json({ success: false, message: result.message });
+                return;
+            }
+
+            res.status(200).json({ success: true, message: result.message });
+            return;
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: "Internal server error" + error.message });
+            return;
+        }
+    },
 }
