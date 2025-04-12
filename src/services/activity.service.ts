@@ -5,9 +5,7 @@ export default {
     getActivityById: async (id: string): Promise<Activity | null> => {
         try {
             const activity = await db("activity")
-                .select(
-                    "title", "meta_description", "start_date", "end_date", "visible"
-                )
+                .select("*")
                 .where("activity_id", id);
 
             return activity.length > 0 ? activity[0] : null;
@@ -21,16 +19,13 @@ export default {
             const now = new Date();
 
             const ongoing = await db("activity")
-                .select("activity_id", "title", "meta_description", "activity_category", "thumbnail_image_url", "start_date", "end_date", "content")
-                .where("visible", true)
+                .select("*")
                 .where("start_date", "<=", now)
                 .where("end_date", ">=", now);
 
             const completedRaw = await db("activity")
-                .select("activity_id", "title", "meta_description", "activity_category", "thumbnail_image_url", "start_date", "end_date", "content")
-                .where("visible", true)
+                .select("*")
                 .where("end_date", "<", now);
-
 
             const completed: Record<string, Activity[]> = completedRaw.reduce((acc, activity) => {
                 const category = activity.activity_category;
@@ -54,6 +49,24 @@ export default {
             .del();
     },
 
+    deleteActivities: async (activities: string[]) => {
+        if (!activities || !Array.isArray(activities) || activities.length === 0) {
+            throw new Error("Invalid Data");
+        }
+                
+        return db.transaction(async (trx) => {
+            let affectedRows = 0;
+            for (const activityId of activities) {
+                const deletedActivities = await trx("activity")
+                    .where('activity_id', activityId)
+                    .del();
+                affectedRows += deletedActivities;
+            }
+
+            return affectedRows;
+        });
+    },
+    
     updateActivity: async (id: string, activity: Activity) => {
         const updatedActivity = await db("activity")
             .where("activity_id", id)
