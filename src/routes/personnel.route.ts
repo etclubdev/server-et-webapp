@@ -9,3 +9,4 @@ router.get("/", personnelController.getPersonnels);
 
 export default router;
 
+
