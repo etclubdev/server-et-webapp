@@ -5,7 +5,7 @@ import validate from "../middlewares/validate.mdw";
 
 const router = express.Router();
 
-router.get("/", personnelController.getAllPersonnels);
+router.get("/", personnelController.getPersonnels);
 
 export default router;
 
