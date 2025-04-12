@@ -3,6 +3,6 @@ import personnelController from "../controllers/personnel.controller";
 
 const router = express.Router();
 
-router.get("/department/:departmentName", personnelController.getPersonnelByDepartment);
+router.get("/", personnelController.getPersonnels);
 
 export default router;
