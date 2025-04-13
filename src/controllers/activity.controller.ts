@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+
 import activityService from "../services/activity.service";
 
 export default {
@@ -35,12 +36,12 @@ export default {
         try {
             const activities = await activityService.getAllActivities();
 
-            if (!activities || (activities.ongoing.length === 0 && activities.completed.length === 0)) {
+            if (!activities || (activities.ongoing.length === 0 && Object.keys(activities.completed).length === 0)) {
                 res.status(404).json({
                     message: "No activities found!",
                     data: {
                         ongoing: [],
-                        completed: []
+                        completed: {}
                     }
                 });
                 return;
@@ -59,30 +60,49 @@ export default {
             });
             return;
         }
-
     },
     deleteActivity: async (req: Request, res: Response): Promise<void> => {
         const { id } = req.params;
-    
+
         try {
             const deletedActivity = await activityService.deleteActivityById(id);
-    
+
             if (deletedActivity === 0) {
                 res.status(404).json({
-                    msg: "The activity post is not found"
+                    message: "The activity post is not found"
                 });
                 return;
             }
-    
-            res.status(200).json({
-                msg: "The activity post is deleted successfully",
-                affected: deletedActivity
-            });
+
+            res.status(204).json();
             return;
         } catch (error) {
             console.error(error);
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
+            });
+            return;
+        }
+    },
+    deleteActivities: async (req: Request, res: Response): Promise<void> => {
+        const { activities } = req.body;
+
+        try {
+            const deletedActivities = await activityService.deleteActivities(activities);
+
+            if (deletedActivities === 0) {
+                res.status(404).json({
+                    message: "Activity not found"
+                });
+                return;
+            }
+
+            res.status(204).json();
+            return;
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                message: "Internal Server Error" + error.message
             });
             return;
         }
@@ -90,27 +110,27 @@ export default {
     updateActivity: async (req: Request, res: Response): Promise<void> => {
         const { id } = req.params;
         const activityData = req.body;
-    
+
         try {
             const updatedActivity = await activityService.updateActivity(id, activityData);
-    
+
             if (!updatedActivity) {
                 res.status(404).json({
-                    msg: "Activity not found or no changes applied"
+                    message: "Activity not found or no changes applied"
                 });
                 return;
             }
-    
+
             res.status(200).json({
-                msg: "The activity is updated successfully",
+                message: "The activity is updated successfully",
                 affected: updatedActivity
             });
             return;
-    
+
         } catch (error) {
             console.error(error);
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
             });
             return;
         }
@@ -120,18 +140,17 @@ export default {
         const activity = req.body;
         try {
             const createdActivity = await activityService.createActivity(activity);
-            res.status(200).json({
-                msg: "The activity is created successfully",
+            res.status(201).json({
+                message: "The activity is created successfully",
                 data: createdActivity
             });
             return;
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
             });
             return;
         }
     },
 }
-
