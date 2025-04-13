@@ -5,6 +5,7 @@ import { createPersonnelWithStatusSchema, updatePersonnelSchema } from "../entit
 
 const router = express.Router();
 
+router.delete("/:id", personnelController.deletePersonnel);
 router.put("/:id", validate(updatePersonnelSchema), personnelController.updatePersonnel);
 router.get("/", personnelController.getPersonnels);
 router.get("/:id", personnelController.getPersonnelByID);
