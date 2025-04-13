@@ -17,7 +17,7 @@ export default {
                 .insert(personnel)
                 .returning("*");
 
-            // 2. Insert personnel_status (dùng term_id từ client)
+            // 2. Insert personnel_status
             const [newStatus] = await trx("personnel_status")
                 .insert({
                     personnel_id: newPersonnel.personnel_id,
@@ -33,5 +33,35 @@ export default {
                 status: newStatus
             };
         });
-    }
+    },
+    getAllPersonnel: async () => {
+        const personnels = await db('personnel')
+            .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
+            .select(
+                'personnel.personnel_id',
+                'personnel.student_id',
+                'personnel.personnel_name',
+                'personnel.email',
+                'personnel.dob',
+                'personnel.gender',
+                'personnel.address',
+                'personnel.faculty',
+                'personnel.university',
+                'personnel.major',
+                'personnel.class',
+                'personnel.cv_type',
+                'personnel.cv_link',
+                'personnel.cohort_name',
+                'personnel_status.term_id',
+                'personnel_status.department_name',
+                'personnel_status.position_name',
+                'personnel_status.personnel_status'
+            );
+
+        if (personnels.length === 0) {
+            return null;
+        }
+        return personnels;
+    },
 };
+

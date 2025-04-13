@@ -7,5 +7,6 @@ import { createPersonnelWithStatusSchema } from "../entities/personnel.entity";
 const router = express.Router();
 
 router.post("/", validate(createPersonnelWithStatusSchema), personnelController.createPersonnelWithStatus);
+router.get("/", personnelController.getAllPersonnels);
 
 export default router; 
