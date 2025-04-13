@@ -14,9 +14,9 @@ export default {
             );
 
 
-            if (!updatedPersonnel || !updatedStatus) {
+            if (!updatedPersonnel && !updatedStatus) {
                 res.status(404).json({
-                    message: "Personnel or status not found or no changes applied",
+                    message: "Personnel and status not found or no changes applied",
                     data: null,
                 });
                 return;
@@ -25,8 +25,8 @@ export default {
             res.status(200).json({
                 message: "Personnel updated successfully",
                 data: {
-                    personnel: updatedPersonnel,
-                    status: updatedStatus,
+                    personnel: updatedPersonnel?? null,
+                    status: updatedStatus ?? null,
                 },
             });
             return;
