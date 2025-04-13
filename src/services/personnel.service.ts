@@ -6,6 +6,10 @@ export default {
 
         try {
 
+            const deletedAccount= await trx('account')
+                .where('personnel_id', id)
+                .del();
+
             const deletedStatus = await trx('personnel_status')
                 .where('personnel_id', id)
                 .del();
