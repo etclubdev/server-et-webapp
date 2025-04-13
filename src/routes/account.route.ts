@@ -1,11 +1,12 @@
 import { Router } from 'express';
 
 import validate from '../middlewares/validate.mdw';
-import { updateAccountSchema, updateAccountPasswordSchema } from '../entities/account.entity';
+import { updateAccountSchema, updateAccountPasswordSchema, createAccountSchema } from '../entities/account.entity';
 import accountController from '../controllers/account.controller';
 
 const router = Router();
 
+router.post('/', validate(createAccountSchema), accountController.createAccount);
 router.get('/:id', accountController.getAccountById);
 router.get('/', accountController.getAllAccount);
 router.put('/change-password/:id', validate(updateAccountPasswordSchema), accountController.updatePassword);
