@@ -2,10 +2,11 @@ import express from "express";
 
 import achievementController from "../controllers/achievement.controller";
 import validate from "../middlewares/validate.mdw";
-import { createAchievementSchema } from "../entities/achievement.entity";
- 
+import { updateAchievementSchema, createAchievementSchema } from "../entities/achievement.entity";
+
 const router = express.Router();
 
+router.put("/:id", validate(updateAchievementSchema), achievementController.updateAchievement);
 router.delete("/:id", achievementController.deleteAchievement);
 router.get("/:id", achievementController.getAchievementById);
 router.post("/", validate(createAchievementSchema), achievementController.createAchievement);
