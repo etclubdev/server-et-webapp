@@ -14,12 +14,7 @@ export default {
                 return;
             }
 
-            res.status(200).json({
-                message: "Personnel deleted successfully",
-                data: {
-                    affectedRows,
-                },
-            });
+            res.status(201).json();
             return;
         } catch (error) {
             console.error("Error deleting multiple personnels:", error);
