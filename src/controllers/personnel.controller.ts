@@ -38,7 +38,7 @@ export default {
                 return;
             }
 
-            res.status(201).json();
+            res.status(204).json();
             return;
         } catch (error) {
             console.error("Error deleting multiple personnels:", error);
@@ -61,7 +61,7 @@ export default {
                 return;
             }
 
-            res.status(201).json();
+            res.status(204).json();
             return;
         } catch (error) {
             console.error("Error deleting personnel:", error);
