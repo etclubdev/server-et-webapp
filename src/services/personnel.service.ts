@@ -211,4 +211,25 @@ export default {
 
         return personnels;
     },
+    getPersonnelByDepartmentAndStatus: async (
+        departmentName: string,
+        status: string
+    ): Promise<any[]> => {
+        if (!departmentName || !status) {
+            throw new Error("Invalid Data: departmentName and status are required");
+        }
+    
+        const personnels = await db('personnel')
+            .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
+            .select(
+                'personnel.*',
+                'personnel_status.*'
+            )
+            .where({
+                'personnel_status.department_name': departmentName,
+                'personnel_status.personnel_status': status
+            });
+    
+        return personnels;
+    }
 };
