@@ -11,6 +11,7 @@ import personnelRoute from './routes/personnel.route';
 import systemRoleRoute from './routes/systemRole.route';
 import bannerRoute from './routes/banner.route';
 import accountRoute from './routes/account.route'
+import authRoute from './routes/auth.route'
 
 const app = express();
 
@@ -29,7 +30,8 @@ app.use('/partners', partnerRoute);
 app.use("/personnels", personnelRoute);
 app.use('/system-role', systemRoleRoute);
 app.use('/banners', bannerRoute);
-app.use('/accounts', accountRoute)
+app.use('/accounts', accountRoute);
+app.use('/auth', authRoute)
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
