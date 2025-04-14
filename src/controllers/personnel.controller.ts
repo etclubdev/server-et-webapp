@@ -72,7 +72,7 @@ export default {
             res.status(200).json({
                 message: "Personnel updated successfully",
                 data: {
-                    personnel: updatedPersonnel?? null,
+                    personnel: updatedPersonnel ?? null,
                     status: updatedStatus ?? null,
                 },
             });
@@ -131,7 +131,7 @@ export default {
         }
     },
     getPersonnels: async (req: Request, res: Response): Promise<void> => {
-        const { status } = req.query;
+        const { status, departmentName } = req.query;
 
         try {
             let personnels;
@@ -146,7 +146,18 @@ export default {
                     });
                     return;
                 }
-            } else {
+            } else if (departmentName && typeof departmentName === "string") {
+                personnels = await personnelService.getPersonnelByDepartment(departmentName);
+
+                if (!personnels || personnels.length === 0) {
+                    res.status(404).json({
+                        message: "No personnel found in the given department",
+                        data: [],
+                    });
+                    return;
+                }
+            }
+            else {
                 personnels = await personnelService.getAllPersonnel();
 
                 if (!personnels || personnels.length === 0) {
@@ -172,4 +183,4 @@ export default {
         }
     },
 };
-    
+
