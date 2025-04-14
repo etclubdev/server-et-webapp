@@ -2,6 +2,11 @@ import db from "../utils/db.util";
 import { Achievement } from "../types/achievement";
 
 export default {
+    deleteAchievementById: async (id: string) => {
+        return db("achievement")
+            .where("achievement_id", id)
+            .del();
+    },
     getAchievementById: async (id: string): Promise<Achievement | null> => {
         try {
             const achievement = await db("achievement")
