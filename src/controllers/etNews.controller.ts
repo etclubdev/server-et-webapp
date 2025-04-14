@@ -13,10 +13,26 @@ export default {
         return;
       }
 
-      res.status(200).json({
-        message: "Successfully",
-        data: deletedNews,
-      });
+      res.status(204).json();
+      return;
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal Server Error " + error.message });
+      return;
+    }
+  },
+
+  deleteMultipleEtNews: async (req: Request, res: Response) => {
+    const { etNews } = req.body;
+    try {
+      const deletedNews = await etNewsService.deleteMultipleEtNews(etNews);
+
+      if (!deletedNews) {
+        res.status(404).json({ message: "Not found!" });
+        return;
+      }
+
+      res.status(204).json()
       return;
     } catch (error) {
       console.log(error);
