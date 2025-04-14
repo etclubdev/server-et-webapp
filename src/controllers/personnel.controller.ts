@@ -2,6 +2,30 @@ import { Request, Response } from "express";
 import personnelService from "../services/personnel.service";
 
 export default {
+    getUnregisteredPersonnels: async (req: Request, res: Response): Promise<void> => {
+        try {
+            const personnels = await personnelService.getUnregisteredPersonnels();
+
+            if (!personnels || personnels.length === 0) {
+                res.status(404).json({
+                    message: "No unregistered personnel found",
+                    data: [],
+                });
+                return;
+            }
+
+            res.status(200).json({
+                message: "Successfully retrieved unregistered personnels",
+                data: personnels,
+            });
+        } catch (error) {
+            console.error("Error retrieving personnels:", error);
+            res.status(500).json({
+                message: "Internal Server Error: " + error.message,
+            });
+            return;
+        }
+    },
     deleteMultiplePersonnels: async (req: Request, res: Response): Promise<void> => {
         const { personnelIds } = req.body;
         try {
@@ -37,9 +61,7 @@ export default {
                 return;
             }
 
-            res.status(200).json({
-                message: "Personnel deleted successfully",
-            });
+            res.status(201).json();
             return;
         } catch (error) {
             console.error("Error deleting personnel:", error);
@@ -148,7 +170,7 @@ export default {
                 }
             } else if (departmentName && typeof departmentName === "string") {
                 personnels = await personnelService.getPersonnelByDepartment(departmentName);
-
+                
                 if (!personnels || personnels.length === 0) {
                     res.status(404).json({
                         message: "No personnel found in the given department",
@@ -183,4 +205,3 @@ export default {
         }
     },
 };
-
