@@ -4,7 +4,7 @@ import validate from "../middlewares/validate.mdw";
 import { createPersonnelWithStatusSchema, updatePersonnelSchema } from "../entities/personnel.entity";
 
 const router = express.Router();
-
+router.delete("/", personnelController.deleteMultiplePersonnels);
 router.delete("/:id", personnelController.deletePersonnel);
 router.put("/:id", validate(updatePersonnelSchema), personnelController.updatePersonnel);
 router.get("/", personnelController.getPersonnels);
