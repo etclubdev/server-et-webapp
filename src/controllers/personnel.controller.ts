@@ -158,7 +158,21 @@ export default {
         try {
             let personnels;
 
-            if (status && typeof status === "string") {
+            if (
+                status && typeof status === "string" &&
+                departmentName && typeof departmentName === "string"
+            ) {
+                personnels = await personnelService.getPersonnelByDepartmentAndStatus(departmentName, status);
+    
+                if (!personnels || personnels.length === 0) {
+                    res.status(404).json({
+                        message: "No personnel found with the given department and status",
+                        data: [],
+                    });
+                    return;
+                }
+            }
+            else if (status && typeof status === "string") {
                 personnels = await personnelService.getPersonnelByStatus(status);
 
                 if (!personnels || personnels.length === 0) {
