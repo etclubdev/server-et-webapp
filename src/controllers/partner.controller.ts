@@ -41,7 +41,7 @@ export default {
             res.status(204).json()
             return;
 
-        }catch (err) {
+        } catch (err) {
             console.log(err);
             res.status(500).json({
                 msg: 'Internal Server Error' + err.message
@@ -105,8 +105,8 @@ export default {
     getPartner: async (req: Request, res: Response) => {
         try {
 
-            const categoryId = req.query.categoryId as string;
-            const partners = categoryId ? await partnerService.getPartnerByCategory(categoryId) : await partnerService.getAllPartner();
+            const category = req.query.categoryId as string;
+            const partners = category ? await partnerService.getPartnerByCategory(category) : await partnerService.getAllPartner();
 
             if (!partners) {
                 res.status(404).json({
@@ -150,8 +150,8 @@ export default {
     },
     updateVisible: async (req: Request, res: Response) => {
         try {
-            const {partners} = req.body; 
-            
+            const { partners } = req.body;
+
             if (!partners || !Array.isArray(partners) || partners.length === 0) {
                 res.status(400).json({
                     message: "Invalid Data"
