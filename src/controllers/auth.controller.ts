@@ -29,20 +29,16 @@ export default {
                 return;
             }
 
-            const iat = Math.floor(Date.now() / 1000);
-            const exp = iat + 60 * 60;
-
             const payload = {
                 account_id: user.account_id,
                 personnel_id: user.personnel_id,
                 username: user.username,
+                sysrole_id: user.sysrole_id,
                 sysrole_name: user.sysrole_name,
-                issued_at: iat,
-                expiration_at: exp
             };
-
-            const accessToken = jwt.sign(payload, SECRET_KEY);
-            const refreshToken = jwt.sign({ account_id: user.account_id}, SECRET_KEY);
+            
+            const accessToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
+            const refreshToken = jwt.sign({ account_id: user.account_id }, SECRET_KEY, { expiresIn: '7d' });
 
             if (user && validPassword) {
                 res.status(200).json({
