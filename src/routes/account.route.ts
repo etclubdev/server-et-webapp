@@ -3,16 +3,17 @@ import { Router } from 'express';
 import validate from '../middlewares/validate.mdw';
 import { updateAccountSchema, updateAccountPasswordSchema, createAccountSchema } from '../entities/account.entity';
 import accountController from '../controllers/account.controller';
+import authGuard from '../middlewares/authGuard.mdw';
 
 const router = Router();
 
-router.post('/', validate(createAccountSchema), accountController.createAccount);
-router.get('/:id', accountController.getAccountById);
-router.get('/', accountController.getAllAccount);
-router.put('/change-password/:id', validate(updateAccountPasswordSchema), accountController.updatePassword);
-router.put('/:id', validate(updateAccountSchema), accountController.updateAccount);
-router.delete('/bulk-delete', accountController.deleteAccounts);
-router.delete('/:id', accountController.deleteAccount);
+router.post('/', authGuard.verifyRoles(['Administrator']), validate(createAccountSchema), accountController.createAccount);
+router.get('/:id', authGuard.verifyRoles(['Administrator']), accountController.getAccountById);
+router.get('/', authGuard.verifyRoles(['Administrator']), accountController.getAllAccount);
+router.put('/change-password/:id', authGuard.verifyRoles(['Administrator']), validate(updateAccountPasswordSchema), accountController.updatePassword);
+router.put('/:id', authGuard.verifyRoles(['Administrator']), validate(updateAccountSchema), accountController.updateAccount);
+router.delete('/bulk-delete', authGuard.verifyRoles(['Administrator']), accountController.deleteAccounts);
+router.delete('/:id', authGuard.verifyRoles(['Administrator']), accountController.deleteAccount);
 
 
 export default router;
