@@ -23,6 +23,10 @@ const authGuard = {
             const accessToken = token.split(' ')[1];
             jwt.verify(accessToken, process.env.JWT_SECRET, (err: any, decoded: JWTPayload) => {
                 if (err) {
+                    if (err.name === 'TokenExpiredError') {
+                        console.log("Token has expired:", err);
+                        return res.status(401).json("Token has expired!");
+                    }
                     console.log("Token verification error:", err);
                     return res.status(403).json("Token is not valid!");
                 }
