@@ -2,10 +2,10 @@ import db from '../utils/db.util';
 import { Partner } from '../types/partner'
 
 export default {
-    getPartnerByCategory: async (categoryId: string) => {
+    getPartnerByCategory: async (category: string) => {
         const partners = await db('partner')
             .select('*')
-            .where('partner_category_id', categoryId);
+            .where('partner_category_name', category);
 
         if (partners.length === 0) {
             return null;
