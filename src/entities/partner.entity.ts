@@ -67,10 +67,10 @@ const updatePartnerSchema = {
             "maxLength": 100,
             "description": "Partner name with a maximum of 100 characters"
         },
-        "partner_category_id": {
+        "partner_category_name": {
             "type": "string",
-            "pattern": "^PNCT\\d{3,}$",
-            "description": "Category ID of the partner, following format 'PNCTXXX' (XXX is a number)"
+            "enum": ["Đối tác doanh nghiệp", "Đối tác chuyên gia", "Đối tác truyền thông", "Nghệ sĩ khách mời"],
+            "description": "Category of the partner, only accepts predefined values"
         },
         "avatar_url": {
             "type": "string",
