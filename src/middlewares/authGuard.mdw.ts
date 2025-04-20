@@ -4,13 +4,7 @@ import { checkDepartmentMatch } from '../services/department.service';
 
 const jwt = require('jsonwebtoken');
 
-declare global {
-    namespace Express {
-        interface Request {
-            user?: JWTPayload;
-        }
-    }
-}
+
 
 const checkUserRole = (req: Request, res: Response, requiredRoles: string[], next: NextFunction) => {
     const userRole = req.user?.sysrole_name;
