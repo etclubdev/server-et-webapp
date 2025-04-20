@@ -7,6 +7,7 @@ import { updateAchievementSchema, createAchievementSchema } from "../entities/ac
 const router = express.Router();
 
 router.put("/:id", validate(updateAchievementSchema), achievementController.updateAchievement);
+router.delete('/bulk-delete', achievementController.deleteAchievements)
 router.delete("/:id", achievementController.deleteAchievement);
 router.get("/:id", achievementController.getAchievementById);
 router.post("/", validate(createAchievementSchema), achievementController.createAchievement);
