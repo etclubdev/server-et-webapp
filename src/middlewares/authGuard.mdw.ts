@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { JWTPayload } from '../types/auth';
+import { checkDepartmentMatch } from '../services/department.service';
+
 const jwt = require('jsonwebtoken');
 
 declare global {
@@ -49,7 +51,62 @@ const authGuard = {
                 checkUserRole(req, res, requiredRoles, next);
             });
         };
+    },
+    verifyDepartment: (userId2Key: string) => {
+        return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+            try {
+                const userId1 = req.user?.personnel_id;
+                const userId2 = req.body[userId2Key] || req.query[userId2Key] || req.params[userId2Key];
+
+                if (!userId1 || !userId2) {
+                    res.status(400).json("Missing user IDs for department verification!");
+                    return;
+                }
+
+                const isSameDepartment = await checkDepartmentMatch(userId1, userId2);
+
+                if (!isSameDepartment) {
+                    res.status(403).json("You do not have permission to access this resource!");
+                    return;
+                }
+
+                next();
+            } catch (error) {
+                console.error('Error checking department match:', error);
+                res.status(500).json("Internal server error!");
+            }
+        };
+    },
+    verifyDepartmentForBulk: () => {
+        return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+            try {
+                const userId1 = req.user?.personnel_id;
+                const personnelIds: string[] = req.body.personnelIds;
+
+                if (!userId1 || !personnelIds || personnelIds.length === 0) {
+                    res.status(400).json("Missing user IDs for department verification!");
+                    return;
+                }
+
+                const userId2 = personnelIds[0];
+
+                const isSameDepartment = await checkDepartmentMatch(userId1, userId2);
+
+                if (!isSameDepartment) {
+                    res.status(403).json(`User ${userId2} does not belong to the same department!`);
+                    return;
+                }
+
+                next();
+            } catch (error) {
+                console.error('Error checking department match:', error);
+                res.status(500).json("Internal server error!");
+                return;
+            }
+        };
     }
 };
+
+
 
 export default authGuard;

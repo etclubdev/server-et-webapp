@@ -12,7 +12,7 @@ router.delete("/bulk-delete", authGuard.verifyRoles([
     'Trưởng ban PR',
     'Trưởng ban HR',
     'Trưởng ban EV',
-    'Trưởng ban FER']), personnelController.deleteMultiplePersonnels);
+    'Trưởng ban FER']), authGuard.verifyDepartmentForBulk(), personnelController.deleteMultiplePersonnels);
 
 router.delete("/:id", authGuard.verifyRoles([
     'Administrator',
@@ -20,7 +20,7 @@ router.delete("/:id", authGuard.verifyRoles([
     'Trưởng ban PR',
     'Trưởng ban HR',
     'Trưởng ban EV',
-    'Trưởng ban FER']), personnelController.deletePersonnel);
+    'Trưởng ban FER']), authGuard.verifyDepartment('id'), personnelController.deletePersonnel);
 
 router.put("/:id", authGuard.verifyRoles([
     'Administrator',
@@ -28,7 +28,7 @@ router.put("/:id", authGuard.verifyRoles([
     'Trưởng ban PR',
     'Trưởng ban HR',
     'Trưởng ban EV',
-    'Trưởng ban FER']), validate(updatePersonnelSchema), personnelController.updatePersonnel);
+    'Trưởng ban FER']), authGuard.verifyDepartment('id'), validate(updatePersonnelSchema), personnelController.updatePersonnel);
 
 router.get("/", authGuard.verifyRoles([
     'Administrator',
@@ -60,6 +60,6 @@ router.post("/", authGuard.verifyRoles([
     'Trưởng ban PR',
     'Trưởng ban HR',
     'Trưởng ban EV',
-    'Trưởng ban FER']), validate(createPersonnelWithStatusSchema), personnelController.createPersonnelWithStatus);
+    'Trưởng ban FER']), authGuard.verifyDepartment('id'), validate(createPersonnelWithStatusSchema), personnelController.createPersonnelWithStatus);
 
 export default router; 
