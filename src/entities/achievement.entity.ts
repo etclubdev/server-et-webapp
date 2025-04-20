@@ -9,8 +9,7 @@ const createAchievementSchema = {
         "achievement_name": {
             "type": "string",
             "maxLength": 30,
-            "pattern": "^[A-Za-z ]+$",
-            "description": "Achievement name, must not contain numbers or special characters"
+            "description": "Achievement name"
         },
         "highlight_number": {
             "type": "string",
@@ -36,8 +35,7 @@ const updateAchievementSchema = {
         "achievement_name": {
             "type": "string",
             "maxLength": 30,
-            "pattern": "^[A-Za-z ]+$",
-            "description": "Achievement name, must not contain numbers or special characters"
+            "description": "Achievement name"
         },
         "highlight_number": {
             "type": "string",

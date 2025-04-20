@@ -57,6 +57,28 @@ export default
                 return;
             }
         },
+        deleteAchievements: async (req: Request, res: Response) => {
+            const { achievements } = req.body;
+
+            try {
+                const deletedAchievement = await achievementService.deleteAchievements(achievements)
+
+                if (!deletedAchievement) {
+                    res.status(404).json({
+                        message: 'Not found'
+                    })
+                    return;
+                }
+
+                res.sendStatus(204)
+                return;
+            } catch (error) {
+                console.log(error);
+                res.status(500).json({
+                    message: 'Internal Server Error ' + error.message
+                })
+            }
+        },
         getAchievementById: async (req: Request, res: Response) => {
             try {
                 const { id } = req.params;
