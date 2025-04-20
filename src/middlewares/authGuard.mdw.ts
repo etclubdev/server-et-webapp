@@ -1,12 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import { JWTPayload } from '../types/auth';
 const jwt = require('jsonwebtoken');
-
-interface JWTPayload {
-    account_id: string;
-    username: string;
-    sysrole_name: string;
-    personnel_id: string;
-}
 
 declare global {
     namespace Express {
@@ -15,6 +9,16 @@ declare global {
         }
     }
 }
+
+const checkUserRole = (req: Request, res: Response, requiredRoles: string[], next: NextFunction) => {
+    const userRole = req.user?.sysrole_name;
+
+    if (!userRole || !requiredRoles.includes(userRole)) {
+        return res.status(403).json("You do not have permission to access this resource!");
+    }
+
+    next();
+};
 
 const authGuard = {
     verifyToken: (req: Request, res: Response, next: NextFunction) => {
@@ -42,12 +46,7 @@ const authGuard = {
     verifyRoles: (requiredRoles: string[]) => {
         return (req: Request, res: Response, next: NextFunction) => {
             authGuard.verifyToken(req, res, () => {
-                const userRole = req.user?.sysrole_name;
-
-                if (!userRole || !requiredRoles.includes(userRole)) {
-                    return res.status(403).json("You do not have permission to access this resource!");
-                }
-                next();
+                checkUserRole(req, res, requiredRoles, next);
             });
         };
     }
