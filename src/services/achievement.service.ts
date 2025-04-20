@@ -16,6 +16,24 @@ export default {
             .where("achievement_id", id)
             .del();
     },
+    deleteAchievements: async (achievements: string[]) => {
+        if (!achievements || !Array.isArray(achievements) || achievements.length === 0) {
+            throw new Error("Invalid Data");
+        }
+
+        return db.transaction(async (trx) => {
+            let affectedRows = 0;
+            for (const achievementId of achievements) {
+
+                const deletedAchivement = await trx("achievement")
+                    .where('achievement_id', achievementId)
+                    .del();
+                affectedRows += deletedAchivement;
+            }
+
+            return affectedRows;
+        });
+    },
     getAchievementById: async (id: string): Promise<Achievement | null> => {
         try {
             const achievement = await db("achievement")

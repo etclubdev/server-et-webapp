@@ -12,6 +12,7 @@ import personnelRoute from './routes/personnel.route';
 import systemRoleRoute from './routes/systemRole.route';
 import bannerRoute from './routes/banner.route';
 import accountRoute from './routes/account.route'
+import authRoute from './routes/auth.route'
 import termRoute from './routes/term.route'
 import authRoute from './routes/auth.route'
 dotenv.config();
@@ -34,8 +35,8 @@ app.use("/personnels", personnelRoute);
 app.use('/system-role', systemRoleRoute);
 app.use('/banners', bannerRoute);
 app.use('/accounts', accountRoute);
-app.use('/terms', termRoute);
-app.use('/auth', authRoute);
+app.use('/auth', authRoute)
+app.use('/terms', termRoute)
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

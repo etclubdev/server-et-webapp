@@ -38,7 +38,11 @@ export default {
 
             for (const personnelId of personnelIds) {
 
-                await trx('personnel_status')
+                const deletedAccount = await trx('account')
+                    .where('personnel_id', personnelId)
+                    .del();
+
+                const deletedStatus = await trx('personnel_status')
                     .where('personnel_id', personnelId)
                     .del();
 
@@ -123,8 +127,6 @@ export default {
             }
 
             await trx.commit();
-
-            console.log(updatedPersonnel, updatedStatus);
 
             return {
                 personnel: updatedPersonnel?.[0] ?? null,
