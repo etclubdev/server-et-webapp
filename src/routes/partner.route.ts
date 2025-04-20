@@ -3,15 +3,16 @@ import authGuard from '../middlewares/authGuard.mdw';
 import partnerController from '../controllers/partner.controller';
 import validate from '../middlewares/validate.mdw';
 import { createPartnerSchema, updatePartnerSchema } from '../entities/partner.entity';
+import { managePartnerRole } from '../global/roles';
 
 const router = Router();
 
-router.put('/bulk-update', authGuard.verifyRoles(['Administrator', 'Trưởng ban PR', 'Trưởng ban FER']), partnerController.updateVisible);
-router.get('/:id', authGuard.verifyRoles(['Administrator', 'Trưởng ban PR', 'Trưởng ban FER']), partnerController.getPartnerByID);
-router.get('/', authGuard.verifyRoles(['Administrator', 'Trưởng ban PR', 'Trưởng ban FER']), partnerController.getPartner);
-router.post('/', authGuard.verifyRoles(['Administrator', 'Trưởng ban PR', 'Trưởng ban FER']), validate(createPartnerSchema), partnerController.createPartner);
-router.put('/:id', authGuard.verifyRoles(['Administrator', 'Trưởng ban PR', 'Trưởng ban FER']), validate(updatePartnerSchema), partnerController.updatePartner);
-router.delete('/bulk-delete', authGuard.verifyRoles(['Administrator', 'Trưởng ban PR', 'Trưởng ban FER']), partnerController.deletePartners);
-router.delete('/:id', authGuard.verifyRoles(['Administrator', 'Trưởng ban PR', 'Trưởng ban FER']), partnerController.deletePartner);
+router.put('/bulk-update', authGuard.verifyRoles(managePartnerRole), partnerController.updateVisible);
+router.get('/:id', authGuard.verifyRoles(managePartnerRole), partnerController.getPartnerByID);
+router.get('/', authGuard.verifyRoles(managePartnerRole), partnerController.getPartner);
+router.post('/', authGuard.verifyRoles(managePartnerRole), validate(createPartnerSchema), partnerController.createPartner);
+router.put('/:id', authGuard.verifyRoles(managePartnerRole), validate(updatePartnerSchema), partnerController.updatePartner);
+router.delete('/bulk-delete', authGuard.verifyRoles(managePartnerRole), partnerController.deletePartners);
+router.delete('/:id', authGuard.verifyRoles(managePartnerRole), partnerController.deletePartner);
 
 export default router;  

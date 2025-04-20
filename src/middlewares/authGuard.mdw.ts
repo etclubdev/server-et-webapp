@@ -52,11 +52,11 @@ const authGuard = {
             });
         };
     },
-    verifyDepartment: (userId2Key: string) => {
+    verifyDepartment: () => {
         return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
             try {
                 const userId1 = req.user?.personnel_id;
-                const userId2 = req.body[userId2Key] || req.query[userId2Key] || req.params[userId2Key];
+                const userId2 = req.body['id'] || req.query['id'] || req.params['id'];
 
                 if (!userId1 || !userId2) {
                     res.status(400).json("Missing user IDs for department verification!");

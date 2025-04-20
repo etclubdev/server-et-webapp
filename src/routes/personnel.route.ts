@@ -3,63 +3,22 @@ import personnelController from "../controllers/personnel.controller";
 import validate from "../middlewares/validate.mdw";
 import { createPersonnelWithStatusSchema, updatePersonnelSchema } from "../entities/personnel.entity";
 import authGuard from '../middlewares/authGuard.mdw';
+import { managePersonnelRole } from "../global/roles";
 
 const router = express.Router();
 
-router.delete("/bulk-delete", authGuard.verifyRoles([
-    'Administrator',
-    'Trưởng ban Tech',
-    'Trưởng ban PR',
-    'Trưởng ban HR',
-    'Trưởng ban EV',
-    'Trưởng ban FER']), authGuard.verifyDepartmentForBulk(), personnelController.deleteMultiplePersonnels);
+router.delete("/bulk-delete", authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForBulk(), personnelController.deleteMultiplePersonnels);
 
-router.delete("/:id", authGuard.verifyRoles([
-    'Administrator',
-    'Trưởng ban Tech',
-    'Trưởng ban PR',
-    'Trưởng ban HR',
-    'Trưởng ban EV',
-    'Trưởng ban FER']), authGuard.verifyDepartment('id'), personnelController.deletePersonnel);
+router.delete("/:id", authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartment(), personnelController.deletePersonnel);
 
-router.put("/:id", authGuard.verifyRoles([
-    'Administrator',
-    'Trưởng ban Tech',
-    'Trưởng ban PR',
-    'Trưởng ban HR',
-    'Trưởng ban EV',
-    'Trưởng ban FER']), authGuard.verifyDepartment('id'), validate(updatePersonnelSchema), personnelController.updatePersonnel);
+router.put("/:id", authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartment(), validate(updatePersonnelSchema), personnelController.updatePersonnel);
 
-router.get("/", authGuard.verifyRoles([
-    'Administrator',
-    'Trưởng ban Tech',
-    'Trưởng ban PR',
-    'Trưởng ban HR',
-    'Trưởng ban EV',
-    'Trưởng ban FER']), personnelController.getPersonnels);
+router.get("/", authGuard.verifyRoles(managePersonnelRole), personnelController.getPersonnels);
 
-router.get("/unregistered", authGuard.verifyRoles([
-    'Administrator',
-    'Trưởng ban Tech',
-    'Trưởng ban PR',
-    'Trưởng ban HR',
-    'Trưởng ban EV',
-    'Trưởng ban FER']), personnelController.getUnregisteredPersonnels);
+router.get("/unregistered", authGuard.verifyRoles(managePersonnelRole), personnelController.getUnregisteredPersonnels);
 
-router.get("/:id", authGuard.verifyRoles([
-    'Administrator',
-    'Trưởng ban Tech',
-    'Trưởng ban PR',
-    'Trưởng ban HR',
-    'Trưởng ban EV',
-    'Trưởng ban FER']), personnelController.getPersonnelByID);
+router.get("/:id", authGuard.verifyRoles(managePersonnelRole), personnelController.getPersonnelByID);
 
-router.post("/", authGuard.verifyRoles([
-    'Administrator',
-    'Trưởng ban Tech',
-    'Trưởng ban PR',
-    'Trưởng ban HR',
-    'Trưởng ban EV',
-    'Trưởng ban FER']), authGuard.verifyDepartment('id'), validate(createPersonnelWithStatusSchema), personnelController.createPersonnelWithStatus);
+router.post("/", authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartment(), validate(createPersonnelWithStatusSchema), personnelController.createPersonnelWithStatus);
 
 export default router; 
