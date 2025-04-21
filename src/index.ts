@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-
-import faqRoute from './routes/faq.route'
+import dotenv from 'dotenv';
+import faqRoute from './routes/faq.route';
 import healthRoute from './routes/health.route';
 import activityRoute from "./routes/activity.route";
 import etNewsRoute from './routes/etNews.route';
@@ -14,7 +14,8 @@ import bannerRoute from './routes/banner.route';
 import accountRoute from './routes/account.route'
 import authRoute from './routes/auth.route'
 import termRoute from './routes/term.route'
-
+import authRoute from './routes/auth.route'
+dotenv.config();
 const app = express();
 
 app.use(cors({
