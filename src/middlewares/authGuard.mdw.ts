@@ -5,6 +5,8 @@ import { JWTPayload } from '../types/auth';
 import '../global/globalJWTPayload'
 import { checkDepartmentMatch } from '../services/department.service';
 
+const jwt = require('jsonwebtoken');
+
 const checkUserRole = (req: Request, res: Response, requiredRoles: string[], next: NextFunction) => {
     const userRole = req.user?.sysrole_name;
 

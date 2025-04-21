@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-
 import { JWTPayload } from '../types/auth';
 
 export { };
