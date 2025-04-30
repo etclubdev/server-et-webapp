@@ -7,5 +7,6 @@ import authController from '../controllers/auth.controller';
 const router = express.Router();
 
 router.post('/login', validate(authSchema), authController.login);
+router.post('/refresh-token', authController.renewToken)
 
 export default router;
