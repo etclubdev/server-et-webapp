@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { JWTPayload } from '../types/auth';
 import { checkDepartmentMatch } from '../services/department.service';
+import '../global/globalJWTPayload'
 
 const jwt = require('jsonwebtoken');
 

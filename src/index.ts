@@ -14,7 +14,8 @@ import bannerRoute from './routes/banner.route';
 import accountRoute from './routes/account.route'
 import authRoute from './routes/auth.route'
 import termRoute from './routes/term.route'
-import authRoute from './routes/auth.route'
+import searchRoute from './routes/search.route'
+
 dotenv.config();
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/banners', bannerRoute);
 app.use('/accounts', accountRoute);
 app.use('/auth', authRoute)
 app.use('/terms', termRoute)
+app.use('/searchs', searchRoute)
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
