@@ -4,7 +4,7 @@ import searchService from '../services/search.service';
 
 export default {
     searchAcrossTables: async (req: Request, res: Response) => {
-        const { keyword } = req.body;
+        const keyword = req.query.keyword as string;
 
         if(!keyword) {
             res.status(400).json({

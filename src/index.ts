@@ -39,7 +39,7 @@ app.use('/banners', bannerRoute);
 app.use('/accounts', accountRoute);
 app.use('/auth', authRoute)
 app.use('/terms', termRoute)
-app.use('/searchs', searchRoute)
+app.use('/search', searchRoute)
 
 const PORT = process.env.PORT || 8080;
 
