@@ -90,15 +90,19 @@ cd express-ts-server
 ```bash
 npm install
 ```
-3. **Start the development server**:
+3. **Start the server in development mode using .env.local**:
 ```bash
-npm run dev
+npm run dev:local
 ```
-4. **Build for production**:
+4. **Start the server in development mode using .env.prod**:
+```bash
+npm run dev:prod
+```
+5. **Build for production**:
 ```bash
 npm run build
 ```
-5. **Run the production build**:
+6. **Run the production build**:
 ```bash
 npm start
 ```

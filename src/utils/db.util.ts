@@ -1,15 +1,13 @@
 import knex, { Knex } from 'knex';  
 
+const { HOST, USER, PASSWORD, DATABASE, DB_PORT } = process.env;
+const connectionConfig = { host:HOST, user:USER, password:PASSWORD, database: DATABASE, port:DB_PORT };
+
 const config: { [key: string]: Knex.Config } = {  
   development: {  
     client: 'pg', 
-    connection: {  
-      host: 'localhost',   
-      user: 'etclubdev', 
-      password: 'etclubdev',
-      database: 'etclubweb', 
-      port: 5432,  
-    }
+    connection: connectionConfig,
+    pool: { min: 0, max: 10 },
   }
 };  
 

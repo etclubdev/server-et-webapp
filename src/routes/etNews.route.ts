@@ -1,4 +1,5 @@
 import express from 'express';
+
 import authGuard from '../middlewares/authGuard.mdw';
 import etNewsController from '../controllers/etNews.controller';
 import validate from '../middlewares/validate.mdw';
