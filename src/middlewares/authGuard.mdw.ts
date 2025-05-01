@@ -1,11 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
+import jwt, { JsonWebTokenError, TokenExpiredError, NotBeforeError } from 'jsonwebtoken';
+
 import { JWTPayload } from '../types/auth';
 import { checkDepartmentMatch } from '../services/department.service';
 import '../global/globalJWTPayload'
-
-const jwt = require('jsonwebtoken');
-
-
 
 const checkUserRole = (req: Request, res: Response, requiredRoles: string[], next: NextFunction) => {
     const userRole = req.user?.sysrole_name;
@@ -22,7 +20,7 @@ const authGuard = {
         const token = req.headers.authorization;
         if (token) {
             const accessToken = token.split(' ')[1];
-            jwt.verify(accessToken, process.env.JWT_SECRET, (err: any, decoded: JWTPayload) => {
+            jwt.verify(accessToken, process.env.JWT_SECRET, (err: JsonWebTokenError | TokenExpiredError | NotBeforeError | null, decoded: JWTPayload) => {
                 if (err) {
                     if (err.name === 'TokenExpiredError') {
                         console.log("Token has expired:", err);

@@ -9,7 +9,7 @@
     "build": "tsc",
     "dev:local": "nodemon --exec ts-node -r dotenv/config src/index.ts dotenv_config_path=.env.local",
     "dev:prod": "nodemon --exec ts-node -r dotenv/config src/index.ts dotenv_config_path=.env.prod",
-    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint": "eslint src/**/*.{ts,tsx} --fix",
     "startMock": "bash ./startMock.sh",
     "stopMock": "bash ./stopMock.sh"
   },

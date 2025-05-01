@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import authGuard from '../middlewares/authGuard.mdw';
 import partnerController from '../controllers/partner.controller';
 import validate from '../middlewares/validate.mdw';

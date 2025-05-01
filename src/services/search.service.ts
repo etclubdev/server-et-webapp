@@ -1,4 +1,3 @@
-import { table } from 'console';
 import db from '../utils/db.util';
 
 export default {
