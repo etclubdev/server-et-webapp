@@ -1,4 +1,5 @@
 import express from "express";
+
 import authGuard from '../middlewares/authGuard.mdw';
 import validate from "../middlewares/validate.mdw";
 import { updateFAQSchema } from "../entities/faq.entity";

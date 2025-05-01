@@ -1,4 +1,3 @@
-import { updateActivitySchema } from "./activity.entity";
 
 const createFAQSchema = {
     "type": "object",

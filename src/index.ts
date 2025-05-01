@@ -14,7 +14,9 @@ import systemRoleRoute from './routes/systemRole.route';
 import bannerRoute from './routes/banner.route';
 import accountRoute from './routes/account.route'
 import termRoute from './routes/term.route'
-import authRoute from './routes/auth.route'
+import searchRoute from './routes/search.route'
+import authRoute from './routes/auth.route';
+
 dotenv.config();
 const app = express();
 
@@ -37,8 +39,12 @@ app.use('/banners', bannerRoute);
 app.use('/accounts', accountRoute);
 app.use('/auth', authRoute)
 app.use('/terms', termRoute)
+app.use('/search', searchRoute)
 
 const PORT = process.env.PORT || 8080;
+
+const ENV = process.env.NODE_ENV;
+
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT} | Environment: ${ENV}`);
 });
