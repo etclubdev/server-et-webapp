@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+
 import personnelService from "../services/personnel.service";
 
 export default {
