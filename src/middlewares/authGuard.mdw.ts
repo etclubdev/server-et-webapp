@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import jwt, { JsonWebTokenError, TokenExpiredError, NotBeforeError } from 'jsonwebtoken';
 
 import { JWTPayload } from '../types/auth';
-import { checkDepartmentMatch } from '../services/department.service';
 import '../global/globalJWTPayload'
+import { checkDepartmentMatch } from '../services/department.service';
 
 const checkUserRole = (req: Request, res: Response, requiredRoles: string[], next: NextFunction) => {
     const userRole = req.user?.sysrole_name;

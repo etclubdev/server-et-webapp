@@ -13,9 +13,9 @@ import personnelRoute from './routes/personnel.route';
 import systemRoleRoute from './routes/systemRole.route';
 import bannerRoute from './routes/banner.route';
 import accountRoute from './routes/account.route'
-import authRoute from './routes/auth.route'
 import termRoute from './routes/term.route'
 import searchRoute from './routes/search.route'
+import authRoute from './routes/auth.route';
 
 dotenv.config();
 const app = express();
