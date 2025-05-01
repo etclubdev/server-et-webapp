@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+
 import faqRoute from './routes/faq.route';
 import healthRoute from './routes/health.route';
 import activityRoute from "./routes/activity.route";
@@ -41,6 +42,9 @@ app.use('/terms', termRoute)
 app.use('/searchs', searchRoute)
 
 const PORT = process.env.PORT || 8080;
+
+const ENV = process.env.NODE_ENV;
+
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT} | Environment: ${ENV}`);
 });

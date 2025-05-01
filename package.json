@@ -7,7 +7,8 @@
     "prepare": "husky install",
     "start": "node dist/index.js",
     "build": "tsc",
-    "dev": "nodemon --exec ts-node src/index.ts",
+    "dev:local": "nodemon --exec ts-node -r dotenv/config src/index.ts dotenv_config_path=.env.local",
+    "dev:prod": "nodemon --exec ts-node -r dotenv/config src/index.ts dotenv_config_path=.env.prod",
     "lint": "eslint src/**/*.{ts,tsx}",
     "startMock": "bash ./startMock.sh",
     "stopMock": "bash ./stopMock.sh"
