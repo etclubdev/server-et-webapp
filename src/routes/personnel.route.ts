@@ -19,6 +19,6 @@ router.get("/unregistered", authGuard.verifyRoles(managePersonnelRole), personne
 
 router.get("/:id", authGuard.verifyRoles(managePersonnelRole), personnelController.getPersonnelByID);
 
-router.post("/", authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartment(), validate(createPersonnelWithStatusSchema), personnelController.createPersonnelWithStatus);
+router.post("/", authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForPost, validate(createPersonnelWithStatusSchema), personnelController.createPersonnelWithStatus);
 
 export default router; 
