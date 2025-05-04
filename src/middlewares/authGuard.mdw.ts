@@ -2,8 +2,14 @@ import { Request, Response, NextFunction } from 'express';
 import jwt, { JsonWebTokenError, TokenExpiredError, NotBeforeError } from 'jsonwebtoken';
 
 import { JWTPayload } from '../types/auth';
-import '../global/globalJWTPayload'
-import { checkDepartmentMatch } from '../services/department.service';
+import departmentService from '../services/department.service';
+import '../global/globalJWTPayload';
+const jwt = require('jsonwebtoken');
+
+
+const isAdministrator = (req: Request): boolean => {
+    return req.user?.sysrole_name === 'Administrator';
+};
 
 const checkUserRole = (req: Request, res: Response, requiredRoles: string[], next: NextFunction) => {
     const userRole = req.user?.sysrole_name;
@@ -48,6 +54,9 @@ const authGuard = {
     verifyDepartment: () => {
         return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
             try {
+                if (isAdministrator(req)) {
+                    return next();
+                }
                 const userId1 = req.user?.personnel_id;
                 const userId2 = req.body['id'] || req.query['id'] || req.params['id'];
 
@@ -56,7 +65,7 @@ const authGuard = {
                     return;
                 }
 
-                const isSameDepartment = await checkDepartmentMatch(userId1, userId2);
+                const isSameDepartment = await departmentService.checkDepartmentMatch(userId1, userId2);
 
                 if (!isSameDepartment) {
                     res.status(403).json("You do not have permission to access this resource!");
@@ -73,6 +82,9 @@ const authGuard = {
     verifyDepartmentForBulk: () => {
         return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
             try {
+                if (isAdministrator(req)) {
+                    return next();
+                }
                 const userId1 = req.user?.personnel_id;
                 const personnelIds: string[] = req.body.personnelIds;
 
@@ -83,7 +95,7 @@ const authGuard = {
 
                 const userId2 = personnelIds[0];
 
-                const isSameDepartment = await checkDepartmentMatch(userId1, userId2);
+                const isSameDepartment = await departmentService.checkDepartmentMatch(userId1, userId2);
 
                 if (!isSameDepartment) {
                     res.status(403).json(`User ${userId2} does not belong to the same department!`);
@@ -97,6 +109,41 @@ const authGuard = {
                 return;
             }
         };
+    },
+    verifyDepartmentForPost: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+
+            if (isAdministrator(req)) {
+                return next();
+            }
+
+
+            const userId = req.user?.personnel_id;
+            const targetDepartment = req.body.status?.department_name;
+
+
+            if (!userId) {
+                res.status(400).json("Missing user ID in JWT!");
+                return;
+            }
+            if (!targetDepartment) {
+                res.status(400).json("Missing target department in request body!");
+                return;
+            }
+
+
+            const isSameDepartment = await departmentService.checkUserDepartment(userId, targetDepartment);
+
+            if (!isSameDepartment) {
+                res.status(403).json("You do not have permission to create an object in this department!");
+                return;
+            }
+
+            next();
+        } catch (error) {
+            console.error('Error verifying department for POST:', error);
+            res.status(500).json("Internal server error!");
+        }
     }
 };
 

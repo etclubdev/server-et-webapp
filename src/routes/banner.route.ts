@@ -8,8 +8,8 @@ import { manageBannerRole } from '../global/roles';
 
 const router = express.Router();
 
-router.get('/', authGuard.verifyRoles(manageBannerRole), bannerController.getAllBanners);
-router.get('/:id', authGuard.verifyRoles(manageBannerRole), bannerController.getBannerById);
+router.get('/', bannerController.getAllBanners);
+router.get('/:id', bannerController.getBannerById);
 router.post('/', authGuard.verifyRoles(manageBannerRole), validate(createBannerSchema), bannerController.createBanner);
 router.put('/:id', authGuard.verifyRoles(manageBannerRole), validate(updateBannerSchema), bannerController.updateBanner);
 router.delete('/bulk-delete', authGuard.verifyRoles(manageBannerRole), bannerController.deleteBanners);
