@@ -41,7 +41,10 @@ const adminRole: Role[] = [
 const manangeEtNewsRole: Role[] = [
     Role.Admin, Role.PR, Role.MEM];
 
+const getByIDPersonnelRole: Role[] = [
+    Role.Admin, Role.HR, Role.Tech, Role.PR, Role.EV, Role.FER, Role.MEM];
 
 
 
-export { manageAchivementRole, manageActivityRole, manageBannerRole, manageEtBlogRole, manageFAQRole, managePartnerRole, managePersonnelRole, adminRole, manangeEtNewsRole };
+
+export { manageAchivementRole, manageActivityRole, manageBannerRole, manageEtBlogRole, manageFAQRole, managePartnerRole, managePersonnelRole, adminRole, manangeEtNewsRole, getByIDPersonnelRole };
