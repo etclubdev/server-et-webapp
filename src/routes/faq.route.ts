@@ -9,8 +9,8 @@ import { manageFAQRole } from "../global/roles";
 
 const router = express.Router();
 
-router.get("/:id", authGuard.verifyRoles(manageFAQRole), faqController.getFAQById);
-router.get("/", authGuard.verifyRoles(manageFAQRole), faqController.getAllFAQs);
+router.get("/:id", faqController.getFAQById);
+router.get("/", faqController.getAllFAQs);
 router.post("/", authGuard.verifyRoles(manageFAQRole), validate(createFAQSchema), faqController.createFAQ);
 router.put("/:id", authGuard.verifyRoles(manageFAQRole), validate(updateFAQSchema), faqController.updateFAQ);
 router.delete("/bulk-delete", authGuard.verifyRoles(manageFAQRole), faqController.deleteFAQs);
