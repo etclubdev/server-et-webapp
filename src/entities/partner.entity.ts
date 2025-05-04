@@ -54,7 +54,7 @@ const createPartnerSchema = {
     },
     "required": [
         "partner_name",
-        "partner_category_id",
+        "partner_category_name",
         "email",
         "visible"
     ]
