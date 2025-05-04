@@ -5,7 +5,6 @@ import { JWTPayload } from '../types/auth';
 import departmentService from '../services/department.service';
 
 import '../global/globalJWTPayload';
-const jwt = require('jsonwebtoken');
 
 
 const isAdministrator = (req: Request): boolean => {
