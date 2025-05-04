@@ -8,8 +8,8 @@ import { manageActivityRole } from "../global/roles";
 
 const router = express.Router();
 
-router.get("/:id", authGuard.verifyRoles(manageActivityRole), activityController.getActivityById);
-router.get("/", authGuard.verifyRoles(manageActivityRole), activityController.getAllActivities);
+router.get("/:id", activityController.getActivityById);
+router.get("/", activityController.getAllActivities);
 router.delete("/bulk-delete", authGuard.verifyRoles(manageActivityRole), activityController.deleteActivities);
 router.delete("/:id", authGuard.verifyRoles(manageActivityRole), activityController.deleteActivity);
 router.put("/:id", authGuard.verifyRoles(manageActivityRole), validate(updateActivitySchema), activityController.updateActivity);

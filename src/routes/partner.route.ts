@@ -9,8 +9,8 @@ import { managePartnerRole } from '../global/roles';
 const router = Router();
 
 router.put('/bulk-update', authGuard.verifyRoles(managePartnerRole), partnerController.updateVisible);
-router.get('/:id', authGuard.verifyRoles(managePartnerRole), partnerController.getPartnerByID);
-router.get('/', authGuard.verifyRoles(managePartnerRole), partnerController.getPartner);
+router.get('/:id', partnerController.getPartnerByID);
+router.get('/', partnerController.getPartner);
 router.post('/', authGuard.verifyRoles(managePartnerRole), validate(createPartnerSchema), partnerController.createPartner);
 router.put('/:id', authGuard.verifyRoles(managePartnerRole), validate(updatePartnerSchema), partnerController.updatePartner);
 router.delete('/bulk-delete', authGuard.verifyRoles(managePartnerRole), partnerController.deletePartners);
