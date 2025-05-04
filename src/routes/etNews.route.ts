@@ -11,7 +11,7 @@ router.delete('/bulk-delete', authGuard.verifyRoles(manangeEtNewsRole), etNewsCo
 router.delete('/:id', authGuard.verifyRoles(manangeEtNewsRole), etNewsController.deleteETNews);
 router.put('/:id', authGuard.verifyRoles(manangeEtNewsRole), validate(updateNewsSchema), etNewsController.updateETNews);
 router.post('/', authGuard.verifyRoles(manangeEtNewsRole), validate(createNewsSchema), etNewsController.createETNews);
-router.get('/:id', authGuard.verifyRoles(manangeEtNewsRole), etNewsController.getETNewsbyID);
-router.get('/', authGuard.verifyRoles(manangeEtNewsRole), etNewsController.getAllETNews);
+router.get('/:id', etNewsController.getETNewsbyID);
+router.get('/', etNewsController.getAllETNews);
 
 export default router;

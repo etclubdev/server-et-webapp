@@ -3,7 +3,7 @@ import personnelController from "../controllers/personnel.controller";
 import validate from "../middlewares/validate.mdw";
 import { createPersonnelWithStatusSchema, updatePersonnelSchema } from "../entities/personnel.entity";
 import authGuard from '../middlewares/authGuard.mdw';
-import { managePersonnelRole } from "../global/roles";
+import { getByIDPersonnelRole, managePersonnelRole } from "../global/roles";
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.get("/", authGuard.verifyRoles(managePersonnelRole), personnelController.
 
 router.get("/unregistered", authGuard.verifyRoles(managePersonnelRole), personnelController.getUnregisteredPersonnels);
 
-router.get("/:id", authGuard.verifyRoles(managePersonnelRole), personnelController.getPersonnelByID);
+router.get("/:id", authGuard.verifyRoles(getByIDPersonnelRole), personnelController.getPersonnelByID);
 
 router.post("/", authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForPost, validate(createPersonnelWithStatusSchema), personnelController.createPersonnelWithStatus);
 
