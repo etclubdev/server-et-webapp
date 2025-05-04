@@ -12,8 +12,8 @@ export default {
                 'personnel_status.*'
             );
         return personnels;
-    },
-    getPersonnelByDepartment: async (departmentName: string): Promise<any[]> => {
+        },
+        getPersonnelByDepartment: async (departmentName: string): Promise<Personnel[]> => {
         if (!departmentName) {
             throw new Error("Invalid Data: departmentName is required");
         }
@@ -38,11 +38,11 @@ export default {
 
             for (const personnelId of personnelIds) {
 
-                const deletedAccount = await trx('account')
+                await trx('account')
                     .where('personnel_id', personnelId)
                     .del();
 
-                const deletedStatus = await trx('personnel_status')
+                await trx('personnel_status')
                     .where('personnel_id', personnelId)
                     .del();
 
@@ -62,11 +62,11 @@ export default {
 
         try {
 
-            const deletedAccount = await trx('account')
+            await trx('account')
                 .where('personnel_id', id)
                 .del();
 
-            const deletedStatus = await trx('personnel_status')
+            await trx('personnel_status')
                 .where('personnel_id', id)
                 .del();
 
@@ -95,7 +95,7 @@ export default {
             position_name: string;
             personnel_status: string;
         }>
-    ): Promise<{ personnel: Personnel | null; status: any | null }> => {
+    ): Promise<{ personnel: Personnel | null; status: string | null }> => {
         const trx = await db.transaction();
 
         try {
@@ -137,8 +137,8 @@ export default {
             throw error;
         }
     },
-    getPersonnelByID: async (id: string): Promise<any | null> => {
-        const personnel = await db('personnel')
+    getPersonnelByID: async (id: string): Promise<Personnel | null> => {
+        const personnel: Personnel = await db('personnel')
             .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
             .select(
                 'personnel.*',
@@ -197,13 +197,13 @@ export default {
         }
         return personnels;
     },
-    getPersonnelByStatus: async (status: string): Promise<any[]> => {
+    getPersonnelByStatus: async (status: string): Promise<Personnel[]> => {
         if (!status) {
             throw new Error("Invalid Data: status is required");
         }
 
 
-        const personnels = await db('personnel')
+        const personnels: Personnel[] = await db('personnel')
             .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
             .select(
                 'personnel.*',
@@ -216,12 +216,12 @@ export default {
     getPersonnelByDepartmentAndStatus: async (
         departmentName: string,
         status: string
-    ): Promise<any[]> => {
+    ): Promise<Personnel[]> => {
         if (!departmentName || !status) {
             throw new Error("Invalid Data: departmentName and status are required");
         }
     
-        const personnels = await db('personnel')
+        const personnels:Personnel[] = await db('personnel')
             .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
             .select(
                 'personnel.*',
