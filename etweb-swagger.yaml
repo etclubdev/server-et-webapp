@@ -48,3 +48,15 @@ tags:
   - name: search
     description: Operations about search functionality
 paths: {}
+components:
+  schemas:
+    # Define your schemas here
+    ObjectId: 
+      type: string
+      format: objectid
+  securitySchemes:
+      bearerAuth:                 
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
+
