@@ -44,7 +44,14 @@ app.use('/accounts', accountRoute);
 app.use('/auth', authRoute)
 app.use('/terms', termRoute)
 app.use('/search', searchRoute)
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.get('/swagger.json', (req, res) => {
+  res.json(swaggerDocument);
+});
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(null, {
+  swaggerUrl: '/swagger.json'
+}));
 
 const PORT = process.env.PORT || 8080;
 
