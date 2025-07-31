@@ -17,9 +17,15 @@ import accountRoute from './routes/account.route'
 import termRoute from './routes/term.route'
 import searchRoute from './routes/search.route'
 import authRoute from './routes/auth.route';
+import YAML from 'yaml';
+import fs from 'fs';
+import path from 'path';
+import swaggerUi from 'swagger-ui-express';
 
 dotenv.config();
 const app = express();
+const file = fs.readFileSync(path.resolve('et-webapp-swagger.yaml'), 'utf8');
+const swaggerDocument = YAML.parse(file);
 
 app.use(cors());
 
@@ -38,6 +44,7 @@ app.use('/accounts', accountRoute);
 app.use('/auth', authRoute)
 app.use('/terms', termRoute)
 app.use('/search', searchRoute)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const PORT = process.env.PORT || 8080;
 

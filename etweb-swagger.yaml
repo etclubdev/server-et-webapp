@@ -1,0 +1,48 @@
+openapi: 3.0.4
+info:
+  title: ET-Web API Documentation
+  version: 1.0.0
+  description: |-
+    This is the API documentation for ET-Web application. The API provides endpoints for managing:
+    - Achievements
+    - Activities
+    - News & Blogs
+    - Partners
+    - Personnel & Accounts
+    - System Roles
+    - FAQs
+    - Banners
+    - Terms
+
+    For any questions or issues, please contact the development team.
+servers:
+  - url: http://localhost:8080
+    description: Development server
+tags:
+  - name: achievements
+    description: Operations about achievements
+  - name: activities
+    description: Operations about activities
+  - name: et-news
+    description: Operations about ET news
+  - name: et-blog
+    description: Operations about ET blog
+  - name: partners
+    description: Operations about partners
+  - name: personnels
+    description: Operations about personnel management
+  - name: accounts
+    description: Operations about user accounts
+  - name: system-role
+    description: Operations about system roles
+  - name: banners
+    description: Operations about banners
+  - name: faqs
+    description: Operations about FAQs
+  - name: terms
+    description: Operations about terms
+  - name: auth
+    description: Operations about authentication
+  - name: search
+    description: Operations about search functionality
+paths: {}
