@@ -24,7 +24,7 @@ import swaggerUi from 'swagger-ui-express';
 
 dotenv.config();
 const app = express();
-const file = fs.readFileSync(path.resolve('et-webapp-swagger.yaml'), 'utf8');
+const file = fs.readFileSync(path.resolve('etweb-swagger.yaml'), 'utf8');
 const swaggerDocument = YAML.parse(file);
 
 app.use(cors());
