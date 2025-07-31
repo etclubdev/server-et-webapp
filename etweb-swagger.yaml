@@ -18,6 +18,8 @@ info:
 servers:
   - url: http://localhost:8080
     description: Development server
+  - url: https://api.etclub.click
+    description: Production server
 tags:
   - name: achievements
     description: Operations about achievements
