@@ -47,9 +47,108 @@ tags:
     description: Operations about authentication
   - name: search
     description: Operations about search functionality
-paths: {}
+paths:
+  /auth/login:
+    post:
+      tags:
+        - auth
+      operationId: login
+      summary: User login
+      description: Authenticate user and return JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              username: "user@example.com"
+              password: "12345678"
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                message: "Login successful"
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Invalid username or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/refresh-token:
+    post:
+      tags:
+        - auth
+      operationId: refreshToken
+      summary: Refresh JWT token
+      description: Refresh the JWT token using the refresh token
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                status: 200
+                message: "Token refreshed successfully"
+                data:
+                  accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          description: Refresh token is missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                example:
+                  message: "Refresh token is missing."
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                example:
+                  message: "Invalid token type. Refresh token required."
 components:
   schemas:
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          format: username
+          example: "lvc.event@example.com"
+        password:
+          type: string
+          format: password
+          example: "securepassword123"
     SuccessResponse: #status 200
       type: object
       properties:
@@ -63,7 +162,6 @@ components:
             id: "123"
             title: "Morning Run"
             createdAt: "2025-08-01T10:20:30Z"
-
     CreatedResponse: #status 201
       type: object
       properties:
@@ -75,16 +173,15 @@ components:
           example:
             id: "123"
             title: "Morning Run"
-
     ErrorResponse: #status 400, 401, 404, 500
       type: object
       properties:
         message:
           type: string
-          example: The 'email' field must be a valid email address
-
+          example: The 'username' field must be a valid username address
   securitySchemes:
     bearerAuth: 
       type: http
       scheme: bearer
-      bearerFormat: JWT 
+      bearerFormat: JWT
+    
