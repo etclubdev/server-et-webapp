@@ -48,3 +48,43 @@ tags:
   - name: search
     description: Operations about search functionality
 paths: {}
+components:
+  schemas:
+    SuccessResponse: #status 200
+      type: object
+      properties:
+        message:
+          type: string
+          example: Success
+        data:
+          type: object
+          nullable: true
+          example:
+            id: "123"
+            title: "Morning Run"
+            createdAt: "2025-08-01T10:20:30Z"
+
+    CreatedResponse: #status 201
+      type: object
+      properties:
+        message:
+          type: string
+          example: Resource created successfully
+        data:
+          type: object
+          example:
+            id: "123"
+            title: "Morning Run"
+
+    ErrorResponse: #status 400, 401, 404, 500
+      type: object
+      properties:
+        message:
+          type: string
+          example: The 'email' field must be a valid email address
+
+  securitySchemes:
+    bearerAuth: 
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
