@@ -60,45 +60,45 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: "#/components/schemas/LoginRequest"
             example:
               username: "user@example.com"
               password: "12345678"
       responses:
-        '200':
+        "200":
           description: Successful login
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
+                $ref: "#/components/schemas/SuccessResponse"
               example:
                 message: "Login successful"
                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        '400':
+        "400":
           description: Invalid username or password
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: User not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
   /auth/refresh-token:
     post:
       tags:
@@ -107,37 +107,241 @@ paths:
       summary: Refresh JWT token
       description: Refresh the JWT token using the refresh token
       security:
-      - bearerAuth: []
+        - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Token refreshed successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
+                $ref: "#/components/schemas/SuccessResponse"
               example:
                 status: 200
                 message: "Token refreshed successfully"
                 data:
                   accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        '401':
+        "401":
           description: Refresh token is missing
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
                 example:
                   message: "Refresh token is missing."
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
                 example:
                   message: "Invalid token type. Refresh token required."
+  /banners:
+    get:
+      tags:
+        - banners
+      operationId: getAllBanners
+      summary: Get all banners
+      description: Retrieve a list of all banners
+      responses:
+        "200":
+          description: Successful retrieval of banners
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/banners"
+              example:
+                - banner_name: "Welcome Banner"
+                  image_url: "https://example.com/banner.jpg"
+                  visible: true
+        "404":
+          description: No banners found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      tags:
+        - banners
+      operationId: createBanner
+      summary: Create a new banner
+      description: Create a new banner with the provided details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/banners"
+            example:
+              banner_name: "New Banner"
+              image_url: "https://example.com/new-banner.jpg"
+              visible: true
+      responses:
+        "201":
+          description: Banner created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatedResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /banners/{id}:
+    get:
+      tags:
+        - banners
+      operationId: getBannerById
+      summary: Get banner by ID
+      description: Retrieve a specific banner by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the banner to retrieve
+      responses:
+        "200":
+          description: Successful retrieval of banner
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/banners"
+              example:
+                banner_name: "Welcome Banner"
+                image_url: "https://example.com/banner.jpg"
+                visible: true
+        "404":
+          description: Banner not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      tags:
+        - banners
+      operationId: updateBanner
+      summary: Update an existing banner
+      description: Update the details of an existing banner
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the banner to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/banners"
+            example:
+              banner_name: "Updated Banner"
+              image_url: "https://example.com/updated-banner.jpg"
+              visible: true
+      responses:
+        "200":
+          description: Banner updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "404":
+          description: Banner not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      tags:
+        - banners
+      operationId: deleteBanner
+      summary: Delete a banner
+      description: Delete a specific banner by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the banner to delete
+      responses:
+        "204":
+          description: Banner deleted successfully
+        "404":
+          description: Banner not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /banners/bulk-delete:
+    delete:
+      tags:
+        - banners
+      operationId: bulkDeleteBanners
+      summary: Bulk delete banners
+      description: Delete multiple banners at once
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+              example: ["banner1", "banner2"]
+      responses:
+        "204":
+          description: Banners deleted successfully
+        "400":
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
+    banners:
+      type: object
+      properties:
+        banner_name:
+          type: string
+          example: "Welcom Banner"
+        image_url:
+          type: string
+          format: uri
+          example: "https://example.com/banner.jpg"
+        visible:
+          type: boolean
+          example: "Indicates whether the banner is visible"
+
     LoginRequest:
       type: object
       properties:
@@ -180,8 +384,7 @@ components:
           type: string
           example: The 'username' field must be a valid username address
   securitySchemes:
-    bearerAuth: 
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-    
