@@ -10,6 +10,9 @@ import '../global/globalJWTPayload';
 const isAdministrator = (req: Request): boolean => {
     return req.user?.sysrole_name === 'Administrator';
 };
+const isHR = (req: Request): boolean => {
+    return req.user?.sysrole_name === 'Trưởng ban HR';
+};
 
 const checkUserRole = (req: Request, res: Response, requiredRoles: string[], next: NextFunction) => {
     const userRole = req.user?.sysrole_name;
@@ -55,6 +58,9 @@ const authGuard = {
         return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
             try {
                 if (isAdministrator(req)) {
+                    return next();
+                }
+                else if (isHR(req)) {
                     return next();
                 }
                 const userId1 = req.user?.personnel_id;
