@@ -185,6 +185,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CreatedResponse"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
           content:
@@ -253,6 +259,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Banner not found
           content:
@@ -281,6 +293,12 @@ paths:
       responses:
         "204":
           description: Banner deleted successfully
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Banner not found
           content:
@@ -315,6 +333,12 @@ paths:
           description: Banners deleted successfully
         "400":
           description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized access
           content:
             application/json:
               schema:
@@ -372,6 +396,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CreatedResponse"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
           content:
@@ -445,6 +475,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: FAQ not found
           content:
@@ -474,6 +510,12 @@ paths:
       responses:
         "204":
           description: FAQ deleted successfully
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: FAQ not found
           content:
@@ -511,6 +553,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Some FAQs not found
           content:
@@ -541,6 +589,12 @@ paths:
                   terms_text:
                     type: string
                     example: "These are the terms and conditions..."
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Terms not found
           content:
