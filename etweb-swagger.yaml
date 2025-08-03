@@ -233,6 +233,14 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
               example:
                 message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "500":
           description: Internal Server Error
           content:
@@ -311,6 +319,14 @@ paths:
       responses:
         "204":
           description: Achievement deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "404":
           description: Achievement not found
           content:
@@ -373,6 +389,14 @@ paths:
                   achievement_name: "Top 5 cuộc thi AI"
                   highlight_number: 400
                   visible: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "404":
           description: Achievement not found
           content:
@@ -426,6 +450,14 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
               example:
                 message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "500":
           description: Internal Server Error
           content:
@@ -542,6 +574,14 @@ paths:
                   expense_money: "500000.00"
                   visible: true
                   content: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "500":
           description: Internal Server Error
           content:
@@ -607,6 +647,14 @@ paths:
       responses:
         "204":
           description: Activity deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "404":
           description: Activity not found
           content:
@@ -704,6 +752,14 @@ paths:
                   expense_money: "500000.00"
                   visible: true
                   content: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "404":
           description: Activity not found
           content:
@@ -757,6 +813,14 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
               example:
                 message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "500":
           description: Internal Server Error
           content:
@@ -863,6 +927,14 @@ paths:
                   thumbnail_image_url: "https://example.com/image.jpg"
                   source: "VNExpress"
                   visible: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "500":
           description: Internal Server Error
           content:
@@ -928,6 +1000,14 @@ paths:
       responses:
         "204":
           description: ET news article deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "404":
           description: ET news article not found
           content:
@@ -1003,6 +1083,14 @@ paths:
                   thumbnail_image_url: "https://example.com/updated_image.jpg"
                   source: "VNExpress"
                   visible: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "404":
           description: ET news article not found
           content:
@@ -1056,6 +1144,14 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
               example:
                 message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "500":
           description: Internal Server Error
           content:
@@ -1145,6 +1241,14 @@ paths:
                   blog_author: "Nguyễn A"
                   meta_description: "Blog about technology"
                   visible: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "500":
           description: Internal Server Error
           content:
@@ -1210,6 +1314,14 @@ paths:
       responses:
         "204":
           description: ET blog deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "404":
           description: ET blog not found
           content:
@@ -1285,6 +1397,14 @@ paths:
                   blog_author: "Nguyễn A"
                   meta_description: "Updated blog about technology"
                   visible: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "404":
           description: ET blog not found
           content:
@@ -1338,6 +1458,14 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
               example:
                 message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "500":
           description: Internal Server Error
           content:
@@ -1415,6 +1543,14 @@ paths:
                   name: "New Partner"
                   logo_url: "https://example.com/logo.jpg"
                   description: "Description of the new partner."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "500":
           description: Internal Server Error
           content:
@@ -1480,6 +1616,14 @@ paths:
       responses:
         "204":
           description: Partner deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "404":
           description: Partner not found
           content:
@@ -1532,6 +1676,14 @@ paths:
                   name: "Updated Partner Name"
                   logo_url: "https://example.com/updated_logo.jpg"
                   description: "Updated description of the partner."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "404":
           description: Partner not found
           content:
@@ -1577,6 +1729,14 @@ paths:
       responses:
         "204":
           description: Partners deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "500":
           description: Internal Server Error
           content:
@@ -1631,6 +1791,14 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
               example:
                 message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
         "500":
           description: Internal Server Error
           content:
