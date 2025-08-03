@@ -136,6 +136,1682 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
                 example:
                   message: "Invalid token type. Refresh token required."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  
+  /achievements:
+    get:
+      tags:
+        - achievements
+      operationId: getAchievements
+      summary: Get all achievements
+      description: Retrieve a list of all achievements
+      responses:
+        "200":
+          description: List of achievements retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    achievement_id:
+                      type: string
+                      example: "ce8fdc28-53b8-46bd-b7c4-319c7a622007"
+                    achievement_name:
+                      type: string
+                      example: "Top 5 cuộc thi AI"
+                    highlight_number:
+                      type: number
+                      example: 500
+                    visible:
+                      type: boolean
+                      example: true
+        "404":
+          description: No achievements found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "No achievements found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    post:
+      tags:
+        - achievements
+      operationId: createAchievement
+      summary: Create a new achievement
+      description: Add a new achievement to the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                achievement_name:
+                  type: string
+                  example: "Top 5 cuộc thi AI"
+                highlight_number:
+                  type: number
+                  example: 500
+                visible:
+                  type: boolean
+                  example: true
+      responses:
+        "201":
+          description: Achievement created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatedResponse"
+              example:
+                message: "Achievement created successfully"
+                data:
+                  achievement_id: "ce8fdc28-53b8-46bd-b7c4-319c7a622007"
+                  achievement_name: "Top 5 cuộc thi AI"
+                  highlight_number: 500
+                  visible: true
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /achievements/{id}:
+    get:
+      tags:
+        - achievements
+      operationId: getAchievementById
+      summary: Get achievement by ID
+      description: Retrieve a specific achievement by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "ce8fdc28-53b8-46bd-b7c4-319c7a622007"
+      responses:
+        "200":
+          description: Achievement retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  achievement_id:
+                    type: string
+                    example: "ce8fdc28-53b8-46bd-b7c4-319c7a622007"
+                  achievement_name:
+                    type: string
+                    example: "Top 5 cuộc thi AI"
+                  highlight_number:
+                    type: number
+                    example: 500
+                  visible:
+                    type: boolean
+                    example: true
+        "404":
+          description: Achievement not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Achievement not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    delete:
+      tags:
+        - achievements
+      operationId: deleteAchievement
+      summary: Delete an achievement
+      description: Remove an achievement from the system by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "ce8fdc28-53b8-46bd-b7c4-319c7a622007"
+      responses:
+        "204":
+          description: Achievement deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "404":
+          description: Achievement not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Achievement not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    put:
+      tags:
+        - achievements
+      operationId: updateAchievement
+      summary: Update an achievement
+      description: Modify an existing achievement by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "ce8fdc28-53b8-46bd-b7c4-319c7a622007"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                achievement_name:
+                  type: string
+                  example: "Top 5 cuộc thi AI"
+                highlight_number:
+                  type: number
+                  example: 400
+                visible:
+                  type: boolean
+                  example: true
+      responses:
+        "200":
+          description: Achievement updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+              example:
+                message: "Achievement updated successfully"
+                data:
+                  achievement_id: "ce8fdc28-53b8-46bd-b7c4-319c7a622007"
+                  achievement_name: "Top 5 cuộc thi AI"
+                  highlight_number: 400
+                  visible: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "404":
+          description: Achievement not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Achievement not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /achievements/bulk-delete:
+    delete:
+      tags:
+        - achievements
+      operationId: bulkDeleteAchievements
+      summary: Bulk delete achievements
+      description: Remove multiple achievements from the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  example:
+                    [
+                      "ce8fdc28-53b8-46bd-b7c4-319c7a622007",
+                      "d1f2e3a4-b5c6-7890-abcd-ef1234567890",
+                    ]
+      responses:
+        "204":
+          description: Achievements deleted successfully
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /activities:
+    get:
+      tags:
+        - activities
+      operationId: getActivities
+      summary: Get all activities
+      description: Retrieve a list of all activities
+      responses:
+        "200":
+          description: List of activities retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  activities:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Activity"
+        "404":
+          description: No activities found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "No activities found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    post:
+      tags:
+        - activities
+      operationId: createActivity
+      summary: Create a new activity
+      description: Add a new activity to the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Tech Talk 1"
+                activity_category:
+                  type: string
+                  example: "Talkshow/Workshop"
+                meta_description:
+                  type: string
+                  example: "Chia sẻ AI"
+                thumbnail_image_url:
+                  type: string
+                  format: uri
+                  example: "https://img1.jpg"
+                start_date:
+                  type: string
+                  format: date-time
+                  example: "2023-12-31T17:00:00.000Z"
+                end_date:
+                  type: string
+                  format: date-time
+                  example: "2024-01-04T17:00:00.000Z"
+                register_number:
+                  type: integer
+                  example: 100
+                participated_number:
+                  type: integer
+                  example: 80
+                expense_money:
+                  type: string
+                  example: "500000.00"
+                visible:
+                  type: boolean
+                  example: true
+                content:
+                  type: string
+                  example: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      responses:
+        "201":
+          description: Activity created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatedResponse"
+              example:
+                message: "Activity created successfully"
+                data:
+                  activity_id: "c0bc999d-47e6-474e-8a40-aa8b1879a486"
+                  title: "Tech Talk 1"
+                  activity_category: "Talkshow/Workshop"
+                  meta_description: "Chia sẻ AI"
+                  thumbnail_image_url: "https://img1.jpg"
+                  start_date: "2023-12-31T17:00:00.000Z"
+                  end_date: "2024-01-04T17:00:00.000Z"
+                  register_number: 100
+                  participated_number: 80
+                  expense_money: "500000.00"
+                  visible: true
+                  content: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /activities/{id}:
+    get:
+      tags:
+        - activities
+      operationId: getActivityById
+      summary: Get activity by ID
+      description: Retrieve a specific activity by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "c0bc999d-47e6-474e-8a40-aa8b1879a486"
+      responses:
+        "200":
+          description: Activity retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+        "404":
+          description: Activity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Activity not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    delete:
+      tags:
+        - activities
+      operationId: deleteActivity
+      summary: Delete an activity
+      description: Remove an activity from the system by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "c0bc999d-47e6-474e-8a40-aa8b1879a486"
+      responses:
+        "204":
+          description: Activity deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "404":
+          description: Activity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Activity not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    put:
+      tags:
+        - activities
+      operationId: updateActivity
+      summary: Update an activity
+      description: Modify an existing activity by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "c0bc999d-47e6-474e-8a40-aa8b1879a486"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Tech Talk 1"
+                activity_category:
+                  type: string
+                  example: "Talkshow/Workshop"
+                meta_description:
+                  type: string
+                  example: "Chia sẻ AI"
+                thumbnail_image_url:
+                  type: string
+                  format: uri
+                  example: "https://img1.jpg"
+                start_date:
+                  type: string
+                  format: date-time
+                  example: "2023-12-31T17:00:00.000Z"
+                end_date:
+                  type: string
+                  format: date-time
+                  example: "2024-01-04T17:00:00.000Z"
+                register_number:
+                  type: integer
+                  example: 100
+                participated_number:
+                  type: integer
+                  example: 80
+                expense_money:
+                  type: string
+                  example: "500000.00"
+                visible:
+                  type: boolean
+                  example: true
+                content:
+                  type: string
+                  example: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      responses:
+        "200":
+          description: Activity updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+              example:
+                message: "Activity updated successfully"
+                data:
+                  activity_id: "c0bc999d-47e6-474e-8a40-aa8b1879a486"
+                  title: "Tech Talk 1"
+                  activity_category: "Talkshow/Workshop"
+                  meta_description: "Chia sẻ AI"
+                  thumbnail_image_url: "https://img1.jpg"
+                  start_date: "2023-12-31T17:00:00.000Z"
+                  end_date: "2024-01-04T17:00:00.000Z"
+                  register_number: 100
+                  participated_number: 80
+                  expense_money: "500000.00"
+                  visible: true
+                  content: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "404":
+          description: Activity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Activity not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /activities/bulk-delete:
+    delete:
+      tags:
+        - activities
+      operationId: bulkDeleteActivities
+      summary: Bulk delete activities
+      description: Remove multiple activities from the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  example:
+                    [
+                      "c0bc999d-47e6-474e-8a40-aa8b1879a486",
+                      "d1f2e3a4-b5c6-7890-abcd-ef1234567890",
+                    ]
+      responses:
+        "204":
+          description: Activities deleted successfully
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  
+  /et-news:
+    get:
+      tags:
+        - et-news
+      operationId: getEtNews
+      summary: Get all ET news
+      description: Retrieve a list of all ET news articles
+      responses:
+        "200":
+          description: List of ET news retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      example: "123e4567-e89b-12d3-a456-426614174000"
+                    title:
+                      type: string
+                      example: "ET News Title"
+                    content:
+                      type: string
+                      example: "Content of the ET news article."
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2025-08-01T10:20:30Z"
+        "404":
+          description: No ET news found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "No ET news found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    post:
+      tags:
+        - et-news
+      operationId: createEtNews
+      summary: Create a new ET news article
+      description: Add a new ET news article to the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "ET News Title"
+                content:
+                  type: string
+                  example: "Content of the ET news article."
+                category:
+                  type: string
+                  example: "Technology"
+                thumbnail_image_url:
+                  type: string
+                  format: uri
+                  example: "https://example.com/image.jpg"
+                source:
+                  type: string
+                  example: "VNExpress"
+                visible:
+                  type: boolean
+                  example: true
+      responses:
+        "201":
+          description: ET news article created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatedResponse"
+              example:
+                message: "ET news article created successfully"
+                data:
+                  etnews_id: "42540ac1-ef8e-4074-a38b-4d462ff7d84d"
+                  title: "ET News Title"
+                  content: "Content of the ET news article."
+                  category: "Technology"
+                  thumbnail_image_url: "https://example.com/image.jpg"
+                  source: "VNExpress"
+                  visible: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /et-news/{id}:
+    get:
+      tags:
+        - et-news
+      operationId: getEtNewsById
+      summary: Get ET news by ID
+      description: Retrieve a specific ET news article by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "42540ac1-ef8e-4074-a38b-4d462ff7d84d"
+      responses:
+        "200":
+          description: ET news article retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ETNews"
+        "404":
+          description: ET news article not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "ET news article not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    delete:
+      tags:
+        - et-news
+      operationId: deleteEtNews
+      summary: Delete an ET news article
+      description: Remove an ET news article from the system by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "42540ac1-ef8e-4074-a38b-4d462ff7d84d"
+      responses:
+        "204":
+          description: ET news article deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "404":
+          description: ET news article not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "ET news article not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    put:
+      tags:
+        - et-news
+      operationId: updateEtNews
+      summary: Update an ET news article
+      description: Modify an existing ET news article by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "42540ac1-ef8e-4074-a38b-4d462ff7d84d"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Updated ET News Title"
+                content:
+                  type: string
+                  example: "Updated content of the ET news article."
+                category:
+                  type: string
+                  example: "Technology"
+                thumbnail_image_url:
+                  type: string
+                  format: uri
+                  example: "https://example.com/updated_image.jpg"
+                source:
+                  type: string
+                  example: "VNExpress"
+                visible:
+                  type: boolean
+                  example: true
+      responses:
+        "200":
+          description: ET news article updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+              example:
+                message: "ET news article updated successfully"
+                data:
+                  etnews_id: "42540ac1-ef8e-4074-a38b-4d462ff7d84d"
+                  title: "Updated ET News Title"
+                  content: "Updated content of the ET news article."
+                  category: "Technology"
+                  thumbnail_image_url: "https://example.com/updated_image.jpg"
+                  source: "VNExpress"
+                  visible: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "404":
+          description: ET news article not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "ET news article not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /et-news/bulk-delete:
+    delete:
+      tags:
+        - et-news
+      operationId: bulkDeleteEtNews
+      summary: Bulk delete ET news articles
+      description: Remove multiple ET news articles from the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  example:
+                    [
+                      "42540ac1-ef8e-4074-a38b-4d462ff7d84d",
+                      "123e4567-e89b-12d3-a456-426614174000",
+                    ]
+      responses:
+        "204":
+          description: ET news articles deleted successfully
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  
+  /et-blog:
+    get:
+      tags:
+        - et-blog
+      operationId: getEtBlogs
+      summary: Get all ET blogs
+      description: Retrieve a list of all ET blogs
+      responses:
+        "200":
+          description: List of ET blogs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ETBlog"
+        "404":
+          description: No ET blogs found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "No ET blogs found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    post:
+      tags:
+        - et-blog
+      operationId: createEtBlog
+      summary: Create a new ET blog
+      description: Add a new ET blog to the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "ET Blog Title"
+                content:
+                  type: string
+                  example: "Content of the ET blog article."
+                thumbnail_image_url:
+                  type: string
+                  format: uri
+                  example: "https://example.com/image.jpg"
+                blog_author:
+                  type: string
+                  example: "Nguyễn A"
+                meta_description:
+                  type: string
+                  example: "Blog about technology"
+                visible:
+                  type: boolean
+                  example: true
+      responses:
+        "201":
+          description: ET blog created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatedResponse"
+              example:
+                message: "ET blog created successfully"
+                data:
+                  blog_id: "aff42ad3-75b5-4ac2-a9e4-2617b36732df"
+                  title: "ET Blog Title"
+                  content: "Content of the ET blog article."
+                  thumbnail_image_url: "https://example.com/image.jpg"
+                  blog_author: "Nguyễn A"
+                  meta_description: "Blog about technology"
+                  visible: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /et-blog/{id}:
+    get:
+      tags:
+        - et-blog
+      operationId: getEtBlogById
+      summary: Get ET blog by ID
+      description: Retrieve a specific ET blog by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "aff42ad3-75b5-4ac2-a9e4-2617b36732df"
+      responses:
+        "200":
+          description: ET blog retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ETBlog"
+        "404":
+          description: ET blog not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "ET blog not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    delete:
+      tags:
+        - et-blog
+      operationId: deleteEtBlog
+      summary: Delete an ET blog
+      description: Remove an ET blog from the system by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "aff42ad3-75b5-4ac2-a9e4-2617b36732df"
+      responses:
+        "204":
+          description: ET blog deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "404":
+          description: ET blog not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "ET blog not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    put:
+      tags:
+        - et-blog
+      operationId: updateEtBlog
+      summary: Update an ET blog
+      description: Modify an existing ET blog by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "aff42ad3-75b5-4ac2-a9e4-2617b36732df"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Updated ET Blog Title"
+                content:
+                  type: string
+                  example: "Updated content of the ET blog article."
+                thumbnail_image_url:
+                  type: string
+                  format: uri
+                  example: "https://example.com/updated_image.jpg"
+                blog_author:
+                  type: string
+                  example: "Nguyễn A"
+                meta_description:
+                  type: string
+                  example: "Updated blog about technology"
+                visible:
+                  type: boolean
+                  example: true
+      responses:
+        "200":
+          description: ET blog updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+              example:
+                message: "ET blog updated successfully"
+                data:
+                  blog_id: "aff42ad3-75b5-4ac2-a9e4-2617b36732df"
+                  title: "Updated ET Blog Title"
+                  content: "Updated content of the ET blog article."
+                  thumbnail_image_url: "https://example.com/updated_image.jpg"
+                  blog_author: "Nguyễn A"
+                  meta_description: "Updated blog about technology"
+                  visible: true
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "404":
+          description: ET blog not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "ET blog not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /et-blog/bulk-delete:
+    delete:
+      tags:
+        - et-blog
+      operationId: bulkDeleteEtBlogs
+      summary: Bulk delete ET blogs
+      description: Remove multiple ET blogs from the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  example:
+                    [
+                      "aff42ad3-75b5-4ac2-a9e4-2617b36732df",
+                      "123e4567-e89b-12d3-a456-426614174000",
+                    ]
+      responses:
+        "204":
+          description: ET blogs deleted successfully
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  
+  /partners:
+    get:
+      tags:
+        - partners
+      operationId: getPartners
+      summary: Get all partners
+      description: Retrieve a list of all partners
+      responses:
+        "200":
+          description: List of partners retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartnerGroupedResponse"
+        "404":
+          description: No partners found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "No partners found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    post:
+      tags:
+        - partners
+      operationId: createPartner
+      summary: Create a new partner
+      description: Add a new partner to the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "New Partner"
+                logo_url:
+                  type: string
+                  format: uri
+                  example: "https://example.com/logo.jpg"
+                description:
+                  type: string
+                  example: "Description of the new partner."
+      responses:
+        "201":
+          description: Partner created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatedResponse"
+              example:
+                message: "Partner created successfully"
+                data:
+                  id: "123e4567-e89b-12d3-a456-426614174000"
+                  name: "New Partner"
+                  logo_url: "https://example.com/logo.jpg"
+                  description: "Description of the new partner."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /partners/{id}:
+    get:
+      tags:
+        - partners
+      operationId: getPartnerById
+      summary: Get partner by ID
+      description: Retrieve a specific partner by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        "200":
+          description: Partner retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Partner"
+        "404":
+          description: Partner not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Partner not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    delete:
+      tags:
+        - partners
+      operationId: deletePartner
+      summary: Delete a partner
+      description: Remove a partner from the system by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        "204":
+          description: Partner deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "404":
+          description: Partner not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Partner not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+    put:
+      tags:
+        - partners
+      operationId: updatePartner
+      summary: Update a partner
+      description: Modify an existing partner by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartnerGroupedResponse"
+      responses:
+        "200":
+          description: Partner updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+              example:
+                message: "Partner updated successfully"
+                data:
+                  id: "123e4567-e89b-12d3-a456-426614174000"
+                  name: "Updated Partner Name"
+                  logo_url: "https://example.com/updated_logo.jpg"
+                  description: "Updated description of the partner."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "404":
+          description: Partner not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Partner not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /partners/bulk-delete:
+    delete:
+      tags:
+        - partners
+      operationId: bulkDeletePartners
+      summary: Bulk delete partners
+      description: Remove multiple partners from the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  example:
+                    [
+                      "123e4567-e89b-12d3-a456-426614174000",
+                      "456e7890-e12b-34d5-a678-901234567890",
+                    ]
+      responses:
+        "204":
+          description: Partners deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+  /partners/bulk-update:
+    put:
+      tags:
+        - partners
+      operationId: bulkUpdatePartners
+      summary: Bulk update partners
+      description: Update multiple partners in the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                partners:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: "123e4567-e89b-12d3-a456-426614174000"
+                      visible:
+                        type: boolean
+                        example: true
+      responses:
+        "200":
+          description: Partners updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+              example:
+                message: "Partners updated successfully"
+                updatedCount: 2
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Invalid input data."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "You are not authenticated!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Internal server error"
+
   /banners:
     get:
       tags:
@@ -199,7 +1875,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-
   /banners/{id}:
     get:
       tags:
@@ -317,7 +1992,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-
   /banners/bulk-delete:
     delete:
       tags:
@@ -357,6 +2031,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  
   /faqs:
     get:
       tags:
@@ -587,6 +2262,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  
   /terms:
     get:
       tags:
@@ -625,6 +2301,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  
   /search:
     get:
       tags:
@@ -664,9 +2341,269 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-
 components:
   schemas:
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          format: username
+          example: "lvc.event@example.com"
+        password:
+          type: string
+          format: password
+          example: "securepassword123"
+    SuccessResponse: #status 200
+      type: object
+      properties:
+        message:
+          type: string
+          example: Success
+        data:
+          type: object
+          nullable: true
+          example:
+            id: "123"
+            title: "Morning Run"
+            createdAt: "2025-08-01T10:20:30Z"
+    CreatedResponse: #status 201
+      type: object
+      properties:
+        message:
+          type: string
+          example: Resource created successfully
+        data:
+          type: object
+          example:
+            id: "123"
+            title: "Morning Run"
+    ErrorResponse: #status 400, 401, 404, 500
+      type: object
+      properties:
+        message:
+          type: string
+          example: The 'username' field must be a valid username address
+    
+    Activity:
+      type: object
+      properties:
+        activity_id:
+          type: string
+          format: uuid
+          example: c0bc999d-47e6-474e-8a40-aa8b1879a486
+        title:
+          type: string
+          example: Tech Talk 1
+        activity_category:
+          type: string
+          example: Talkshow/Workshop
+        meta_description:
+          type: string
+          example: Chia sẻ AI
+        thumbnail_image_url:
+          type: string
+          format: uri
+          example: https://img1.jpg
+        start_date:
+          type: string
+          format: date-time
+          example: 2023-12-31T17:00:00.000Z
+        end_date:
+          type: string
+          format: date-time
+          example: 2024-01-04T17:00:00.000Z
+        register_number:
+          type: integer
+          example: 100
+        participated_number:
+          type: integer
+          example: 80
+        expense_money:
+          type: string
+          example: "500000.00"
+        visible:
+          type: boolean
+          example: true
+        content:
+          type: string
+          example: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        view_count:
+          type: integer
+          example: 0
+        last_modified_on:
+          type: string
+          format: date-time
+          example: 2025-08-01T06:35:34.895Z
+        created_on:
+          type: string
+          format: date-time
+          example: 2025-08-01T06:35:34.895Z
+    
+    ETNews:
+      type: object
+      properties:
+        etnews_id:
+          type: string
+          format: uuid
+          example: 42540ac1-ef8e-4074-a38b-4d462ff7d84d
+        title:
+          type: string
+          example: Tin công nghệ 1
+        etnews_category:
+          type: string
+          example: Công nghệ Việt Nam
+        meta_description:
+          type: string
+          example: Tin mới về AI
+        thumbnail_image_url:
+          type: string
+          format: uri
+          example: https://img1.jpg
+        source:
+          type: string
+          example: VNExpress
+        visible:
+          type: boolean
+          example: true
+        content:
+          type: string
+          example: FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+        view_count:
+          type: integer
+          example: 0
+        created_on:
+          type: string
+          format: date-time
+          example: 2025-08-01T06:35:36.353Z
+        last_modified_on:
+          type: string
+          format: date-time
+          example: 2025-08-01T06:35:36.353Z
+    
+    ETBlog:
+      type: object
+      properties:
+        blog_id:
+          type: string
+          format: uuid
+          example: aff42ad3-75b5-4ac2-a9e4-2617b36732df
+        title:
+          type: string
+          example: Blog 1
+        thumbnail_image_url:
+          type: string
+          format: uri
+          example: https://img1.jpg
+        blog_author:
+          type: string
+          example: Nguyễn A
+        meta_description:
+          type: string
+          example: Viết về công nghệ
+        visible:
+          type: boolean
+          example: true
+        content:
+          type: string
+          example: Blog ABlog ABlog ABlog...
+        view_count:
+          type: integer
+          example: 0
+        created_on:
+          type: string
+          format: date-time
+          example: 2025-08-01T06:35:39.008Z
+        last_modified_on:
+          type: string
+          format: date-time
+          example: 2025-08-01T06:35:39.008Z
+    
+    Partner:
+      type: object
+      properties:
+        partner_id:
+          type: string
+          format: uuid
+          example: "6a98fbc6-d544-4431-aff1-e9309350d962"
+        partner_name:
+          type: string
+          example: "FPT Software"
+        partner_category_name:
+          type: string
+          example: "Đối tác doanh nghiệp"
+        avatar_url:
+          type: string
+          format: uri
+          example: "https://example.com/img/fpt.png"
+        short_description:
+          type: string
+          example: "Công ty phần mềm hàng đầu"
+        email:
+          type: string
+          format: email
+          example: "fpt@fsoft.com.vn"
+        phone_number:
+          type: string
+          example: "0901123456"
+        visible:
+          type: boolean
+          example: true
+        note:
+          type: string
+          example: "Đối tác chiến lược lâu dài"
+        created_on:
+          type: string
+          format: date-time
+          example: "2025-08-02T23:17:08.127Z"
+        last_modified_on:
+          type: string
+          format: date-time
+          example: "2025-08-02T23:17:08.127Z"
+    PartnerGroupedResponse:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          $ref: "#/components/schemas/Partner"
+      example:
+        Đối tác doanh nghiệp:
+          - partner_id: "6a98fbc6-d544-4431-aff1-e9309350d962"
+            partner_name: "FPT Software"
+            partner_category_name: "Đối tác doanh nghiệp"
+            avatar_url: "https://example.com/img/fpt.png"
+            short_description: "Công ty phần mềm hàng đầu"
+            email: "fpt@fsoft.com.vn"
+            phone_number: "0901123456"
+            visible: true
+            note: "Đối tác chiến lược lâu dài"
+            created_on: "2025-08-02T23:17:08.127Z"
+            last_modified_on: "2025-08-02T23:17:08.127Z"
+        Đối tác chuyên gia:
+          - partner_id: "22e4ba6d-98c1-4c59-9ed4-f90c01234abc"
+            partner_name: "Đại học Bách Khoa Hà Nội"
+            partner_category_name: "Đối tác chuyên gia"
+            avatar_url: "https://example.com/img/hust.png"
+            short_description: "Trường đại học kỹ thuật hàng đầu"
+            email: "contact@hust.edu.vn"
+            phone_number: "0911888999"
+            visible: true
+            note: "Hợp tác trong nghiên cứu & phát triển"
+            created_on: "2025-08-03T01:02:03.123Z"
+            last_modified_on: "2025-08-03T01:02:03.123Z"
+        Đối tác truyền thông:
+          - partner_id: "3cfa235a-67e3-4c17-a939-aaa90123abcd"
+            partner_name: "YBOX"
+            partner_category_name: "Đối tác truyền thông"
+            avatar_url: "https://example.com/img/ybox.png"
+            short_description: "Nền tảng truyền thông cho giới trẻ"
+            email: "info@ybox.vn"
+            phone_number: "0909333444"
+            visible: true
+            note: "Đăng bài truyền thông cho các chiến dịch"
+            created_on: "2025-08-03T01:05:06.789Z"
+            last_modified_on: "2025-08-03T01:05:06.789Z"
+    
     banners:
       type: object
       properties:
@@ -686,6 +2623,7 @@ components:
         - banner_name
         - image_url
         - visible
+    
     faqs:
       type: object
       properties:
@@ -767,48 +2705,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SearchResult"
-
-    LoginRequest:
-      type: object
-      properties:
-        username:
-          type: string
-          format: username
-          example: "lvc.event@example.com"
-        password:
-          type: string
-          format: password
-          example: "securepassword123"
-    SuccessResponse: #status 200
-      type: object
-      properties:
-        message:
-          type: string
-          example: Success
-        data:
-          type: object
-          nullable: true
-          example:
-            id: "123"
-            title: "Morning Run"
-            createdAt: "2025-08-01T10:20:30Z"
-    CreatedResponse: #status 201
-      type: object
-      properties:
-        message:
-          type: string
-          example: Resource created successfully
-        data:
-          type: object
-          example:
-            id: "123"
-            title: "Morning Run"
-    ErrorResponse: #status 400, 401, 404, 500
-      type: object
-      properties:
-        message:
-          type: string
-          example: The 'username' field must be a valid username address
   securitySchemes:
     bearerAuth:
       type: http

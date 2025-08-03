@@ -5,7 +5,7 @@ import validate from "../middlewares/validate.mdw";
 import { updateFAQSchema } from "../entities/faq.entity";
 import faqController from "../controllers/faq.controller";
 import { createFAQSchema } from "../entities/faq.entity";
-import { manageFAQRole } from "../global/roles";
+import { getFAQRole, manageFAQRole } from "../global/roles";
 
 const router = express.Router();
 
