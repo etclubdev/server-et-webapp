@@ -99,6 +99,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  
   /auth/refresh-token:
     post:
       tags:
@@ -110,16 +111,23 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: Token refreshed successfully
+          description: Successful login
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
-              example:
-                status: 200
-                message: "Token refreshed successfully"
-                data:
-                  accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          accessToken:
+                            type: string
+                            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                          refreshToken:
+                            type: string
+                            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
         '401':
           description: Refresh token is missing
           content:
@@ -136,6 +144,857 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
                 example:
                   message: "Invalid token type. Refresh token required."
+
+  /accounts:
+    get:
+      tags:
+        - accounts
+      operationId: getAllAccounts
+      summary: Get all accounts
+      description: Retrieve a list of all user accounts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved all accounts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Accounts retrieved successfully."
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Account'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Unauthorized access. Please provide a valid token."
+        '404':
+          description: No accounts found
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "No accounts found."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "An unexpected error occurred."
+
+    post:
+      tags:
+        - accounts
+      operationId: createAccount
+      summary: Create a new account
+      description: Create a new user account with auto-generated password
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccountRequest'
+      responses:
+        '201':
+          description: Account created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Account has been created successfully."
+                  data:
+                    $ref: '#/components/schemas/Account'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Invalid input. Please check the request body."
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Unauthorized access. Please provide a valid token."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "An unexpected error occurred."
+
+  /accounts/{id}:
+    get:
+      tags:
+        - accounts
+      operationId: getAccountById
+      summary: Get account by ID
+      description: Retrieve details of a specific account
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAccountResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Unauthorized access. Please provide a valid token."
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Account not found."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "An unexpected error occurred."
+
+    put:
+      tags:
+        - accounts
+      operationId: updateAccount
+      summary: Update account system role
+      description: Update the system role of an account
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAccountRequest'
+      responses:
+        '200':
+          description: Account updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Account updated successfully."
+                      data:
+                        $ref: '#/components/schemas/Account'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Unauthorized access. Please provide a valid token."
+        '404':
+          description: Account not found or no changes applied
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Account not found or no changes applied."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "An unexpected error occurred."
+
+    delete:
+      tags:
+        - accounts
+      operationId: deleteAccount
+      summary: Delete an account
+      description: Delete an account by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Account deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Unauthorized access. Please provide a valid token."
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Account not found."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "An unexpected error occurred."
+
+  /accounts/bulk-delete:
+    delete:
+      tags:
+        - accounts
+      operationId: deleteAccounts
+      summary: Bulk delete accounts
+      description: Delete multiple accounts by their IDs
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkDeleteAccountsRequest'
+      responses:
+        '204':
+          description: Accounts deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Unauthorized access. Please provide a valid token."
+        '404':
+          description: Accounts not found
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Some or all accounts not found."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "An unexpected error occurred."
+
+  /accounts/{id}/password:
+    put:
+      tags:
+        - accounts
+      operationId: updatePassword
+      summary: Update account password
+      description: Update password for a specific account
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePasswordRequest'
+      responses:
+        '200':
+          description: Password updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Password updated successfully."
+        '401':
+          description: Unauthorized (wrong old password)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Incorrect old password."
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Account not found."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "An unexpected error occurred."
+
+  /personnels:
+    get:
+      tags:
+        - personnels
+      summary: Get personnel list
+      description: Retrieve all personnel or filter by `status` and/or `departmentName`.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+          description: Personnel status
+        - in: query
+          name: departmentName
+          schema:
+            type: string
+          description: Department name
+      responses:
+        200:
+          description: Successfully retrieved personnel list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully retrieved personnels
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Personnel"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized access. Please provide a valid token.
+        404:
+          description: No personnel found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No personnel found
+                  data:
+                    type: array
+                    items: {}
+        500:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Internal Server Error
+                    
+    post:
+      tags:
+        - personnels
+      summary: Create personnel with status
+      description: Create a new personnel along with status information.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                personnel:
+                  $ref: "#/components/schemas/PersonnelInput"
+                status:
+                  $ref: "#/components/schemas/StatusInput"
+      responses:
+        201:
+          description: Personnel created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Personnel and status created successfully
+                  data:
+                    $ref: "#/components/schemas/PersonnelWithStatus"
+        401: 
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized access. Please provide a valid token.
+        500:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Internal Server Error
+
+  /personnels/unregistered:
+    get:
+      tags:
+        - personnels
+      summary: Get unregistered personnel list
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully retrieved unregistered personnels
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Personnel"
+        401: 
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized access. Please provide a valid token.
+        404:
+          description: No unregistered personnel found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No unregistered personnel found
+                  data:
+                    type: array
+                    items: {}
+
+  /personnels/bulk-delete:
+    delete:
+      tags:
+        - personnels
+      summary: Delete multiple personnel
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                personnelIds:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        204:
+          description: Successfully deleted (no content)
+        401: 
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized access. Please provide a valid token.
+        404:
+          description: No personnel found to delete
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No personnel found to delete
+
+  /personnels/{id}:
+    get:
+      tags:
+        - personnels
+      summary: Get personnel by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully retrieved personnel
+                  data:
+                    $ref: "#/components/schemas/Personnel"
+        401: 
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized access. Please provide a valid token.
+        404:
+          description: Personnel not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Personnel not found
+                  data:
+                    type: "null"
+
+    put:
+      tags:
+        - personnels
+      summary: Update personnel
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                personnel:
+                  $ref: "#/components/schemas/PersonnelInput"
+                status:
+                  $ref: "#/components/schemas/StatusInput"
+      responses:
+        200:
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Personnel updated successfully
+                  data:
+                    type: object
+                    properties:
+                      personnel:
+                        $ref: "#/components/schemas/Personnel"
+                      status:
+                        $ref: "#/components/schemas/Status"
+        401: 
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized access. Please provide a valid token.
+        404:
+          description: Not found or no changes applied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Personnel and status not found or no changes applied
+                  data:
+                    type: "null"
+
+    delete:
+      tags:
+        - personnels
+      summary: Delete personnel by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Successfully deleted
+        401: 
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized access. Please provide a valid token.
+        404:
+          description: Personnel not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Personnel not found
+
+  /system-role:
+    get:
+      tags:
+        - system-role
+      summary: Get all system roles
+      description: Retrieve the list of all available system roles. Only accessible by admin users.
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully retrieved system roles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Successfully retrieved system roles
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SystemRole"
+        401: 
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Unauthorized access. Please provide a valid token.
+        404:
+          description: No roles found (empty list)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: No roles found
+                  data:
+                    type: array
+                    items: {}
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Internal Server Error
+
 components:
   schemas:
     LoginRequest:
@@ -149,6 +1008,7 @@ components:
           type: string
           format: password
           example: "securepassword123"
+    
     SuccessResponse: #status 200
       type: object
       properties:
@@ -162,6 +1022,7 @@ components:
             id: "123"
             title: "Morning Run"
             createdAt: "2025-08-01T10:20:30Z"
+    
     CreatedResponse: #status 201
       type: object
       properties:
@@ -173,12 +1034,328 @@ components:
           example:
             id: "123"
             title: "Morning Run"
+    
     ErrorResponse: #status 400, 401, 404, 500
       type: object
       properties:
         message:
           type: string
           example: The 'username' field must be a valid username address
+  
+    Account:
+      type: object
+      properties:
+        account_id:
+          type: string
+        sysrole_id:
+          type: string
+        username:
+          type: string
+        personnel_id:
+          type: string
+        created_on:
+          type: string
+          format: date-time
+        last_modified_on:
+          type: string
+          format: date-time
+        personnel_name:
+          type: string
+        phone_number:
+          type: string
+        email:
+          type: string
+        dob:
+          type: string
+          format: date
+        gender:
+          type: string
+        address:
+          type: string
+        student_id:
+          type: string
+        university:
+          type: string
+        faculty:
+          type: string
+        major:
+          type: string
+        class:
+          type: string
+        cv_type:
+          type: string
+        cv_link:
+          type: string
+        cohort_name:
+          type: string
+        sysrole_name:
+          type: string
+
+    GetAccountResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Account retrieved successfully."
+        data:
+          type: object
+          properties:
+            account_id: 
+              type: string
+              example: "ACC001"
+            personnel_id: 
+              type: string
+              example: "PER001"
+            personnel_name: 
+              type: string
+              example: "John Doe"
+            student_id: 
+              type: string
+              example: "STU123456"
+            username: 
+              type: string
+              example: "lvc.event@example.com"
+            sysrole_id: 
+              type: string
+              example: "SYSROLE001"
+
+    CreateAccountRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        personnel_id:
+          type: string
+        sysrole_id:
+          type: string
+      required:
+        - username
+        - personnel_id
+        - sysrole_id
+
+    UpdateAccountRequest:
+      type: object
+      properties:
+        sysrole_id:
+          type: string
+      required:
+        - sysrole_id
+
+    BulkDeleteAccountsRequest:
+      type: object
+      properties:
+        accounts:
+          type: array
+          items:
+            type: string
+      required:
+        - accounts
+
+    UpdatePasswordRequest:
+      type: object
+      properties:
+        oldPassword:
+          type: string
+        newPassword:
+          type: string
+      required:
+        - oldPassword
+        - newPassword
+  
+    Personnel:
+      type: object
+      properties:
+        personnel_id:
+          type: string
+          example: "12345"
+        personnel_name:
+          type: string
+          example: "Nguyễn Văn A"
+        email:
+          type: string
+          example: "nguyenvana@example.com"
+        dob:
+          type: string
+          format: date
+          example: "2000-05-15"
+        gender:
+          type: string
+          enum: ["Nam", "Nữ", "Khác"]
+          example: "Nam"
+        address:
+          type: string
+          example: "123 Đường ABC, Quận 1, TP.HCM"
+        student_id:
+          type: string
+          example: "SV123456"
+        faculty:
+          type: string
+          example: "Công nghệ thông tin"
+        university:
+          type: string
+          example: "Đại học Bách Khoa"
+        major:
+          type: string
+          example: "Khoa học máy tính"
+        class:
+          type: string
+          example: "CTK44"
+        cv_type:
+          type: string
+          enum: ["CV mẫu", "CV tự thiết kế"]
+          example: "CV mẫu"
+        cv_link:
+          type: string
+          format: uri
+          example: "https://drive.google.com/cv123"
+        cohort_name:
+          type: string
+          pattern: "^K([1-9]?[0-9])$"
+          description: "Must match format K0 to K99"
+          example: "K44"
+
+    Status:
+      type: object
+      properties:
+        term_id:
+          type: string
+          pattern: "^TERM[0-9]{3}$"
+          example: "TERM001"
+        department_name:
+          type: string
+          enum:
+            - "Ban Kỹ thuật - Công nghệ"
+            - "Ban Truyền thông"
+            - "Ban Nhân sự - Tổ chức"
+            - "Ban Sự kiện"
+            - "Ban Tài chính - Đối ngoại"
+          example: "Ban Kỹ thuật - Công nghệ"
+        position_name:
+          type: string
+          enum:
+            - "Chủ nhiệm"
+            - "Phó chủ nhiệm"
+            - "Thành viên ban chủ nhiệm"
+            - "Trưởng ban"
+            - "Phó ban"
+            - "Thành viên"
+            - "Cộng tác viên"
+          example: "Thành viên"
+        personnel_status:
+          type: string
+          enum: ["Đang hoạt động", "Cựu thành viên", "Ứng viên"]
+          example: "Đang hoạt động"
+
+    PersonnelInput:
+      type: object
+      required:
+        - personnel_name
+        - email
+        - dob
+        - gender
+        - student_id
+        - faculty
+        - university
+        - major
+        - class
+      properties:
+        personnel_name:
+          type: string
+          example: "Nguyễn Văn A"
+        email:
+          type: string
+          example: "nguyenvana@example.com"
+        dob:
+          type: string
+          format: date
+          example: "2000-05-15"
+        gender:
+          type: string
+          enum: ["Nam", "Nữ", "Khác"]
+        address:
+          type: string
+          example: "123 Đường ABC, Quận 1, TP.HCM"
+        student_id:
+          type: string
+          example: "SV123456"
+        faculty:
+          type: string
+          example: "Công nghệ thông tin"
+        university:
+          type: string
+          example: "Đại học Bách Khoa"
+        major:
+          type: string
+          example: "Khoa học máy tính"
+        class:
+          type: string
+          example: "CTK44"
+        cv_type:
+          type: string
+          enum: ["CV mẫu", "CV tự thiết kế"]
+        cv_link:
+          type: string
+          format: uri
+          example: "https://drive.google.com/cv123"
+        cohort_name:
+          type: string
+          pattern: "^K([1-9]?[0-9])$"
+          example: "K44"
+
+    StatusInput:
+      type: object
+      required:
+        - term_id
+        - department_name
+        - position_name
+        - personnel_status
+      properties:
+        term_id:
+          type: string
+          pattern: "^TERM[0-9]{3}$"
+          example: "TERM001"
+        department_name:
+          type: string
+          enum:
+            - "Ban Kỹ thuật - Công nghệ"
+            - "Ban Truyền thông"
+            - "Ban Nhân sự - Tổ chức"
+            - "Ban Sự kiện"
+            - "Ban Tài chính - Đối ngoại"
+        position_name:
+          type: string
+          enum:
+            - "Chủ nhiệm"
+            - "Phó chủ nhiệm"
+            - "Thành viên ban chủ nhiệm"
+            - "Trưởng ban"
+            - "Phó ban"
+            - "Thành viên"
+            - "Cộng tác viên"
+        personnel_status:
+          type: string
+          enum: ["Đang hoạt động", "Cựu thành viên", "Ứng viên"]
+
+    PersonnelWithStatus:
+      type: object
+      required:
+        - personnel
+        - status
+      properties:
+        personnel:
+          $ref: "#/components/schemas/Personnel"
+        status:
+          $ref: "#/components/schemas/Status"
+   
+    SystemRole:
+      type: object
+      properties:
+        sysrole_id:
+          type: string
+          example: "role_123"
+        sysrole_name:
+          type: string
+          example: "Admin"
   securitySchemes:
     bearerAuth: 
       type: http
