@@ -4,7 +4,7 @@ import authGuard from '../middlewares/authGuard.mdw';
 import partnerController from '../controllers/partner.controller';
 import validate from '../middlewares/validate.mdw';
 import { createPartnerSchema, updatePartnerSchema } from '../entities/partner.entity';
-import { managePartnerRole } from '../global/roles';
+import { getPartnerRole, managePartnerRole } from '../global/roles';
 
 const router = Router();
 
