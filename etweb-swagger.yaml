@@ -168,6 +168,8 @@ paths:
       operationId: createBanner
       summary: Create a new banner
       description: Create a new banner with the provided details
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -235,6 +237,8 @@ paths:
       operationId: updateBanner
       summary: Update an existing banner
       description: Update the details of an existing banner
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -283,6 +287,8 @@ paths:
       operationId: deleteBanner
       summary: Delete a banner
       description: Delete a specific banner by its ID
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -319,6 +325,8 @@ paths:
       operationId: bulkDeleteBanners
       summary: Bulk delete banners
       description: Delete multiple banners at once
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -383,6 +391,8 @@ paths:
       operationId: createFAQ
       summary: Create a new FAQ
       description: Add a new frequently asked question
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -448,6 +458,8 @@ paths:
       operationId: updateFAQ
       summary: Update an existing FAQ
       description: Modify the details of an existing frequently asked question
+      security:
+        - bearerAuth: []
       parameters:
         - name: faq_id
           in: path
@@ -499,6 +511,8 @@ paths:
       operationId: deleteFAQ
       summary: Delete an existing FAQ
       description: Remove a frequently asked question by its ID
+      security:
+        - bearerAuth: []
       parameters:
         - name: faq_id
           in: path
@@ -535,6 +549,8 @@ paths:
       operationId: bulkDeleteFAQs
       summary: Bulk delete FAQs
       description: Delete multiple FAQs at once
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -578,6 +594,8 @@ paths:
       operationId: getTerms
       summary: Get terms and conditions
       description: Retrieve the terms and conditions of the application
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: Terms retrieved successfully
