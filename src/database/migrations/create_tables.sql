@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS banner (
     banner_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     banner_name TEXT NOT NULL,
     image_url TEXT NOT NULL,
+    hypertext_link TEXT,
     visible BOOLEAN NOT NULL
 );
 
@@ -160,7 +161,7 @@ CREATE TABLE IF NOT EXISTS faq (
 );
 CREATE TABLE IF NOT EXISTS activity (
     activity_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
+    title VARCHAR(250) NOT NULL,
     activity_category activity_category_enum NOT NULL,
     meta_description VARCHAR(160),
     thumbnail_image_url TEXT NOT NULL,
@@ -178,7 +179,7 @@ CREATE TABLE IF NOT EXISTS activity (
 
 CREATE TABLE IF NOT EXISTS et_news (
     etnews_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
+    title VARCHAR(250) NOT NULL,
     etnews_category etnews_category_enum NOT NULL,
     meta_description VARCHAR(160),
     thumbnail_image_url TEXT NOT NULL,
@@ -192,7 +193,7 @@ CREATE TABLE IF NOT EXISTS et_news (
 
 CREATE TABLE IF NOT EXISTS et_blog (
     blog_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
+    title VARCHAR(250) NOT NULL,
     thumbnail_image_url TEXT NOT NULL,
     blog_author VARCHAR(60) NOT NULL,
     meta_description TEXT NOT NULL,
