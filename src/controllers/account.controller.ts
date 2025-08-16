@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import apicache from 'apicache';
 
 import accountService from '../services/account.service';
 import sendEmail from '../utils/email.util';
@@ -40,7 +41,7 @@ export default {
                 Technical Department | ET Club</p>`
             )
 
-
+            apicache.clear('/accounts');
             res.status(201).json({
                 msg: "The account has been created successfully.",
                 data: {
@@ -141,6 +142,7 @@ export default {
                 return;
             }
 
+            apicache.clear('/accounts');
             res.status(200).json({
                 msg: "Successfully",
                 data: updatedAccount
@@ -166,6 +168,7 @@ export default {
                 })
                 return;
             }
+            apicache.clear('/accounts');
             res.status(204).json({
                 msg: "Successfully",
                 data: deletedAccount
@@ -191,6 +194,7 @@ export default {
                 })
                 return;
             }
+            apicache.clear('/accounts');
             res.status(204).json({
                 msg: "Successfully",
                 data: deletedAccounts
@@ -220,7 +224,7 @@ export default {
                 res.status(401).json({ success: false, message: result.message });
                 return;
             }
-
+            apicache.clear('/accounts');
             res.status(200).json({ success: true, message: result.message });
             return;
         } catch (error) {

@@ -1,0 +1,3 @@
+apis:
+  etweb-swagger.yaml:
+    alias: et-web-api-documentation

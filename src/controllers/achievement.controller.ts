@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import apicache from "apicache";
 
 import achievementService from "../services/achievement.service";
 
@@ -17,7 +18,7 @@ export default
                     });
                     return;
                 }
-
+                apicache.clear("/achievements");
                 res.status(200).json({
                     msg: "The achivement is updated successfully",
                     affected: updatedAchievement
