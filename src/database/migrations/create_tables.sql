@@ -84,6 +84,13 @@ BEGIN
             'Nghệ sĩ khách mời'
         );
     END IF;
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'application_status_enum') THEN
+        CREATE TYPE application_status_enum AS ENUM (
+            'Pending',
+            'Approved',
+            'Rejected'
+        );
+    END IF;
 END $$;
 
 --Create tables
@@ -216,6 +223,28 @@ CREATE TABLE IF NOT EXISTS partner (
     note TEXT,
     created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_modified_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS application (
+    application_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    full_name TEXT NOT NULL,
+    phone_number VARCHAR(10) CHECK (phone_number ~ '^0[0-9]{9}$'),
+    email VARCHAR(320) NOT NULL CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'),
+    dob DATE NOT NULL DEFAULT '1990-01-01',
+    gender gender_enum NOT NULL DEFAULT 'Nam',
+    student_id VARCHAR NOT NULL DEFAULT '3123XXXXXXX',
+    university VARCHAR NOT NULL DEFAULT 'Đại học Kinh tế TP.HCM',
+    faculty VARCHAR NOT NULL DEFAULT 'Công nghệ thông tin kinh doanh',
+    major VARCHAR NOT NULL DEFAULT 'Công nghệ thông tin',
+    class VARCHAR NOT NULL DEFAULT 'ET0001',
+    cv_type cv_type_enum,
+    cv_link TEXT,
+    apply_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    application_status application_status_enum NOT NULL DEFAULT 'Pending',
+    department_name department_enum NOT NULL,
+    note TEXT,
+    reviewd_by UUID REFERENCES personnel(personnel_id),
+    reviewed_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 --Create trigger
