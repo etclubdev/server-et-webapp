@@ -1,4 +1,5 @@
 import express from "express";
+import apicache from "apicache";
 
 import authGuard from '../middlewares/authGuard.mdw';
 import validate from "../middlewares/validate.mdw";
@@ -8,9 +9,10 @@ import { createFAQSchema } from "../entities/faq.entity";
 import { getFAQRole, manageFAQRole } from "../global/roles";
 
 const router = express.Router();
+const cache = apicache.middleware;
 
 router.get("/:id", faqController.getFAQById);
-router.get("/", faqController.getAllFAQs);
+router.get("/", cache('30 minutes'), faqController.getAllFAQs);
 router.post("/", authGuard.verifyRoles(manageFAQRole), validate(createFAQSchema), faqController.createFAQ);
 router.put("/:id", authGuard.verifyRoles(manageFAQRole), validate(updateFAQSchema), faqController.updateFAQ);
 router.delete("/bulk-delete", authGuard.verifyRoles(manageFAQRole), faqController.deleteFAQs);

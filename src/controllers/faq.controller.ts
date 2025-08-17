@@ -1,4 +1,5 @@
 import { Request, Response, RequestHandler } from "express";
+import apicache from "apicache";
 
 import faqService from "../services/faq.service";
 
@@ -42,6 +43,7 @@ export default {
                 msg: "The FAQ is created successfully",
                 data: createdFAQ
             });
+            apicache.clear('/faqs');
             return;
         } catch (error) {
             console.log(error);
@@ -92,7 +94,7 @@ export default {
                 });
                 return;
             }
-
+            apicache.clear('/faqs');
             res.status(200).json({
                 msg: "The FAQ is updated successfully",
                 affected: updatedFAQ
@@ -118,7 +120,7 @@ export default {
                 });
                 return;
             }
-
+            apicache.clear('/faqs');
             res.status(204).json();
             return;
         } catch (error) {
@@ -149,7 +151,7 @@ export default {
                 });
                 return;
             }
-
+            apicache.clear('/faqs');
             res.status(204).json()
             return;
         } catch (error) {

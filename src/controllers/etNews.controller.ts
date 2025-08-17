@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import apicache from "apicache";
 
 import etNewsService from "../services/etNews.service";
 
@@ -12,7 +13,7 @@ export default {
         res.status(404).json({ message: "News not found!" });
         return;
       }
-
+      apicache.clear('/et-news');
       res.status(204).json();
       return;
     } catch (error) {
@@ -31,7 +32,7 @@ export default {
         res.status(404).json({ message: "Not found!" });
         return;
       }
-
+      apicache.clear('/et-news');
       res.status(204).json()
       return;
     } catch (error) {
@@ -52,7 +53,7 @@ export default {
         res.status(404).json({ message: "News not found" });
         return;
       }
-
+      apicache.clear('/et-news');
       res.status(200).json({
         message: "Successfully",
         affected: updatedNews,
@@ -69,7 +70,7 @@ export default {
     const news = req.body;
     try {
       const createdNews = await etNewsService.createNews(news);
-
+      apicache.clear('/et-news');
       res.status(201).json({
         message: "Successfully",
         data: createdNews,

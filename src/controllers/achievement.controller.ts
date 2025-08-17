@@ -45,7 +45,7 @@ export default
                     });
                     return;
                 }
-
+                apicache.clear("/achievements");
                 res.status(200).json({
                     msg: "The activity post is deleted successfully",
                     affected: deletedAchievement
@@ -71,7 +71,7 @@ export default
                     })
                     return;
                 }
-
+                apicache.clear("/achievements");
                 res.sendStatus(204)
                 return;
             } catch (error) {
@@ -114,6 +114,7 @@ export default
             const achievement = req.body;
             try {
                 const createdAchievement = await achievementService.createAchievement(achievement);
+                apicache.clear("/achievements");
                 res.status(200).json({
                     msg: "The achievement is created successfully",
                     data: createdAchievement

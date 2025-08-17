@@ -1,6 +1,7 @@
 export interface Personnel {
     personnel_id?: string;
     personnel_name: string;
+    phone_number: string;
     email: string;
     dob: Date;
     gender: "Nam" | "Nữ" | "Khác";
@@ -10,6 +11,7 @@ export interface Personnel {
     university: string;
     major: string;
     class: string;
+    avatar_url?: string;
     cv_type?: "CV Mẫu" | "CV Tự thiết kế";
     cv_link?: string;
     cohort_name?: string;

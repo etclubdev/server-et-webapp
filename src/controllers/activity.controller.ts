@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import apicache from "apicache";
 
 import activityService from "../services/activity.service";
 
@@ -73,7 +74,7 @@ export default {
                 });
                 return;
             }
-
+            apicache.clear("/activities");
             res.status(204).json();
             return;
         } catch (error) {
@@ -96,7 +97,7 @@ export default {
                 });
                 return;
             }
-
+            apicache.clear("/activities");
             res.status(204).json();
             return;
         } catch (error) {
@@ -120,7 +121,7 @@ export default {
                 });
                 return;
             }
-
+            apicache.clear("/activities");
             res.status(200).json({
                 message: "The activity is updated successfully",
                 affected: updatedActivity
@@ -140,6 +141,7 @@ export default {
         const activity = req.body;
         try {
             const createdActivity = await activityService.createActivity(activity);
+            apicache.clear("/activities");
             res.status(201).json({
                 message: "The activity is created successfully",
                 data: createdActivity

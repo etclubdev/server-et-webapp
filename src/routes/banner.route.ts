@@ -1,4 +1,5 @@
 import express from 'express';
+import apicache from 'apicache';
 
 import authGuard from '../middlewares/authGuard.mdw';
 import bannerController from '../controllers/banner.controller';
@@ -7,8 +8,9 @@ import { createBannerSchema, updateBannerSchema } from '../entities/banner.entit
 import { manageBannerRole } from '../global/roles';
 
 const router = express.Router();
+const cache = apicache.middleware;
 
-router.get('/', bannerController.getAllBanners);
+router.get('/', cache('30 minutes'), bannerController.getAllBanners);
 router.get('/:id', bannerController.getBannerById);
 router.post('/', authGuard.verifyRoles(manageBannerRole), validate(createBannerSchema), bannerController.createBanner);
 router.put('/:id', authGuard.verifyRoles(manageBannerRole), validate(updateBannerSchema), bannerController.updateBanner);

@@ -1,4 +1,8 @@
 import express from 'express';
+import fs from 'fs';
+import path from 'path';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yaml';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -16,11 +20,8 @@ import bannerRoute from './routes/banner.route';
 import accountRoute from './routes/account.route'
 import termRoute from './routes/term.route'
 import searchRoute from './routes/search.route'
+import applicationRoute from './routes/application.route';
 import authRoute from './routes/auth.route';
-import YAML from 'yaml';
-import fs from 'fs';
-import path from 'path';
-import swaggerUi from 'swagger-ui-express';
 
 dotenv.config();
 const app = express();
@@ -45,6 +46,7 @@ app.use('/auth', authRoute)
 app.use('/terms', termRoute)
 app.use('/search', searchRoute)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/applications', applicationRoute);
 
 const PORT = process.env.PORT || 8080;
 

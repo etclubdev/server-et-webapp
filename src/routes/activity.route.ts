@@ -1,4 +1,5 @@
 import express from "express";
+import apicache from "apicache";
 
 import authGuard from '../middlewares/authGuard.mdw';
 import activityController from "../controllers/activity.controller";
@@ -7,9 +8,10 @@ import { updateActivitySchema, createActivitySchema } from "../entities/activity
 import { manageActivityRole } from "../global/roles";
 
 const router = express.Router();
+const cache = apicache.middleware;
 
 router.get("/:id", activityController.getActivityById);
-router.get("/", activityController.getAllActivities);
+router.get("/", cache('30 minutes'), activityController.getAllActivities);
 router.delete("/bulk-delete", authGuard.verifyRoles(manageActivityRole), activityController.deleteActivities);
 router.delete("/:id", authGuard.verifyRoles(manageActivityRole), activityController.deleteActivity);
 router.put("/:id", authGuard.verifyRoles(manageActivityRole), validate(updateActivitySchema), activityController.updateActivity);
