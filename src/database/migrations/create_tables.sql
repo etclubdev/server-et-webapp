@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS personnel (
     personnel_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     personnel_name TEXT NOT NULL CHECK (personnel_name !~ '[0-9]') DEFAULT 'Nguyễn Văn A',
     phone_number VARCHAR(10) CHECK (phone_number ~ '^0[0-9]{9}$'),
-    email VARCHAR(320) NOT NULL CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$') DEFAULT 'example@gmail.com',
+    email VARCHAR(320) UNIQUE NOT NULL CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$') DEFAULT 'example@gmail.com',
     dob DATE NOT NULL DEFAULT '1990-01-01',
     gender gender_enum NOT NULL DEFAULT 'Nam',
     address VARCHAR,
