@@ -39,14 +39,14 @@ export default {
         try {
             const createdFAQ = await faqService.createFAQ(faq);
             res.status(201).json({
-                msg: "The FAQ is created successfully",
+                message: "The FAQ is created successfully",
                 data: createdFAQ
             });
             return;
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
             });
             return;
         }
@@ -88,20 +88,20 @@ export default {
 
             if (!updatedFAQ) {
                 res.status(404).json({
-                    msg: "FAQ not found or no changes applied"
+                    message: "FAQ not found or no changes applied"
                 });
                 return;
             }
 
             res.status(200).json({
-                msg: "The FAQ is updated successfully",
+                message: "The FAQ is updated successfully",
                 affected: updatedFAQ
             });
             return;
         } catch (error) {
             console.error(error);
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
             });
             return;
         }
@@ -114,7 +114,7 @@ export default {
 
             if (deletedFAQ === 0) {
                 res.status(404).json({
-                    msg: "The FAQ is not found"
+                    message: "The FAQ is not found"
                 });
                 return;
             }
@@ -124,7 +124,7 @@ export default {
         } catch (error) {
             console.error(error);
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
             });
             return;
         }
@@ -135,7 +135,7 @@ export default {
 
         if (!faqs || !Array.isArray(faqs) || faqs.length === 0) {
             res.status(400).json({
-                msg: "Invalid Data"
+                message: "Invalid Data"
             });
             return;
         }
@@ -145,7 +145,7 @@ export default {
 
             if (deletedFAQs === 0) {
                 res.status(404).json({
-                    msg: "Not found"
+                    message: "Not found"
                 });
                 return;
             }
@@ -155,7 +155,7 @@ export default {
         } catch (error) {
             console.error(error);
             res.status(500).json({
-                msg: "Internal Server Error" + error.message
+                message: "Internal Server Error" + error.message
             });
             return;
         }
