@@ -93,7 +93,7 @@ const createPersonnelWithStatusSchema = {
         "status": {
             "type": "object",
             "properties": {
-                "term_id": { "type": "string", "pattern": "^TERM[0-9]{3}$" },
+                "term_id": { "type": "string" },
                 "department_name": {
                     "type": "string",
                     "enum": [
