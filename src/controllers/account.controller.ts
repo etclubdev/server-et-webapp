@@ -5,12 +5,12 @@ import { v4 as uuidv4 } from 'uuid';
 import accountService from '../services/account.service';
 import sendEmail from '../utils/email.util';
 
+const logInUrl = process.env.logInUrl;
+const manageProfileUrl = process.env.manageProfileUrl;
+
 export default {
     createAccount: async (req: Request, res: Response): Promise<void> => {
         try {
-            const logInUrl = process.env.logInUrl;
-            const manageProfileUrl = process.env.manageProfileUrl;
-
             const password = uuidv4().slice(0, 12);
 
             const salt = await bcrypt.genSalt(10);
@@ -229,4 +229,41 @@ export default {
             return;
         }
     },
+    resetPassword: async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            
+            const result = await accountService.resetPassword(id);
+
+            if (!result) {
+                res.status(404).json({ message: "Not found" });
+                return;
+            }
+
+            const { user, newPassword } = result.data;
+
+            sendEmail(user.username, 'Password Reset Request - New Login Credentials',
+                `<p>Dear ${user.personnel_name},</p>
+                <p>We have successfully processed your password reset request for your ${user.sysrole_name} account. Here are your new login credentials:</p>
+                <ul>
+                    <li><strong>Username:</strong> ${user.username}</li>
+                    <li><strong>Password:</strong> ${newPassword}</li>
+                </ul>
+                <p>To ensure the security of your account, please follow these steps:</p>
+                <ol>
+                    <li><strong>Log in</strong> to your account at ${logInUrl}.</li>
+                    <li><strong>Change your password</strong> immediately after logging in by navigating to ${manageProfileUrl}.</li>
+                </ol>
+                <p>If you did not request this password reset, please contact our support team immediately at tech.etclub@gmail.com.</p>
+                <p>Best regards,<br>
+                Technical Department | ET Club</p>`
+            )
+
+            res.status(200).json({ success: true });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: "Internal server error" + error.message });
+            return;
+        }
+    }
 }
