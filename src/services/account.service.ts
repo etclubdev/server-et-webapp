@@ -6,90 +6,116 @@ import { Account } from '../types/account';
 export default {
     createAccount: async (account: Account) => {
         return db.transaction(async (trx) => {
-            const [newAccount] = await trx('account')
-                .insert(account)
-                .returning('*'); 
+            const insertResult = await trx.raw(
+                `
+                INSERT INTO account (username, password, sysrole_id)
+                VALUES (?, ?, ?)
+                RETURNING *
+                `,
+                [
+                    account.username,
+                    account.password,
+                    account.sysrole_id
+                ]
+            );
+            const newAccount = insertResult.rows[0];
 
-            return trx('account')
-                .select('account.*', 'personnel.*', 'system_role.sysrole_name')
-                .join('personnel', 'account.personnel_id', 'personnel.personnel_id')
-                .join('system_role', 'account.sysrole_id', 'system_role.sysrole_id')
-                .where('account.account_id', newAccount.account_id)
-                .first();
+            const selectResult = await trx.raw(
+                `
+                SELECT a.*, sr.sysrole_name
+                FROM account a
+                JOIN system_role sr ON a.sysrole_id = sr.sysrole_id
+                WHERE a.account_id = ?
+                `,
+                [newAccount.account_id]
+            );
+            return selectResult.rows[0];
         });
     },
     getAccountById: async (id: string) => {
-        const account = await db('account')
-            .join('personnel', 'account.personnel_id', 'personnel.personnel_id')
-            .select('account_id', 'account.personnel_id', 'personnel.personnel_name', 'personnel.student_id', 'username', 'sysrole_id')
-            .where('account_id', id)
-
-        if (account.length === 0) {
+        const result = await db.raw(
+            `
+            SELECT a.*, sr.sysrole_name
+            FROM account a
+            JOIN system_role sr ON a.sysrole_id = sr.sysrole_id
+            WHERE a.account_id = ?
+            `,
+            [id]
+        );
+        if (!result.rows || result.rows.length === 0) {
             return null;
         }
-
-        return account[0];
+        return result.rows[0];
     },
     getAllAccount: async () => {
-        const accounts = await db('account')
-            .select('account_id', 'username', 'personnel_id', 'sysrole_id', 'created_on', 'last_modified_on')
-            .orderBy('sysrole_id');
-
-        if (accounts.length === 0) {
+        const result = await db.raw(
+            `
+            SELECT a.*, sr.sysrole_name
+            FROM account a
+            JOIN system_role sr ON a.sysrole_id = sr.sysrole_id
+            ORDER BY a.sysrole_id
+            `
+        );
+        if (!result.rows || result.rows.length === 0) {
             return null;
         }
-
-        return accounts;
+        return result.rows;
     },
     updateAccount: async (id: string, sysrole_id: string) => {
-        const updatedAccount = await db('account')
-            .where('account_id', id)
-            .update('sysrole_id', sysrole_id)
-            .returning(['account_id', 'sysrole_id', 'personnel_id', 'created_on', 'last_modified_on']);
-
-        if (updatedAccount.length === 0)
-            return null;
-        return updatedAccount;
+        const result = await db.raw(
+            `
+            UPDATE account
+            SET sysrole_id = ?
+            WHERE account_id = ?
+            RETURNING *
+            `,
+            [sysrole_id, id]
+        );
+        if (!result.rows || result.rows.length === 0) return null;
+        const account = result.rows[0];
+        const sysroleResult = await db.raw(
+            `SELECT sysrole_name FROM system_role WHERE sysrole_id = ?`,
+            [account.sysrole_id]
+        );
+        return { ...account, sysrole_name: sysroleResult.rows[0]?.sysrole_name };
     },
     deleteAccount: async (id: string) => {
-        return db('account')
-            .where('account_id', id)
-            .del();
+        const result = await db.raw(
+            `DELETE FROM account WHERE account_id = ?`,
+            [id]
+        );
+        return result.rowCount;
     },
     deleteAccounts: async (accounts: string[]) => {
         if (!accounts || !Array.isArray(accounts) || accounts.length === 0) {
             throw new Error("Invalid Data");
         }
-
         return db.transaction(async (trx) => {
-            let affectedRows = 0;
-            for (const accountId of accounts) {
-
-                const deletedAccount = await trx("account")
-                    .where('account_id', accountId)
-                    .del();
-                affectedRows += deletedAccount;
-            }
-
-            return affectedRows;
+            const result = await trx.raw(
+                `DELETE FROM account WHERE account_id = ANY(?)`,
+                [accounts]
+            );
+            return result.rowCount;
         });
     },
     updatePassword: async (account_id: string, oldPassword: string, newPassword: string) => {
-        const user = await db('account').where('account_id', account_id).first();
-
+        const result = await db.raw(
+            `SELECT * FROM account WHERE account_id = ? LIMIT 1`,
+            [account_id]
+        );
+        const user = result.rows[0];
         if (!user) {
-            return null
+            return null;
         }
-
         const isMatch = await bcrypt.compare(oldPassword, user.password);
         if (!isMatch) {
             return { success: false, message: 'Old password is incorrect' };
         }
-
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-        await db('account').where('account_id', account_id).update({ password: hashedPassword });
-
+        await db.raw(
+            `UPDATE account SET password = ? WHERE account_id = ?`,
+            [hashedPassword, account_id]
+        );
         return { success: true, message: 'Successfully' };
     }
 };
