@@ -1,4 +1,5 @@
 import { Router } from "express";
+import apicache from "apicache";
 
 import authGuard from '../middlewares/authGuard.mdw';
 import etBlogController from "../controllers/etBlog.controller";
@@ -7,9 +8,10 @@ import { createBlogSchema, updateBlogSchema } from "../entities/etBlog.entity";
 import { manageEtBlogRole } from "../global/roles";
 
 const router = Router();
+const cache = apicache.middleware;
 
 router.get("/:id", etBlogController.getEtBlogById);
-router.get("/", etBlogController.getAllEtBlogs);
+router.get("/", cache('30 minutes'), etBlogController.getAllEtBlogs);
 router.post('/', authGuard.verifyRoles(manageEtBlogRole), validate(createBlogSchema), etBlogController.createEtBlog);
 router.put('/:id', authGuard.verifyRoles(manageEtBlogRole), validate(updateBlogSchema), etBlogController.updateEtBlog);
 router.delete('/bulk-delete', authGuard.verifyRoles(manageEtBlogRole), etBlogController.deleteEtBlogs);

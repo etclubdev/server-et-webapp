@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import apicache from 'apicache';
 
 import bannerService from '../services/banner.service';
 
@@ -7,6 +8,7 @@ export default {
         const banner = req.body;
         try {
             const createdBanner = await bannerService.createBanner(banner);
+            apicache.clear('/banners');
             res.status(201).json({
                 message: 'Successfully',
                 data: createdBanner,
@@ -84,6 +86,7 @@ export default {
                 res.status(404).json({ message: 'Not found' });
                 return;
             }
+            apicache.clear('/banners');
             res.status(204).json();
             return;
         } catch (error) {
@@ -101,6 +104,7 @@ export default {
                 res.status(404).json({ message: 'Not found' });
                 return;
             }
+            apicache.clear('/banners');
             res.status(204).json();
             return;
         } catch (error) {

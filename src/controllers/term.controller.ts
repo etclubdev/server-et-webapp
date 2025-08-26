@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import apicache from 'apicache';
 
 import termService from '../services/term.service';
 
@@ -24,6 +25,29 @@ export default {
                 message: 'Internal Server Error' + error. message
             })
             return;
+        }
+    },
+    createTerm: async (req: Request, res: Response) => {
+        try {
+            const term = req.body;
+
+            if (!term || !term.term_name) {
+                res.status(400).json({
+                    message: 'Invalid term data'
+                });
+                return;
+            }
+
+            const newTerm = await termService.createTerm(term);
+            apicache.clear('/terms');
+            res.status(201).json({
+                message: 'Term created successfully',
+                data: newTerm
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: 'Internal Server Error' + error.message
+            });
         }
     }
 }

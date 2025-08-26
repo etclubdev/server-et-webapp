@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import apicache from "apicache";
 
 import achievementService from "../services/achievement.service";
 
@@ -17,7 +18,7 @@ export default
                     });
                     return;
                 }
-
+                apicache.clear("/achievements");
                 res.status(200).json({
                     message: "The achivement is updated successfully",
                     affected: updatedAchievement
@@ -44,7 +45,7 @@ export default
                     });
                     return;
                 }
-
+                apicache.clear("/achievements");
                 res.status(204);
                 return;
             } catch (error) {
@@ -67,7 +68,7 @@ export default
                     })
                     return;
                 }
-
+                apicache.clear("/achievements");
                 res.sendStatus(204)
                 return;
             } catch (error) {
@@ -110,6 +111,7 @@ export default
             const achievement = req.body;
             try {
                 const createdAchievement = await achievementService.createAchievement(achievement);
+                apicache.clear("/achievements");
                 res.status(200).json({
                     message: "The achievement is created successfully",
                     data: createdAchievement

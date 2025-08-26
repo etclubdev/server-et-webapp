@@ -1,4 +1,5 @@
 import express from "express";
+import apicache from "apicache";
 
 import authGuard from '../middlewares/authGuard.mdw';
 import achievementController from "../controllers/achievement.controller";
@@ -7,12 +8,13 @@ import { updateAchievementSchema, createAchievementSchema } from "../entities/ac
 import { manageAchivementRole } from "../global/roles";
 
 const router = express.Router();
+const cache = apicache.middleware;
 
 router.put("/:id", authGuard.verifyRoles(manageAchivementRole), validate(updateAchievementSchema), achievementController.updateAchievement);
 router.delete('/bulk-delete', authGuard.verifyRoles(manageAchivementRole), achievementController.deleteAchievements)
 router.delete("/:id", authGuard.verifyRoles(manageAchivementRole), achievementController.deleteAchievement);
 router.get("/:id", achievementController.getAchievementById);
 router.post("/", authGuard.verifyRoles(manageAchivementRole), validate(createAchievementSchema), achievementController.createAchievement);
-router.get("/", achievementController.getAllAchievements);
+router.get("/", cache('30 minutes'), achievementController.getAllAchievements);
 
 export default router; 

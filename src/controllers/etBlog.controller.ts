@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import apicache from "apicache";
 
 import EtBlogService from '../services/etBlog.service';
 
@@ -15,7 +16,7 @@ export default {
                 })
                 return;
             }
-
+            apicache.clear("/et-blog");
             res.status(204).json();
             return;
 
@@ -40,7 +41,7 @@ export default {
                 })
                 return;
             }
-
+            apicache.clear("/et-blog");
             res.status(204).json()
             return;
 
@@ -66,7 +67,7 @@ export default {
                 });
                 return;
             }
-
+            apicache.clear("/et-blog");
             res.status(200).json({
                 message: "The blog is updated successfully",
                 affected: updatedBlog
@@ -86,7 +87,7 @@ export default {
 
         try {
             const createdBlog = await EtBlogService.createEtBlog(blog);
-
+            apicache.clear("/et-blog");
             res.status(201).json({
                 message: "The blog is created successfully",
                 data: createdBlog

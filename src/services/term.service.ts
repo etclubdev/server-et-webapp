@@ -9,5 +9,12 @@ export default {
             return null;
 
         return terms;
+    },
+    createTerm: async (term) => {
+        const newTerm = await db('term')
+            .insert(term)
+            .returning(['term_id', 'term_name']);
+
+        return newTerm;
     }
 }

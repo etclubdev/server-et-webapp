@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import apicache from 'apicache';
 
 import partnerService from '../services/partner.service';
 
@@ -15,6 +16,7 @@ export default {
                 })
                 return;
             }
+            apicache.clear('/partners');
             res.status(204).json();
             return;
         } catch (err) {
@@ -38,6 +40,7 @@ export default {
                 })
                 return;
             }
+            apicache.clear('/partners');
             res.status(204).json()
             return;
 
@@ -63,7 +66,7 @@ export default {
                 })
                 return;
             }
-
+            apicache.clear('/partners');
             res.status(201).json({
                 message: "Successfully",
                 data: updatedPartner
@@ -133,7 +136,7 @@ export default {
 
         try {
             const createdPartner = await partnerService.createPartner(partner);
-
+            apicache.clear('/partners');
             res.status(201).json({
                 message: "Partner is created successfully",
                 data: createdPartner
@@ -159,7 +162,7 @@ export default {
             }
 
             await partnerService.updateVisible(partners);
-
+            apicache.clear('/partners');
             res.status(200).json({
                 message: "Successfully",
                 updatedCount: partners.length

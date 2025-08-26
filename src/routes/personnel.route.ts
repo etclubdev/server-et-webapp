@@ -1,4 +1,6 @@
 import express from "express";
+import apicache from "apicache";
+
 import personnelController from "../controllers/personnel.controller";
 import validate from "../middlewares/validate.mdw";
 import { createPersonnelWithStatusSchema, updatePersonnelSchema } from "../entities/personnel.entity";
@@ -6,6 +8,7 @@ import authGuard from '../middlewares/authGuard.mdw';
 import { getByIDPersonnelRole, getPesonnelRole, managePersonnelRole, updatePersonnelRole } from "../global/roles";
 
 const router = express.Router();
+const cache = apicache.middleware; 
 
 router.delete("/bulk-delete", authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForBulk(), personnelController.deleteMultiplePersonnels);
 
@@ -13,7 +16,7 @@ router.delete("/:id", authGuard.verifyRoles(managePersonnelRole), authGuard.veri
 
 router.put("/:id", authGuard.verifyRoles(updatePersonnelRole), authGuard.verifyDepartment(), validate(updatePersonnelSchema), personnelController.updatePersonnel);
 
-router.get("/", authGuard.verifyRoles(getPesonnelRole), personnelController.getPersonnels);
+router.get("/", authGuard.verifyRoles(getPesonnelRole), cache('30 minutes'), personnelController.getPersonnels);
 
 router.get("/unregistered", authGuard.verifyRoles(managePersonnelRole), personnelController.getUnregisteredPersonnels);
 

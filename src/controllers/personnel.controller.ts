@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import apicache from "apicache";
 
 import personnelService from "../services/personnel.service";
 
@@ -38,7 +39,7 @@ export default {
                 });
                 return;
             }
-
+            apicache.clear('/personnels');
             res.status(204).json();
             return;
         } catch (error) {
@@ -61,7 +62,7 @@ export default {
                 });
                 return;
             }
-
+            apicache.clear('/personnels');
             res.status(204).json();
             return;
         } catch (error) {
@@ -83,7 +84,6 @@ export default {
                 status
             );
 
-
             if (!updatedPersonnel && !updatedStatus) {
                 res.status(404).json({
                     message: "Personnel and status not found or no changes applied",
@@ -91,7 +91,7 @@ export default {
                 });
                 return;
             }
-
+            apicache.clear('/personnels');
             res.status(200).json({
                 message: "Personnel updated successfully",
                 data: {
@@ -140,7 +140,9 @@ export default {
         const { personnel, status } = req.body;
 
         try {
+            console.log(personnel, status)
             const created = await personnelService.createPersonnelWithStatus(personnel, status);
+            apicache.clear('/personnels');
             res.status(201).json({
                 message: "Personnel and status created successfully",
                 data: created
