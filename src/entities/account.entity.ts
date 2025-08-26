@@ -15,8 +15,7 @@ const updateAccountSchema = {
     "properties": {
         "sysrole_id": {
             "type": "string",
-            "pattern": "^SRLE\\d{3,}$",
-            "description": "System role ID of the Account, following format 'SRLEXXX' (XXX is a number)"
+            "description": "System role ID of the Account"
         },
     },
     "additionalProperties": false,
@@ -27,9 +26,7 @@ const createAccountSchema = {
     "properties": {
         "sysrole_id": {
             "type": "string",
-            "maxLength": 7,
-            "pattern": "^SRLE\\d{3}$",
-            "description": "System role ID, must follow the format: SROLXXX",
+            "description": "System role ID"
         },
         "username": {
             "type": "string",
@@ -43,8 +40,6 @@ const createAccountSchema = {
         },
         "personnel_id": {
             "type": "string",
-            "maxLength": 7,
-            "pattern": "^PERS\\d{3}$",
         },
         "created_on": {
             "type": "string",

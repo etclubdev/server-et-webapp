@@ -36,7 +36,7 @@ export default {
 
             if (!deletedPartners) {
                 res.status(404).json({
-                    msg: "Not found"
+                    message: "Not found"
                 })
                 return;
             }
@@ -47,7 +47,7 @@ export default {
         } catch (err) {
             console.log(err);
             res.status(500).json({
-                msg: 'Internal Server Error' + err.message
+                message: 'Internal Server Error' + err.message
             })
             return;
         }
@@ -164,7 +164,7 @@ export default {
             await partnerService.updateVisible(partners);
             apicache.clear('/partners');
             res.status(200).json({
-                msg: "Successfully",
+                message: "Successfully",
                 updatedCount: partners.length
             })
             return;

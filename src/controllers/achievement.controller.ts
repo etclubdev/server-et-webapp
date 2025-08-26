@@ -14,13 +14,13 @@ export default
 
                 if (!updatedAchievement) {
                     res.status(404).json({
-                        msg: "Achievement not found or no changes applied"
+                        message: "Achievement not found or no changes applied"
                     });
                     return;
                 }
                 apicache.clear("/achievements");
                 res.status(200).json({
-                    msg: "The achivement is updated successfully",
+                    message: "The achivement is updated successfully",
                     affected: updatedAchievement
                 });
                 return;
@@ -28,7 +28,7 @@ export default
             } catch (error) {
                 console.error(error);
                 res.status(500).json({
-                    msg: "Internal Server Error"
+                    message: "Internal Server Error"
                 });
                 return;
             }
@@ -41,20 +41,17 @@ export default
 
                 if (deletedAchievement === 0) {
                     res.status(404).json({
-                        msg: "The activity post is not found"
+                        message: "The activity post is not found"
                     });
                     return;
                 }
                 apicache.clear("/achievements");
-                res.status(200).json({
-                    msg: "The activity post is deleted successfully",
-                    affected: deletedAchievement
-                });
+                res.status(204);
                 return;
             } catch (error) {
                 console.error(error);
                 res.status(500).json({
-                    msg: "Internal Server Error"
+                    message: "Internal Server Error"
                 });
                 return;
             }
@@ -116,14 +113,14 @@ export default
                 const createdAchievement = await achievementService.createAchievement(achievement);
                 apicache.clear("/achievements");
                 res.status(200).json({
-                    msg: "The achievement is created successfully",
+                    message: "The achievement is created successfully",
                     data: createdAchievement
                 });
                 return;
             } catch (error) {
                 console.log(error);
                 res.status(500).json({
-                    msg: "Internal Server Error"
+                    message: "Internal Server Error"
                 });
                 return;
             }

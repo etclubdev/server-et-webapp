@@ -144,14 +144,14 @@ export default {
             const created = await personnelService.createPersonnelWithStatus(personnel, status);
             apicache.clear('/personnels');
             res.status(201).json({
-                msg: "Personnel and status created successfully",
+                message: "Personnel and status created successfully",
                 data: created
             });
             return;
         } catch (error) {
             console.error("Error creating personnel with status:", error);
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
             });
         }
     },

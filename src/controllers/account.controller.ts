@@ -43,7 +43,7 @@ export default {
 
             apicache.clear('/accounts');
             res.status(201).json({
-                msg: "The account has been created successfully.",
+                message: "The account has been created successfully.",
                 data: {
                     account_id: createdAccount.account_id,
                     sysrole_id: createdAccount.sysrole_id,
@@ -72,7 +72,7 @@ export default {
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                msg: "Internal Server Error" + error.message
+                message: "Internal Server Error" + error.message
             });
             return;
         }
@@ -86,20 +86,20 @@ export default {
 
             if (!account) {
                 res.status(404).json({
-                    msg: "Not found"
+                    message: "Not found"
                 })
                 return;
             }
 
             res.status(200).json({
-                msg: "Successfully",
+                message: "Successfully",
                 data: account
             })
             return;
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                msg: "Internal Server Error" + error.message
+                message: "Internal Server Error" + error.message
             })
             return;
         }
@@ -110,20 +110,20 @@ export default {
 
             if (!accounts) {
                 res.status(404).json({
-                    msg: "No accounts found"
+                    message: "No accounts found"
                 })
                 return;
             }
 
             res.status(200).json({
-                msg: "Successfully",
+                message: "Successfully",
                 data: accounts
             })
             return;
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                msg: "Internal Server Error" + error.message
+                message: "Internal Server Error" + error.message
             })
             return;
         }
@@ -137,21 +137,21 @@ export default {
 
             if (!updatedAccount) {
                 res.status(404).json({
-                    msg: "Account not found or no changes applied"
+                    message: "Account not found or no changes applied"
                 })
                 return;
             }
 
             apicache.clear('/accounts');
             res.status(200).json({
-                msg: "Successfully",
+                message: "Successfully",
                 data: updatedAccount
             })
             return;
         } catch (err) {
             console.log(err);
             res.status(500).json({
-                msg: 'Internal Server Error' + err.message
+                message: 'Internal Server Error' + err.message
             })
             return;
         }
@@ -164,20 +164,20 @@ export default {
 
             if (!deletedAccount) {
                 res.status(404).json({
-                    msg: "Not found"
+                    message: "Not found"
                 })
                 return;
             }
             apicache.clear('/accounts');
             res.status(204).json({
-                msg: "Successfully",
+                message: "Successfully",
                 data: deletedAccount
             })
             return;
         } catch (err) {
             console.log(err);
             res.status(500).json({
-                msg: 'Internal Server Error' + err.message
+                message: 'Internal Server Error' + err.message
             })
             return;
         }
@@ -190,20 +190,20 @@ export default {
 
             if (!deletedAccounts) {
                 res.status(404).json({
-                    msg: "Not found"
+                    message: "Not found"
                 })
                 return;
             }
             apicache.clear('/accounts');
             res.status(204).json({
-                msg: "Successfully",
+                message: "Successfully",
                 data: deletedAccounts
             })
             return;
         } catch (err) {
             console.log(err);
             res.status(500).json({
-                msg: 'Internal Server Error' + err.message
+                message: 'Internal Server Error' + err.message
             })
             return;
         }

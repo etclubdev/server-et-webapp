@@ -31,7 +31,7 @@ export default {
             }
 
             res.status(200).json({
-                msg: 'Successfully',
+                message: 'Successfully',
                 data: banners,
             });
             return;
@@ -50,7 +50,7 @@ export default {
             }
 
             res.status(200).json({
-                msg: 'Successfully',
+                message: 'Successfully',
                 data: banner,
             });
             return;
@@ -67,15 +67,14 @@ export default {
         try {
             const updatedBanner = await bannerService.updateBanner(id, banner);
             if (!updatedBanner) {
-                res.status(404).json({ msg: 'Banner not found' });
+                res.status(404).json({ message: 'Banner not found' });
                 return;
             }
-            apicache.clear('/banners');
-            res.status(200).json({ msg: 'Banner updated successfully', data: updatedBanner });
+            res.status(200).json({ message: 'Banner updated successfully', data: updatedBanner });
             return;
         } catch (error) {
             console.log(error);
-            res.status(500).json({ msg: 'Internal server error', error });
+            res.status(500).json({ message: 'Internal server error', error });
             return;
         }
     },
