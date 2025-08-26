@@ -2,11 +2,10 @@ import db from '../utils/db.util';
 
 export default {
     getAllSystemRole: async () => {
-        const systemRole = await db('system_role')
-            .select('*')
-            .returning('*')
+        const result = await db.raw(`SELECT * FROM system_role`);
+        const systemRole = result.rows;
 
-        if (systemRole.length === 0) {
+        if (!systemRole || systemRole.length === 0) {
             return null;
         }
         return systemRole;
