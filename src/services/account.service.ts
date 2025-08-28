@@ -8,13 +8,14 @@ export default {
         return db.transaction(async (trx) => {
             const insertResult = await trx.raw(
                 `
-                INSERT INTO account (username, password, sysrole_id)
-                VALUES (?, ?, ?)
+                INSERT INTO account (username, password, personnel_id, sysrole_id)
+                VALUES (?, ?, ?, ?)
                 RETURNING *
                 `,
                 [
                     account.username,
                     account.password,
+                    account.personnel_id,
                     account.sysrole_id
                 ]
             );

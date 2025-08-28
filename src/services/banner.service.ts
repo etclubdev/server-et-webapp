@@ -3,58 +3,77 @@ import { Banner } from '../types/banner';
 
 export default {
     createBanner: async (banner: Banner) => {
-        return db('banner')
-            .insert(banner)
-            .returning('*');
+        const { banner_name, image_url, visible } = banner;
+        const result = await db.raw(
+            `
+            INSERT INTO banner (banner_name, image_url, visible)
+            VALUES (?, ?, ?)
+            RETURNING *
+            `,
+            [banner_name, image_url, visible]
+        );
+        return result.rows;
     },
     getAllBanners: async () => {
-        const banners = await db('banner')
-            .select('*')
-
-        if (banners.length === 0) {
+        const result = await db.raw(
+            `
+            SELECT * FROM banner
+            `
+        );
+        if (!result.rows || result.rows.length === 0) {
             return null;
         }
-        return banners;
+        return result.rows;
     },
     getBannerById: async (id: string) => {
-        return await db('banner')
-            .select('*')
-            .where('banner_id', id)
-            .first();
+        const result = await db.raw(
+            `
+            SELECT * FROM banner WHERE banner_id = ?
+            `,
+            [id]
+        );
+        if (!result.rows || result.rows.length === 0) return null;
+        return result.rows[0];
     },
     updateBanner: async (id: string, banner: Banner) => {
-        return await db('banner')
-            .where('banner_id', id)
-            .update(banner)
-            .returning("*");
+        const { banner_name, image_url, visible } = banner;
+        const result = await db.raw(
+            `
+            UPDATE banner
+            SET banner_name = ?, image_url = ?, visible = ?
+            WHERE banner_id = ?
+            RETURNING *
+            `,
+            [banner_name, image_url, visible, id]
+        );
+        return result.rows;
     },
     deleteBanner: async (id: string) => {
-        const deletedBanner = await db('banner')
-            .where('banner_id', id)
-            .del()
-            .returning('*');
-
-        if (deletedBanner.length === 0) {
-            return null;
-        }
-
-        return deletedBanner;
+        const result = await db.raw(
+            `
+            DELETE FROM banner
+            WHERE banner_id = ?
+            RETURNING *
+            `,
+            [id]
+        );
+        if (!result.rows || result.rows.length === 0) return null;
+        return result.rows;
     },
     deleteBanners: async (banners: string[]) => {
         if (!banners || !Array.isArray(banners) || banners.length === 0) {
             throw new Error("Invalid Data");
         }
-
         return db.transaction(async (trx) => {
-            let affectedRows = 0;
-            for (const bannerId of banners) {
-                const deletedBanner = await trx("banner")
-                    .where('banner_id', bannerId)
-                    .del();
-                affectedRows += deletedBanner;
-            }
-
-            return affectedRows;
+            const result = await trx.raw(
+                `
+                DELETE FROM banner
+                WHERE banner_id = ANY(?)
+                RETURNING *
+                `,
+                [banners]
+            );
+            return result.rows;
         });
     },
 }
