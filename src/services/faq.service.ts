@@ -76,6 +76,19 @@ export default {
 
             return affectedRows;
         });
+    },
+    getFAQsByCategory: async (faq_category: string) => {
+        const result = await db.raw(
+            `SELECT * FROM faq
+            WHERE faq_category = ?`,
+        [faq_category])
+
+        const faqs = result.rows;
+
+        if (faqs.length == 0)
+            return [];
+
+        return faqs;
     }
 
 
