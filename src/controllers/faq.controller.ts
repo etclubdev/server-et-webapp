@@ -6,20 +6,7 @@ import faqService from "../services/faq.service";
 export default {
     getAllFAQs: (async (req: Request, res: Response): Promise<void> => {
         try {
-            const faq_category = req.query.faq_category?.toString();
-            const validCategories = [
-                "Về ET Club",
-                "Về hoạt động và sự kiện",
-                "Về quy trình tham gia",
-                "Khác"
-            ];
-
-            if (faq_category && !validCategories.includes(faq_category)) {
-                res.status(400).json({
-                    message: `faq_category must be one of: ${validCategories.join(", ")}`
-                });
-                return;
-            }
+            const faq_category = req.query.faq_category as string[];
 
             const groupedFAQs = faq_category
                 ? await faqService.getFAQsByCategory(faq_category)
