@@ -2,10 +2,10 @@ import db from '../utils/db.util'
 
 export default {
     getAllTerms: async () => {
-        const terms = await db('term')
-        .select('term_id', 'term_name')
+        const result = await db.raw(`SELECT term_id, term_name FROM term`);
+        const terms = result.rows;
 
-        if (terms.length === 0) 
+        if (!terms || terms.length === 0) 
             return null;
 
         return terms;

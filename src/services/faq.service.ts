@@ -4,48 +4,48 @@ import { FAQ } from "../types/faq";
 export default {
 
     getFAQById: async (id: string): Promise<FAQ | null> => {
-        try {
-            const faq = await db("faq")
-                .select("*")
-                .where("faq_id", id);
-
-            return faq.length > 0 ? faq[0] : null;
-        } catch (error) {
-            console.error("Error getting FAQ by ID:", error);
-            throw new Error("Error getting FAQ by ID: " + error.message);
-        }
+        const result = await db.raw(
+            `SELECT * FROM faq WHERE faq_id = ?`,
+            [id]
+        );
+        const faq = result.rows;
+        return faq.length > 0 ? faq[0] : null;
     },
 
-
     getAllFAQs: async (): Promise<Record<string, FAQ[]>> => {
-        try {
+        const result = await db.raw(`SELECT * FROM faq`);
+        const faqs = result.rows;
 
-            const faqs = await db("faq").select("*");
+        const groupedFAQs: Record<string, FAQ[]> = {};
 
-            const groupedFAQs: Record<string, FAQ[]> = {};
+        faqs.forEach((faq) => {
+            const category = faq.faq_category || "Khác";
+            if (!groupedFAQs[category]) {
+                groupedFAQs[category] = [];
+            }
+            groupedFAQs[category].push(faq);
+        });
 
-            faqs.forEach((faq) => {
-                const category = faq.faq_category || "Khác";
-                if (!groupedFAQs[category]) {
-                    groupedFAQs[category] = [];
-                }
-                groupedFAQs[category].push(faq);
-            });
-
-            return groupedFAQs;
-        } catch (error) {
-            console.error("Error getting FAQs:", error);
-            throw new Error("Error getting FAQs: " + error.message);
-        }
+        return groupedFAQs;
     },
 
     createFAQ: async (faq: FAQ) => {
-        return db("faq")
-            .insert(faq)
-            .returning("*");
+        const result = await db.raw(
+            `INSERT INTO faq (question, answer, faq_category, visible)
+         VALUES (:question, :answer, :faq_category, :visible)
+         RETURNING *`,
+            {
+                question: faq.question,
+                answer: faq.answer,
+                faq_category: faq.faq_category,
+                visible: faq.visible
+            }
+        );
+
+        return result.rows[0];
     },
 
-    async updateFAQ(id: string, faq: Partial<FAQ>) {
+    updateFAQ: async (id: string, faq: Partial<FAQ>) => {
         const updatedFAQ = await db("faq")
             .where("faq_id", id)
             .update(faq)
@@ -54,10 +54,13 @@ export default {
         if (updatedFAQ.length === 0) return null;
         return updatedFAQ;
     },
+
     deleteFAQById: async (id: string) => {
-        return db("faq")
-            .where("faq_id", id)
-            .del();
+        const result = await db.raw(
+            `DELETE FROM faq WHERE faq_id = ? RETURNING faq_id`,
+            [id]
+        );
+        return result.rows.length;
     },
 
     deleteFAQs: async (faqs: string[]) => {
@@ -65,18 +68,14 @@ export default {
             throw new Error("Invalid Data");
         }
 
-        return db.transaction(async (trx) => {
-            let affectedRows = 0;
-            for (const faqId of faqs) {
-                const deletedFAQs = await trx("faq")
-                    .where('faq_id', faqId)
-                    .del();
-                affectedRows += deletedFAQs;
-            }
+        const result = await db.raw(
+            `DELETE FROM faq
+             WHERE faq_id = ANY(:faqs::uuid[])
+             RETURNING faq_id`,
+            { faqs }
+        );
 
-            return affectedRows;
-        });
+        return result.rows.length;
     }
-
 
 };

@@ -111,6 +111,7 @@ export default {
 
       if (!news) {
         res.status(404).json({ message: "News not found!" });
+        return;
       }
       res.status(200).json({
         message: "Successfully",

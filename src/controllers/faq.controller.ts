@@ -37,6 +37,8 @@ export default {
     createFAQ: async (req: Request, res: Response) => {
         const faq = req.body;
         try {
+            console.log(faq);
+            
             const createdFAQ = await faqService.createFAQ(faq);
             res.status(201).json({
                 message: "The FAQ is created successfully",

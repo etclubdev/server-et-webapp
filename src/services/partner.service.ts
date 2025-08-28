@@ -3,19 +3,20 @@ import { Partner } from '../types/partner'
 
 export default {
     getPartnerByCategory: async (category: string) => {
-        const partners = await db('partner')
-            .select('*')
-            .where('partner_category_name', category);
+        const result = await db.raw(
+            `SELECT * FROM partner WHERE partner_category_name = ?`,
+            [category])
+        const partners = result.rows;
 
-        if (partners.length === 0) {
+        if (!partners || partners.length === 0) {
             return null;
         }
         return partners;
     },
     deletePartner: async (id: string) => {
-        return db('partner')
-            .where('partner_id', id)
-            .del();
+        return db.raw(
+            `DELETE FROM partner WHERE partner_id = ? RETURNING partner_id`,
+            [id])
     },
 
     deletePartners: async (partners: string[]) => {
@@ -24,41 +25,47 @@ export default {
         }
 
         return db.transaction(async (trx) => {
-            let affectedRows = 0;
-            for (const partnerId of partners) {
-                const deletedPartner = await trx("partner")
-                    .where('partner_id', partnerId)
-                    .del();
-                affectedRows += deletedPartner;
-            }
+            const result = await trx.raw(
+                `DELETE FROM partner
+             WHERE partner_id = ANY(:partners::uuid[])
+             RETURNING *`,
+                { partners } // named binding với Knex
+            );
 
-            return affectedRows;
+            return result.rows.length;
         });
     },
 
     updatePartner: async (id: string, partner: Partner) => {
         const updatedPartner = await db('partner')
-            .where('partner_id', id)
             .update(partner)
-            .returning("*");
+            .where({ partner_id: id })
+            .returning('*');
 
-        if (updatedPartner.length === 0)
-            return null;
-        return updatedPartner;
-    },
-    getPartnerByID: async (id: string) => {
-        const partner = await db('partner')
-            .select('*')
-            .where('partner_id', id);
-
-        if (partner.length === 0) {
+        if (updatedPartner.length === 0) {
             return null;
         }
-        return partner[0];
+
+        return updatedPartner[0];
+    },
+    getPartnerByID: async (id: string) => {
+        const result = await db.raw(
+            `SELECT * FROM partner WHERE partner_id = ?`,
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return null;
+        }
+        return result.rows[0];
     },
     getAllPartner: async () => {
-        const partners = await db('partner')
-            .select('*');
+        const result = await db.raw(`SELECT * FROM partner`);
+        const partners = result.rows;
+
+        if (!partners || partners.length === 0) {
+            return null;
+        }
 
         const groupedPartners: Record<string, Partner[]> = {};
 
@@ -73,22 +80,40 @@ export default {
         return groupedPartners;
     },
     createPartner: async (partner: Partner) => {
-        return db('partner')
-            .insert(partner)
-            .returning("*");
+        const result = await db.raw(
+            `INSERT INTO partner (
+                partner_name, partner_category_name, avatar_url, 
+                short_description, email, phone_number, visible
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            RETURNING *`,
+            [
+                partner.partner_name,
+                partner.partner_category_name,
+                partner.avatar_url,
+                partner.short_description,
+                partner.email,
+                partner.phone_number,
+                partner.visible
+            ]
+        );
+        return result.rows[0];
     },
+
     updateVisible: async (partners: { partner_id: string; visible: boolean }[]) => {
         if (!partners || !Array.isArray(partners) || partners.length === 0) {
             throw new Error("Invalid Data");
         }
-        console.log(partners);
-        
+
         return db.transaction(async (trx) => {
             for (const partner of partners) {
-                await trx("partner")
-                    .where('partner_id', partner.partner_id)
-                    .update('visible', partner.visible)
+                await trx.raw(
+                    `UPDATE partner 
+                 SET visible = $1 
+                 WHERE partner_id = $2`,
+                    [partner.visible, partner.partner_id]
+                );
             }
+            return true;
         });
     }
 }
