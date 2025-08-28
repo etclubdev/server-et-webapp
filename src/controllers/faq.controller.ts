@@ -6,9 +6,29 @@ import faqService from "../services/faq.service";
 export default {
     getAllFAQs: (async (req: Request, res: Response): Promise<void> => {
         try {
-            const groupedFAQs = await faqService.getAllFAQs();
+            const faq_category = req.query.faq_category?.toString();
+            const validCategories = [
+                "Về ET Club",
+                "Về hoạt động và sự kiện",
+                "Về quy trình tham gia",
+                "Khác"
+            ];
 
-            const allEmpty = Object.values(groupedFAQs).every((group) => group.length === 0);
+            if (faq_category && !validCategories.includes(faq_category)) {
+                res.status(400).json({
+                    message: `faq_category must be one of: ${validCategories.join(", ")}`
+                });
+                return;
+            }
+
+            const groupedFAQs = faq_category
+                ? await faqService.getFAQsByCategory(faq_category)
+                : await faqService.getAllFAQs();
+
+            const allEmpty = Object.values(groupedFAQs).every(
+                (group) => Array.isArray(group) && group.length === 0
+            );
+
 
             if (allEmpty) {
                 res.status(404).json({
@@ -130,7 +150,7 @@ export default {
         }
     },
 
-    deleteFAQs: async (req: Request, res: Response) => { 
+    deleteFAQs: async (req: Request, res: Response) => {
         const { faqs } = req.body;
 
         if (!faqs || !Array.isArray(faqs) || faqs.length === 0) {
