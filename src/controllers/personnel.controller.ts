@@ -154,13 +154,14 @@ export default {
         }
     },
     getPersonnels: async (req: Request, res: Response): Promise<void> => {
-        const { status, departmentName } = req.query;
+        const { departmentName } = req.query;
+        const status = req.query.status as string | string[] | undefined;
 
         try {
             let personnels;
 
             if (
-                status && typeof status === "string" &&
+                status && Array.isArray(status) &&
                 departmentName && typeof departmentName === "string"
             ) {
                 personnels = await personnelService.getPersonnelByDepartmentAndStatus(departmentName, status);
@@ -173,7 +174,7 @@ export default {
                     return;
                 }
             }
-            else if (status && typeof status === "string") {
+            else if (status && Array.isArray(status)) {
                 personnels = await personnelService.getPersonnelByStatus(status);
 
                 if (!personnels || personnels.length === 0) {

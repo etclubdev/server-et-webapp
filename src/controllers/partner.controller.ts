@@ -104,7 +104,7 @@ export default {
     },
     getPartner: async (req: Request, res: Response) => {
         try {
-            const category = req.query.category as string;
+            const category = req.query.category as string | string[] | undefined;
             const partners = category ? await partnerService.getPartnerByCategory(category) : await partnerService.getAllPartner();
 
             if (!partners) {
