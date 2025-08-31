@@ -64,11 +64,11 @@ export default {
         return news[0];
     },
 
-    getAllNews: async (category?: string) => {
+    getAllNews: async (categories?: string[]) => {
         try {
             let result;
-            if (category) {
-                result = await db.raw(`SELECT * FROM et_news WHERE etnews_category = ?`, [category]);
+            if (Array.isArray(categories) && categories.length > 0) {
+                result = await db.raw(`SELECT * FROM et_news WHERE etnews_category = ANY(?)`, [categories]);
             } else {
                 result = await db.raw(`SELECT * FROM et_news`);
             }
