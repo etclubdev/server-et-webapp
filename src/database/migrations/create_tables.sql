@@ -18,9 +18,7 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'personnel_status_enum') THEN
         CREATE TYPE personnel_status_enum AS ENUM (
             'Đang hoạt động',
-            'Cựu thành viên',
-            'Ứng viên',
-            'Ứng viên bị loại'
+            'Cựu thành viên'
         );
     END IF;
     
