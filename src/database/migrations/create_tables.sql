@@ -237,15 +237,15 @@ CREATE TABLE IF NOT EXISTS application (
     faculty VARCHAR NOT NULL DEFAULT 'Công nghệ thông tin kinh doanh',
     major VARCHAR NOT NULL DEFAULT 'Công nghệ thông tin',
     class VARCHAR NOT NULL DEFAULT 'ET0001',
-    cv_type cv_type_enum,
-    cv_link TEXT,
+    cv_type cv_type_enum NOT NULL,
+    cv_link TEXT NOT NULL CHECK (cv_link ~* '^(https?|ftp)://[^\s/$.?#].[^\s]*$'),
     apply_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     round INT CHECK (round BETWEEN 1 AND 3) DEFAULT 1,
     application_status application_status_enum NOT NULL DEFAULT 'Pending',
     department_name department_enum NOT NULL,
     note TEXT,
-    reviewed_by UUID REFERENCES personnel(personnel_id),
-    reviewed_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    reviewed_by UUID REFERENCES personnel(personnel_id) DEFAULT NULL,
+    reviewed_on TIMESTAMP DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS recruitment (
