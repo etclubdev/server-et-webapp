@@ -1,3 +1,4 @@
+
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -41,6 +42,7 @@ export default {
                 username: user.username,
                 sysrole_id: user.sysrole_id,
                 sysrole_name: user.sysrole_name,
+                department_name: user.department_name,
             };
 
             const accessToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '2m' });
@@ -100,7 +102,8 @@ export default {
                     personnel_id: decoded.personnel_id,
                     username: decoded.username,
                     sysrole_id: decoded.sysrole_id,
-                    sysrole_name: decoded.sysrole_name
+                    sysrole_name: decoded.sysrole_name,
+                    department_name: decoded.department_name,
                 },
                 SECRET_KEY,
                 { expiresIn: '2m' }
@@ -113,6 +116,7 @@ export default {
                     username: decoded.username,
                     sysrole_id: decoded.sysrole_id,
                     sysrole_name: decoded.sysrole_name,
+                    department_name: decoded.department_name,
                     token_type: 'refresh'
                 },
                 SECRET_KEY,

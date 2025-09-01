@@ -16,6 +16,7 @@ import bannerRoute from './routes/banner.route';
 import accountRoute from './routes/account.route'
 import termRoute from './routes/term.route'
 import searchRoute from './routes/search.route'
+import applicationRoute from './routes/application.route';
 import authRoute from './routes/auth.route';
 import YAML from 'yaml';
 import fs from 'fs';
@@ -44,6 +45,7 @@ app.use('/accounts', accountRoute);
 app.use('/auth', authRoute)
 app.use('/terms', termRoute)
 app.use('/search', searchRoute)
+app.use('/applications', applicationRoute)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const PORT = process.env.PORT || 8080;
