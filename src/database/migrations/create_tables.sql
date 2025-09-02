@@ -18,9 +18,7 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'personnel_status_enum') THEN
         CREATE TYPE personnel_status_enum AS ENUM (
             'Đang hoạt động',
-            'Cựu thành viên',
-            'Ứng viên',
-            'Ứng viên bị loại'
+            'Cựu thành viên'
         );
     END IF;
     
@@ -51,7 +49,7 @@ BEGIN
     END IF;
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'department_enum') THEN
         CREATE TYPE department_enum AS ENUM (
-            'Ban Kỹ thuật - Công nghệ',
+            'Ban Chuyên môn',
             'Ban Truyền thông',
             'Ban Nhân sự - Tổ chức',
             'Ban Sự kiện',
@@ -155,7 +153,7 @@ CREATE TABLE IF NOT EXISTS banner (
 CREATE TABLE IF NOT EXISTS achievement (
     achievement_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     achievement_name TEXT NOT NULL,
-    highlight_number VARCHAR(10) NOT NULL,
+    highlight_number INT NOT NULL,
     visible BOOLEAN NOT NULL
 );
 
@@ -237,14 +235,24 @@ CREATE TABLE IF NOT EXISTS application (
     faculty VARCHAR NOT NULL DEFAULT 'Công nghệ thông tin kinh doanh',
     major VARCHAR NOT NULL DEFAULT 'Công nghệ thông tin',
     class VARCHAR NOT NULL DEFAULT 'ET0001',
-    cv_type cv_type_enum,
-    cv_link TEXT,
+    cv_type cv_type_enum NOT NULL,
+    cv_link TEXT NOT NULL CHECK (cv_link ~* '^(https?|ftp)://[^\s/$.?#].[^\s]*$'),
     apply_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    round INT CHECK (round BETWEEN 1 AND 3) DEFAULT 1,
     application_status application_status_enum NOT NULL DEFAULT 'Pending',
     department_name department_enum NOT NULL,
     note TEXT,
-    reviewd_by UUID REFERENCES personnel(personnel_id),
-    reviewed_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    reviewed_by UUID REFERENCES personnel(personnel_id) DEFAULT NULL,
+    reviewed_on TIMESTAMP DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS recruitment (
+    recruitment_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    is_open BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 --Create trigger
@@ -278,5 +286,10 @@ EXECUTE FUNCTION update_last_modified_column();
 
 CREATE TRIGGER update_last_modified_on
 BEFORE UPDATE ON activity
+FOR EACH ROW
+EXECUTE FUNCTION update_last_modified_column();
+
+CREATE TRIGGER update_last_modified_on
+BEFORE UPDATE ON recruitment
 FOR EACH ROW
 EXECUTE FUNCTION update_last_modified_column();
