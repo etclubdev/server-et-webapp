@@ -28,7 +28,30 @@ const departmentService = {
         }
     },
 
+    checkDepartmentMatchWithApplication: async (userId: string, applicationId: string[]): Promise<boolean> => {
+        try {
+            const [user, application] = await Promise.all([
+                db('personnel')
+                    .join('personnel_status', 'personnel.personnel_id', '=', 'personnel_status.personnel_id')
+                    .select('personnel_status.department_name')
+                    .where('personnel.personnel_id', userId)
+                    .first(),
+                db('application')
+                    .select('department_name')
+                    .whereIn('application_id', applicationId)
+                    .first()
+            ]);
 
+            if (user && application && user.department_name === application.department_name) {
+                console.log(`User ${user} and Application ${application} are in the same department: ${user.department_name}`);
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Error checking department match:', error);
+            throw new Error('Error checking department match: ' + error.message);
+        }
+    },
     checkUserDepartment: async (userId: string, targetDepartment: string): Promise<boolean> => {
         try {
             const user = await db('personnel')
