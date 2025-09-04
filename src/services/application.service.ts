@@ -51,4 +51,10 @@ export default {
         );
         return updatedResult.rows;
     },
+    getApplicationById: async (id: string) => {
+        const result = await db.raw(
+            `SELECT * FROM application WHERE application_id = ?`, [id]
+        );
+        return result.rows[0] || null;
+    }
 }
