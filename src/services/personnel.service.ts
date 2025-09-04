@@ -98,7 +98,7 @@ export default {
             let updatedPersonnel: Personnel | null = null;
             let updatedStatus: string | null = null;
 
-            // Pre-check unique email nếu có cập nhật email
+
             if (personnelData.email) {
                 const checkEmail = await trx.raw(
                     `SELECT personnel_id FROM personnel WHERE email = ? AND personnel_id <> ?`,
