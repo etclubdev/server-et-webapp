@@ -51,4 +51,17 @@ export default {
         );
         return updatedResult.rows;
     },
+    deleteApplications: async (applications: string[]) => {
+        if (!applications || !Array.isArray(applications) || applications.length === 0) {
+            throw new Error("Invalid Data");
+        }
+        return db.transaction(async (trx) => {
+            const result = await trx.raw(
+                `DELETE FROM application
+            WHERE application_id = ANY(?::uuid[])`,
+                [applications]
+            );
+            return result.rowCount;
+        });
+    }
 }

@@ -33,5 +33,27 @@ export default {
             });
             return;
         }
+    },
+    deleteApplications: async (req: Request, res: Response) => {
+        const { applications } = req.body;
+        try {
+            const deletedCount = await applicationService.deleteApplications(applications);
+
+            if (!deletedCount || deletedCount === 0) {
+                res.status(404).json({
+                    message: "No applications were deleted"
+                });
+                return;
+            }
+
+            res.status(204);
+            return;
+
+        } catch (error) {
+            res.status(500).json({
+                message: "Internal server error",
+                error: (error as Error).message
+            });
+        }
     }
-}
+} 
