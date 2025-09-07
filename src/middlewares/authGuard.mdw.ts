@@ -92,17 +92,23 @@ const authGuard = {
                     return next();
                 }
                 const userId = req.user?.personnel_id;
-                const applicationId = req.body['ids']
-
-                if (!userId || !applicationId || applicationId.length === 0) {
+                const applicationId = req.body.ids
+                    ? req.body.ids
+                    : req.query.ids
+                        ? (req.query.ids as string).split(",")
+                        : req.params.id
+                            ? [req.params.id]
+                            : [];
+                
+                if (!userId || applicationId.length === 0) {
                     res.status(400).json("Missing user IDs for department verification!");
                     return;
                 }
 
-                const isSameDepartment = await departmentService.checkDepartmentMatchWithApplication(userId, applicationId);
+                const { isMatched, message } = await departmentService.checkDepartmentMatchWithApplication(userId, applicationId);
 
-                if (!isSameDepartment) {
-                    res.status(403).json("You do not have permission to access this resource!");
+                if (!isMatched) {
+                    res.status(403).json(message);
                     return;
                 }
 

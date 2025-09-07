@@ -5,6 +5,8 @@ export interface LoginInfo {
 export interface JWTPayload {
     account_id: string;
     username: string;
+    sysrole_id: string;
     sysrole_name: string;
     personnel_id: string;
+    department_name: string;
 }

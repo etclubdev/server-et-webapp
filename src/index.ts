@@ -46,6 +46,7 @@ app.use('/auth', authRoute)
 app.use('/terms', termRoute)
 app.use('/applications', applicationRoute);
 app.use('/search', searchRoute)
+app.use('/applications', applicationRoute)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const PORT = process.env.PORT || 8080;
