@@ -92,9 +92,9 @@ const authGuard = {
                     return next();
                 }
                 const userId = req.user?.personnel_id;
-                const applicationId = req.body['ids']
-
-                if (!userId || !applicationId || applicationId.length === 0) {
+                const applicationId = req.body.ids ? req.body.ids : req.params.id ? [req.params.id] : [];
+                
+                if (!userId || applicationId.length === 0) {
                     res.status(400).json("Missing user IDs for department verification!");
                     return;
                 }
