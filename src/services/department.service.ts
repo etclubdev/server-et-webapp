@@ -27,6 +27,7 @@ const departmentService = {
             throw new Error('Error checking department match: ' + error.message);
         }
     },
+
     checkDepartmentMatchWithApplication: async (userId: string, applicationId: string[]): Promise<boolean> => {
         try {
             const [user, application] = await Promise.all([
@@ -51,7 +52,6 @@ const departmentService = {
             throw new Error('Error checking department match: ' + error.message);
         }
     },
-
     checkUserDepartment: async (userId: string, targetDepartment: string): Promise<boolean> => {
         try {
             const user = await db('personnel')
