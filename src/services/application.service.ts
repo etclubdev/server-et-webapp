@@ -51,6 +51,34 @@ export default {
         );
         return updatedResult.rows;
     },
+    rejectApplication: async (reviewed_by: string, ids: string[]) => {
+        const result = await db.raw(
+            `SELECT * FROM application
+            WHERE application_id = ANY(?::uuid[])`, [ids]
+        );
+        const applications = result.rows;
+        if (applications.length === 0) {
+            throw new Error('No applications to reject');
+        }
+        if (applications.length !== ids.length) {
+            throw new Error('Some applications not found');
+        }
+        for (const application of applications) {
+            if (application.round === 3 && application.application_status === 'Approved') {
+                throw new Error('Cannot reject an already approved application');
+            }
+        }
+        await db.raw(
+            `UPDATE application
+            SET application_status = 'Rejected', reviewed_by = ?, reviewed_on = NOW()
+            WHERE application_id = ANY(?::uuid[])`, [reviewed_by, ids]
+        );
+        const updatedResult = await db.raw(`
+            SELECT * FROM application
+            WHERE application_id = ANY(?:: uuid[])`, [ids]
+        );
+        return updatedResult.rows;
+    },
     restoreApplication: async (reviewed_by: string, ids: string[]) => {
         const result = await db.raw(
             `SELECT * FROM application
