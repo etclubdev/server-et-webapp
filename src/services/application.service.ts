@@ -27,8 +27,8 @@ export default {
                 );
 
                 await db.raw(
-                    `INSERT INTO personnel (personnel_name, phone_number, email, dob, gender, student_id, university, faculty, major, class, cv_type, cv_link)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
+                    `INSERT INTO personnel (personnel_name, phone_number, email, dob, gender, student_id, university, faculty, major, class, cv_type, cv_link, cohort_name)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
                     application.full_name,
                     application.phone_number,
                     application.email,
@@ -40,7 +40,8 @@ export default {
                     application.major,
                     application.class,
                     application.cv_type,
-                    application.cv_link
+                    application.cv_link,
+                    application.cohort_name
                 ]
                 );
             }
@@ -146,5 +147,46 @@ export default {
             [ids]
         )
         return restoredApplications.rows
+    },
+    statisticsApplication: async () => {
+        // Tổng số application
+        const totalResult = await db.raw(`SELECT COUNT(*) AS total_applications FROM application`);
+        const total_applications = Number(totalResult.rows[0]?.total_applications || 0);
+
+        // Tổng số thành viên (giả sử là số personnel)
+        const memberResult = await db.raw(`SELECT COUNT(*) AS total_members FROM personnel`);
+        const total_members = Number(memberResult.rows[0]?.total_members || 0);
+
+        // Theo major (department_name)
+        const majorResult = await db.raw(`
+        SELECT department_name AS major, COUNT(*) AS total_applications
+        FROM application
+        GROUP BY department_name
+    `);
+
+        // Theo cohort_name
+        const cohortResult = await db.raw(`
+        SELECT cohort_name, COUNT(*) AS total_applications
+        FROM application
+        GROUP BY cohort_name
+    `);
+
+        // Theo gender
+        const genderResult = await db.raw(`
+        SELECT gender, COUNT(*) AS total_applications
+        FROM application
+        GROUP BY gender
+    `);
+
+        const stats = {
+            by_major: majorResult.rows,
+            by_cohort: cohortResult.rows,
+            by_gender: genderResult.rows,
+            totals: {
+                total_applications,
+                total_members
+            }
+        };
+        return stats;
     },
 }
