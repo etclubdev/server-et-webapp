@@ -38,6 +38,20 @@ export default {
             return;
         }
     },
+    getApplicationById: async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const application = await applicationService.getApplicationById(id);
+        if (!application) {
+            res.status(404).json({
+                message: "Application not found"
+            });
+            return;
+        }
+        res.status(200).json({
+            message: "Application retrieved successfully",
+            data: application
+        });
+    },
     getApplications: async (req: Request, res: Response) => {
         try {
             const { round, status, department_name } = req.query;
