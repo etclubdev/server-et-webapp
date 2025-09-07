@@ -51,25 +51,42 @@ export default {
         );
         return updatedResult.rows;
     },
+    deleteApplications: async (applications: string[]) => {
+        if (!applications || !Array.isArray(applications) || applications.length === 0) {
+            throw new Error("Invalid Data");
+        }
+
+        const result = await db.raw(
+            `DELETE FROM application
+            WHERE application_id = ANY(ARRAY[${applications.map(() => '?').join(',')}]::uuid[])`,
+            applications
+        );
+
+        return result.rowCount;
+
+    },
     getApplicationById: async (id: string) => {
         const result = await db.raw(
             `SELECT * FROM application WHERE application_id = ?`, [id]
         );
         return result.rows[0] || null;
     },
-    getApplications: async (filters: { round?: number; status?: string; department_name?: string }) => {
+    getApplications: async (filters: { round?: number; status?: string[]; department_name?: string[] }) => {
         let query = `SELECT * FROM application WHERE 1=1`;
         const params: any[] = [];
+
         if (filters.round !== undefined) {
             query += ` AND round = ?`;
             params.push(filters.round);
         }
-        if (filters.status !== undefined) {
-            query += ` AND application_status = ?`;
+
+        if (filters.status && filters.status.length > 0) {
+            query += ` AND application_status = ANY(?::application_status_enum[])`;
             params.push(filters.status);
         }
-        if (filters.department_name !== undefined) {
-            query += ` AND department_name = ?`;
+
+        if (filters.department_name && filters.department_name.length > 0) {
+            query += ` AND department_name = ANY(?::department_enum[])`;
             params.push(filters.department_name);
         }
 
@@ -114,7 +131,7 @@ export default {
             return []
         }
         for (const app of result.rows) {
-            if(app.round === 3 && app.application_status === 'Approved')
+            if (app.round === 3 && app.application_status === 'Approved')
                 throw new Error("Cannot restore application that has been approved in round 3")
         }
         await db.raw(

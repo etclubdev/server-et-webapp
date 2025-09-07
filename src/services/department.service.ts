@@ -28,7 +28,7 @@ const departmentService = {
         }
     },
 
-    checkDepartmentMatchWithApplication: async (userId: string, applicationId: string[]): Promise<boolean> => {
+    checkDepartmentMatchWithApplication: async (userId: string, applicationId: string[]): Promise<{ isMatched: boolean, message: string }> => {
         try {
             const [user, application] = await Promise.all([
                 db('personnel')
@@ -42,11 +42,15 @@ const departmentService = {
                     .first()
             ]);
 
-            if (user && application && user.department_name === application.department_name) {
-                console.log(`User ${user} and Application ${application} are in the same department: ${user.department_name}`);
-                return true;
+            if (!application) {
+                return { isMatched: false, message: "No application can be found" };
             }
-            return false;
+
+            if (user && application && user.department_name === application.department_name) {
+                return { isMatched: true, message: "User and Application(s) are in the same department" };
+            }
+
+            return { isMatched: false, message: "User and Application(s) are NOT in the same department" };
         } catch (error) {
             console.error('Error checking department match:', error);
             throw new Error('Error checking department match: ' + error.message);
