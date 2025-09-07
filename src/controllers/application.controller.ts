@@ -2,6 +2,10 @@ import { Request, Response } from "express";
 
 import applicationService from "../services/application.service";
 
+const isAdministrator = (sysrole_name) => {
+    return sysrole_name === 'Administrator';
+}
+
 export default {
     approveApplication: async (req: Request, res: Response) => {
         const reviewed_by = req.user?.personnel_id;
@@ -32,6 +36,33 @@ export default {
                 error: (error as Error).message
             });
             return;
+        }
+    },
+    getApplications: async (req: Request, res: Response) => {
+        try {
+            const { round, status, department_name } = req.query;
+
+            const filters: { round?: number; status?: string; department_name?: string } = {};
+
+            if (round !== undefined) filters.round = Number(round);
+            if (status !== undefined) filters.status = String(status);
+            if (department_name !== undefined) filters.department_name = String(department_name);
+
+            if (!isAdministrator(req.user?.sysrole_name)) {
+                filters.department_name = req.user?.department_name;
+            }
+
+            const applications = await applicationService.getApplications(filters);
+
+            res.status(200).json({
+                message: "Get applications successfully",
+                data: applications
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: "Internal server error",
+                error: (error as Error).message
+            });
         }
     },
     rejectApplication: async (req: Request, res: Response) => {

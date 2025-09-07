@@ -51,6 +51,25 @@ export default {
         );
         return updatedResult.rows;
     },
+    getApplications: async (filters: { round?: number; status?: string; department_name?: string }) => {
+        let query = `SELECT * FROM application WHERE 1=1`;
+        const params: any[] = [];
+        if (filters.round !== undefined) {
+            query += ` AND round = ?`;
+            params.push(filters.round);
+        }
+        if (filters.status !== undefined) {
+            query += ` AND application_status = ?`;
+            params.push(filters.status);
+        }
+        if (filters.department_name !== undefined) {
+            query += ` AND department_name = ?`;
+            params.push(filters.department_name);
+        }
+
+        const result = await db.raw(query, params);
+        return result.rows;
+    },
     rejectApplication: async (reviewed_by: string, ids: string[]) => {
         const result = await db.raw(
             `SELECT * FROM application
