@@ -6,6 +6,9 @@ import { managePersonnelRole } from '../global/roles';
 
 const router = express.Router();
 
+router.get('/', authGuard.verifyRoles(managePersonnelRole), applicationController.getApplications);
+router.put('/restore', authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForManageApplication(), applicationController.restoreApplication);
 router.put('/approve', authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForManageApplication(), applicationController.approveApplication);
-router.get('/', authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForManageApplication(), applicationController.getApplications);
+router.put('/reject', authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForManageApplication(), applicationController.rejectApplication);
+
 export default router;
