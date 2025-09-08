@@ -221,7 +221,7 @@ export default {
         }
         return personnels;
     },
-    getPersonnelByStatus: async (status: string): Promise<Personnel[]> => {
+    getPersonnelByStatus: async (status: string[]): Promise<Personnel[]> => {
         if (!status) {
             throw new Error("Invalid Data: status is required");
         }
@@ -238,7 +238,7 @@ export default {
     },
     getPersonnelByDepartmentAndStatus: async (
         departmentName: string,
-        status: string
+        status: string[]
     ): Promise<Personnel[]> => {
         if (!departmentName || !status) {
             throw new Error("Invalid Data: departmentName and status are required");
