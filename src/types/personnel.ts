@@ -1,6 +1,7 @@
 export interface Personnel {
     personnel_id?: string;
     personnel_name: string;
+    phone_number: string;
     email: string;
     dob: Date;
     phone_number?: string;
