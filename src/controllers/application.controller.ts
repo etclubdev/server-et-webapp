@@ -184,13 +184,28 @@ export default {
     },
     exportApplications: async (req: Request, res: Response) => {
         try {
-            const { round, status } = req.query;
-            const filters: { round?: number; status?: string[] } = {};
-            if (round !== undefined) filters.round = Number(round);
+            const { round, status, department_name } = req.query;
+
+            const filters: { round?: number; status?: string[]; department_name?: string[] } = {};
+
+            if (round !== undefined) {
+                filters.round = Number(round);
+            }
+
             if (status !== undefined) {
                 filters.status = Array.isArray(status)
                     ? status.map(String)
                     : String(status).split(",");
+            }
+
+            if (department_name !== undefined) {
+                filters.department_name = Array.isArray(department_name)
+                    ? department_name.map(String)
+                    : String(department_name).split(",");
+            }
+
+            if (!isAdministrator(req.user?.sysrole_name)) {
+                filters.department_name = [req.user?.department_name as string];
             }
 
             const applications = await applicationService.getApplications(filters);
@@ -199,16 +214,27 @@ export default {
             const worksheet = workbook.addWorksheet("Applications");
 
             worksheet.columns = [
-                { header: 'ID', key: 'application_id', width: 36 },
-                { header: 'Họ tên', key: 'full_name', width: 20 },
-                { header: 'Email', key: 'email', width: 25 },
-                { header: 'Số điện thoại', key: 'phone_number', width: 15 },
-                { header: 'Round', key: 'round', width: 8 },
-                { header: 'Status', key: 'application_status', width: 15 },
-                { header: 'Department', key: 'department_name', width: 20 },
+                { header: "STT", key: "order", width: 6 },
+                { header: "Họ tên", key: "full_name", width: 20 },
+                { header: "Email", key: "email", width: 25 },
+                { header: "Số điện thoại", key: "phone_number", width: 15 },
+                { header: "Ngày sinh", key: "dob", width: 15, style: { numFmt: "dd-mm-yyyy" } },
+                { header: "Giới tính", key: "gender", width: 10 },
+                { header: "MSSV", key: "student_id", width: 20 },
+                { header: "Trường", key: "university", width: 30 },
+                { header: "Khoa", key: "faculty", width: 30 },
+                { header: "Ngành", key: "major", width: 25 },
+                { header: "Lớp", key: "class", width: 15 },
+                { header: "Vòng", key: "round", width: 8 },
+                { header: "Trạng thái", key: "application_status", width: 15 },
+                { header: "Ban", key: "department_name", width: 20 },
             ];
 
-            applications.forEach(app => worksheet.addRow(app));
+            applications.forEach((app, index) => worksheet.addRow({
+                order: index + 1,
+                dob: app.dob ? new Date(app.dob) : null,
+                ...app
+            }));
 
             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             res.setHeader('Content-Disposition', 'attachment; filename=applications.xlsx');
