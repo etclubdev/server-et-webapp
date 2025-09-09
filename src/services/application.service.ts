@@ -160,4 +160,49 @@ export default {
         )
         return restoredApplications.rows
     },
+    statisticsApplication: async () => {
+        // Total applications
+        const totalResult = await db.raw(`SELECT COUNT(*) AS total_applications FROM application`);
+        const total_applications = Number(totalResult.rows[0]?.total_applications || 0);
+
+        // Total members
+        const memberResult = await db.raw(`
+            SELECT COUNT(*) AS total_members 
+            FROM application
+            WHERE application_status = 'Approved' AND round = 3
+        `);
+        const total_members = Number(memberResult.rows[0]?.total_members || 0);
+
+        // By major (department_name)
+        const majorResult = await db.raw(`
+        SELECT department_name AS major, COUNT(*) AS total_applications
+        FROM application
+        GROUP BY department_name
+    `);
+
+        // By cohort_name
+        const cohortResult = await db.raw(`
+        SELECT cohort_name, COUNT(*) AS total_applications
+        FROM application
+        GROUP BY cohort_name
+    `);
+
+        // By gender
+        const genderResult = await db.raw(`
+        SELECT gender, COUNT(*) AS total_applications
+        FROM application
+        GROUP BY gender
+    `);
+
+        const stats = {
+            by_major: majorResult.rows,
+            by_cohort: cohortResult.rows,
+            by_gender: genderResult.rows,
+            totals: {
+                total_applications,
+                total_members
+            }
+        };
+        return stats;
+    },
 }
