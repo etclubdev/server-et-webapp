@@ -1,4 +1,5 @@
 import db from '../utils/db.util';
+import personnelService from './personnel.service';
 
 export default {
     approveApplication: async (reviewed_by: string, ids: string[]) => {
@@ -26,23 +27,34 @@ export default {
                 WHERE application_id = ?`, [reviewed_by, application.application_id]
                 );
 
-                await db.raw(
-                    `INSERT INTO personnel (personnel_name, phone_number, email, dob, gender, student_id, university, faculty, major, class, cv_type, cv_link, cohort_name)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
-                    application.full_name,
-                    application.phone_number,
-                    application.email,
-                    application.dob,
-                    application.gender,
-                    application.student_id,
-                    application.university,
-                    application.faculty,
-                    application.major,
-                    application.class,
-                    application.cv_type,
-                    application.cv_link,
-                    application.cohort_name
-                ]
+                const termResult = await db.raw(
+                    `SELECT term_id FROM term ORDER BY start_date DESC LIMIT 1`
+                );
+                const term_id = termResult.rows[0]?.term_id;
+
+                await personnelService.createPersonnelWithStatus(
+                    {
+                        personnel_name: application.full_name,
+                        phone_number: application.phone_number,
+                        email: application.email,
+                        dob: application.dob,
+                        gender: application.gender,
+                        address: application.address ?? null,
+                        student_id: application.student_id,
+                        university: application.university,
+                        faculty: application.faculty,
+                        major: application.major,
+                        class: application.class,
+                        cv_type: application.cv_type,
+                        cv_link: application.cv_link,
+                        cohort_name: application.cohort_name ?? null
+                    },
+                    {
+                        term_id,
+                        department_name: application.department_name,
+                        position_name: 'Cộng tác viên',
+                        personnel_status: 'Đang hoạt động'
+                    }
                 );
             }
         }
@@ -149,29 +161,33 @@ export default {
         return restoredApplications.rows
     },
     statisticsApplication: async () => {
-        // Tổng số application
+        // Total applications
         const totalResult = await db.raw(`SELECT COUNT(*) AS total_applications FROM application`);
         const total_applications = Number(totalResult.rows[0]?.total_applications || 0);
 
-        // Tổng số thành viên (giả sử là số personnel)
-        const memberResult = await db.raw(`SELECT COUNT(*) AS total_members FROM personnel`);
+        // Total members
+        const memberResult = await db.raw(`
+            SELECT COUNT(*) AS total_members 
+            FROM application
+            WHERE application_status = 'Approved' AND round = 3
+        `);
         const total_members = Number(memberResult.rows[0]?.total_members || 0);
 
-        // Theo major (department_name)
+        // By major (department_name)
         const majorResult = await db.raw(`
         SELECT department_name AS major, COUNT(*) AS total_applications
         FROM application
         GROUP BY department_name
     `);
 
-        // Theo cohort_name
+        // By cohort_name
         const cohortResult = await db.raw(`
         SELECT cohort_name, COUNT(*) AS total_applications
         FROM application
         GROUP BY cohort_name
     `);
 
-        // Theo gender
+        // By gender
         const genderResult = await db.raw(`
         SELECT gender, COUNT(*) AS total_applications
         FROM application
