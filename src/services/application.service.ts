@@ -1,4 +1,5 @@
 import db from '../utils/db.util';
+import personnelService from './personnel.service';
 
 export default {
     approveApplication: async (reviewed_by: string, ids: string[]) => {
@@ -26,22 +27,34 @@ export default {
                 WHERE application_id = ?`, [reviewed_by, application.application_id]
                 );
 
-                await db.raw(
-                    `INSERT INTO personnel (personnel_name, phone_number, email, dob, gender, student_id, university, faculty, major, class, cv_type, cv_link)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
-                    application.full_name,
-                    application.phone_number,
-                    application.email,
-                    application.dob,
-                    application.gender,
-                    application.student_id,
-                    application.university,
-                    application.faculty,
-                    application.major,
-                    application.class,
-                    application.cv_type,
-                    application.cv_link
-                ]
+                const termResult = await db.raw(
+                    `SELECT term_id FROM term ORDER BY start_date DESC LIMIT 1`
+                );
+                const term_id = termResult.rows[0]?.term_id;
+
+                await personnelService.createPersonnelWithStatus(
+                    {
+                        personnel_name: application.full_name,
+                        phone_number: application.phone_number,
+                        email: application.email,
+                        dob: application.dob,
+                        gender: application.gender,
+                        address: application.address ?? null,
+                        student_id: application.student_id,
+                        university: application.university,
+                        faculty: application.faculty,
+                        major: application.major,
+                        class: application.class,
+                        cv_type: application.cv_type,
+                        cv_link: application.cv_link,
+                        cohort_name: application.cohort_name ?? null
+                    },
+                    {
+                        term_id,
+                        department_name: application.department_name,
+                        position_name: 'Cộng tác viên',
+                        personnel_status: 'Đang hoạt động'
+                    }
                 );
             }
         }

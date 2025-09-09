@@ -243,7 +243,8 @@ CREATE TABLE IF NOT EXISTS application (
     department_name department_enum NOT NULL,
     note TEXT,
     reviewed_by UUID REFERENCES personnel(personnel_id) DEFAULT NULL,
-    reviewed_on TIMESTAMP DEFAULT NULL
+    reviewed_on TIMESTAMP DEFAULT NULL,
+    cohort_name VARCHAR(10) NOT NULL DEFAULT 'K49'
 );
 
 CREATE TABLE IF NOT EXISTS recruitment (
