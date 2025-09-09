@@ -244,5 +244,27 @@ export default {
         } catch (error) {
             res.status(500).json({ message: 'Export failed', error: (error as Error).message });
         }
-    }
+    },
+    statisticsApplication: async (req: Request, res: Response) => {
+        try {
+            const stats = await applicationService.statisticsApplication();
+            if (!stats || Object.keys(stats).length === 0) {
+                res.status(404).json({
+                    message: 'No statistics found',
+                    data: stats
+                });
+                return;
+            }
+            res.status(200).json({
+                message: 'Statistics retrieved successfully',
+                data: stats
+            });
+            return;
+        } catch (error) {
+            res.status(500).json({
+                message: 'Internal Server Error ' + error.message
+            });
+            return;
+        }
+    },
 }
