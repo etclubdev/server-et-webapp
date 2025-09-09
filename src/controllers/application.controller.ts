@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-
+import ExcelJS from 'exceljs';
 import applicationService from "../services/application.service";
 
 const isAdministrator = (sysrole_name) => {
@@ -182,4 +182,41 @@ export default {
             return;
         }
     },
+    exportApplications: async (req: Request, res: Response) => {
+        try {
+            const { round, status } = req.query;
+            const filters: { round?: number; status?: string[] } = {};
+            if (round !== undefined) filters.round = Number(round);
+            if (status !== undefined) {
+                filters.status = Array.isArray(status)
+                    ? status.map(String)
+                    : String(status).split(",");
+            }
+
+            const applications = await applicationService.getApplications(filters);
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet("Applications");
+
+            worksheet.columns = [
+                { header: 'ID', key: 'application_id', width: 36 },
+                { header: 'Họ tên', key: 'full_name', width: 20 },
+                { header: 'Email', key: 'email', width: 25 },
+                { header: 'Số điện thoại', key: 'phone_number', width: 15 },
+                { header: 'Round', key: 'round', width: 8 },
+                { header: 'Status', key: 'application_status', width: 15 },
+                { header: 'Department', key: 'department_name', width: 20 },
+            ];
+
+            applications.forEach(app => worksheet.addRow(app));
+
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', 'attachment; filename=applications.xlsx');
+
+            await workbook.xlsx.write(res);
+            res.end();
+        } catch (error) {
+            res.status(500).json({ message: 'Export failed', error: (error as Error).message });
+        }
+    }
 }

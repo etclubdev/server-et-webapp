@@ -1,4 +1,6 @@
+import { application } from 'express';
 import db from '../utils/db.util';
+
 
 export default {
     approveApplication: async (reviewed_by: string, ids: string[]) => {
@@ -146,5 +148,5 @@ export default {
             [ids]
         )
         return restoredApplications.rows
-    },
+    }
 }
