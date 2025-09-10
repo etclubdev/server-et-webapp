@@ -233,5 +233,16 @@ export default {
             .whereIn('personnel_status.personnel_status', status);
     
         return personnels;
+    },
+    checkUniqueEmail: async (email: string): Promise<boolean> => {
+        const result = await db.raw(
+            `SELECT email FROM personnel
+            WHERE email = ?`, [email]
+        )
+        const uniqueEmail = result.rows[0];
+        
+        if (!uniqueEmail || uniqueEmail.length === 0) 
+            return true;
+        return false;
     }
 };

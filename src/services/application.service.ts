@@ -21,6 +21,15 @@ export default {
                 );
             }
             if (application.round === 3) {
+                const isUnique = await personnelService.checkUniqueEmail(application.email);
+
+                if (!isUnique) {
+                    return {
+                        isUnique,
+                        updatedApplications: []
+                    };
+                }
+
                 await db.raw(
                     `UPDATE application 
                 SET application_status = 'Approved', reviewed_by = ?, reviewed_on = NOW()
@@ -62,7 +71,10 @@ export default {
             SELECT * FROM application
             WHERE application_id = ANY(?:: uuid[])`, [ids]
         );
-        return updatedResult.rows;
+        return {
+            isUnique: true,
+            updatedApplications: updatedResult.rows
+        };
     },
     deleteApplications: async (applications: string[]) => {
         if (!applications || !Array.isArray(applications) || applications.length === 0) {

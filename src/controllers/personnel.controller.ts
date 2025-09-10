@@ -140,6 +140,13 @@ export default {
         const { personnel, status } = req.body;
 
         try {
+            const isUnique = await personnelService.checkUniqueEmail(personnel.email)
+            if(!isUnique) {
+                res.status(409).json({
+                    message: "The email is not available"
+                })
+                return;
+            } 
             const created = await personnelService.createPersonnelWithStatus(personnel, status);
             res.status(201).json({
                 message: "Personnel and status created successfully",
