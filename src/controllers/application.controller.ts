@@ -10,8 +10,19 @@ export default {
     approveApplication: async (req: Request, res: Response) => {
         const reviewed_by = req.user?.personnel_id;
         const { ids } = req.body;
-        const updatedApplications = await applicationService.approveApplication(reviewed_by, ids);
+        const { isUnique, updatedApplications } = await applicationService.approveApplication(reviewed_by, ids);
+
+        console.log(isUnique);
+        
+
         try {
+            if ( !isUnique && (updatedApplications.length === 0 || !updatedApplications)){
+                res.status(409).json({
+                    message: "The email is not available"
+                })
+                return;
+            }
+
             if (updatedApplications.length === 0 || !updatedApplications) {
                 res.status(404).json({
                     message: "No applications were updated"
