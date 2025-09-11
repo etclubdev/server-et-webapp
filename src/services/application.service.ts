@@ -1,8 +1,9 @@
 import db from '../utils/db.util';
 import personnelService from './personnel.service';
+import { Application, ApproveApplicationResult, ApplicationStatistics } from '../types/application';
 
 export default {
-    approveApplication: async (reviewed_by: string, ids: string[]) => {
+    approveApplication: async (reviewed_by: string, ids: string[]): Promise<ApproveApplicationResult> => {
         const result = await db.raw(
             `SELECT * FROM application
             WHERE application_id = ANY(?::uuid[])`, [ids]
@@ -76,7 +77,7 @@ export default {
             updatedApplications: updatedResult.rows
         };
     },
-    deleteApplications: async (applications: string[]) => {
+    deleteApplications: async (applications: string[]): Promise<number> => {
         if (!applications || !Array.isArray(applications) || applications.length === 0) {
             throw new Error("Invalid Data");
         }
@@ -90,13 +91,13 @@ export default {
         return result.rowCount;
 
     },
-    getApplicationById: async (id: string) => {
+    getApplicationById: async (id: string): Promise<Application | null> => {
         const result = await db.raw(
             `SELECT * FROM application WHERE application_id = ?`, [id]
         );
         return result.rows[0] || null;
     },
-    getApplications: async (filters: { round?: number; status?: string[]; department_name?: string[] }) => {
+    getApplications: async (filters: { round?: number; status?: string[]; department_name?: string[] }): Promise<Application[]> => {
         let query = `SELECT * FROM application WHERE 1=1`;
         const params: any[] = [];
 
@@ -118,7 +119,7 @@ export default {
         const result = await db.raw(query, params);
         return result.rows;
     },
-    rejectApplication: async (reviewed_by: string, ids: string[]) => {
+    rejectApplication: async (reviewed_by: string, ids: string[]): Promise<Application[] | null> => {
         const result = await db.raw(
             `SELECT * FROM application
             WHERE application_id = ANY(?::uuid[])`, [ids]
@@ -146,7 +147,7 @@ export default {
         );
         return updatedResult.rows;
     },
-    restoreApplication: async (reviewed_by: string, ids: string[]) => {
+    restoreApplication: async (reviewed_by: string, ids: string[]): Promise<Application[] | null> => {
         const result = await db.raw(
             `SELECT * FROM application
             WHERE application_id = ANY(?::uuid[])`,
@@ -172,7 +173,7 @@ export default {
         )
         return restoredApplications.rows
     },
-    statisticsApplication: async () => {
+    statisticsApplication: async (): Promise<ApplicationStatistics> => {
         // Total applications
         const totalResult = await db.raw(`SELECT COUNT(*) AS total_applications FROM application`);
         const total_applications = Number(totalResult.rows[0]?.total_applications || 0);
