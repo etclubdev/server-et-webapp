@@ -12,9 +12,6 @@ export default {
         const { ids } = req.body;
         const { isUnique, updatedApplications } = await applicationService.approveApplication(reviewed_by, ids);
 
-        console.log(isUnique);
-        
-
         try {
             if ( !isUnique && (updatedApplications.length === 0 || !updatedApplications)){
                 res.status(409).json({
