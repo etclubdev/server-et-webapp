@@ -185,9 +185,9 @@ export default {
         `);
         const total_members = Number(memberResult.rows[0]?.total_members || 0);
 
-        // By major (department_name)
-        const majorResult = await db.raw(`
-        SELECT department_name AS major, COUNT(*) AS total_applications
+        // By department (department_name)
+        const departmentResult = await db.raw(`
+        SELECT department_name AS department, COUNT(*) AS total_applications
         FROM application
         GROUP BY department_name
     `);
@@ -206,10 +206,18 @@ export default {
         GROUP BY gender
     `);
 
+        // By major
+        const majorResult = await db.raw(`
+        SELECT major, COUNT(*) AS total_applications
+        FROM application
+        GROUP BY major
+    `);
+
         const stats = {
-            by_major: majorResult.rows,
+            by_department: departmentResult.rows,
             by_cohort: cohortResult.rows,
             by_gender: genderResult.rows,
+            by_major: majorResult.rows,
             totals: {
                 total_applications,
                 total_members
