@@ -3,17 +3,14 @@ const createAchievementSchema = {
     "properties": {
         "achievement_id": {
             "type": "string",
-            "pattern": "^ACHV\\d{3}$",
             "description": "Unique identifier for the achievement, formatted as ACHVXXX"
         },
         "achievement_name": {
             "type": "string",
-            "maxLength": 30,
             "description": "Achievement name"
         },
         "highlight_number": {
-            "type": "string",
-            "maxLength": 10,
+            "type": "integer",
             "description": "Highlighted number representing the achievement"
         },
         "visible": {
@@ -29,17 +26,14 @@ const updateAchievementSchema = {
     "properties": {
         "achievement_id": {
             "type": "string",
-            "pattern": "^ACHV\\d{3}$",
             "description": "Unique identifier for the achievement, formatted as ACHVXXX"
         },
         "achievement_name": {
             "type": "string",
-            "maxLength": 30,
             "description": "Achievement name"
         },
         "highlight_number": {
-            "type": "string",
-            "maxLength": 10,
+            "type": "integer",
             "description": "Highlighted number representing the achievement"
         },
         "visible": {

@@ -45,7 +45,7 @@ export default
                     return;
                 }
 
-                res.status(204);
+                res.status(204).end();
                 return;
             } catch (error) {
                 console.error(error);

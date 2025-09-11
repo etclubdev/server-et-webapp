@@ -44,7 +44,6 @@ app.use('/banners', bannerRoute);
 app.use('/accounts', accountRoute);
 app.use('/auth', authRoute)
 app.use('/terms', termRoute)
-app.use('/applications', applicationRoute);
 app.use('/search', searchRoute)
 app.use('/applications', applicationRoute)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
