@@ -13,7 +13,7 @@ export default {
         const { isUnique, updatedApplications } = await applicationService.approveApplication(reviewed_by, ids);
 
         try {
-            if ( !isUnique && (updatedApplications.length === 0 || !updatedApplications)){
+            if (!isUnique && (updatedApplications.length === 0 || !updatedApplications)) {
                 res.status(409).json({
                     message: "The email is not available"
                 })
@@ -275,4 +275,28 @@ export default {
             return;
         }
     },
+    createApplication: async (req: Request, res: Response) => {
+        try {
+            const applicationData = req.body;
+            const isUnique = await applicationService.checkUniqueEmail(applicationData.email);
+            if (!isUnique) {
+                res.status(409).json({
+                    message: 'The email is not available'
+                });
+                return;
+            }
+            const newApplication = await applicationService.createApplication(applicationData);
+
+            res.status(201).json({
+                message: 'Application created successfully',
+                data: newApplication
+            });
+            return;
+        } catch (error) {
+            res.status(500).json({
+                message: 'Internal Server Error ' + error.message
+            });
+            return; 
+        }
+    }
 }

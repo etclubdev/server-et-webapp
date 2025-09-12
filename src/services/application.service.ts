@@ -226,4 +226,43 @@ export default {
         };
         return stats;
     },
+    createApplication: async (application: Application): Promise<Application> => {
+        const result = await db.raw(
+            `INSERT INTO application (
+                full_name, phone_number, email, dob, gender, student_id, university, faculty, major, class, cv_type, cv_link, department_name, note, cohort_name)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                RETURNING *`,
+            [
+                application.full_name,
+                application.phone_number,
+                application.email,
+                application.dob,
+                application.gender,
+                application.student_id,
+                application.university,
+                application.faculty,
+                application.major,
+                application.class,
+                application.cv_type,
+                application.cv_link,
+                application.department_name,
+                application.note || null,
+                application.cohort_name
+            ]
+        );
+        return result.rows[0];
+    },
+    checkUniqueEmail: async (email: string): Promise<boolean> => {
+        const uniquePersonnelEmail = await db.raw(
+            `SELECT email FROM personnel
+            WHERE email = ?`, [email]
+        )
+        const uniqueApplicationEmail = await db.raw(
+            `SELECT email FROM application
+            WHERE email = ?`, [email]
+        )
+        if ((!uniquePersonnelEmail.rows[0] || uniquePersonnelEmail.length === 0) && (!uniqueApplicationEmail.rows[0] || uniqueApplicationEmail.length === 0))
+            return true;
+        return false;
+    }
 }
