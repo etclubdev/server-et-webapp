@@ -24,7 +24,7 @@ const manageBannerRole: Role[] = [
     Role.Admin, Role.PR];
 
 const manageEtBlogRole: Role[] = [
-    Role.Admin, Role.PR, Role.MEM];
+    Role.Admin, Role.PR, Role.Tech, Role.MEM];
 
 const manageFAQRole: Role[] = [
     Role.Admin, Role.PR];
