@@ -12,7 +12,7 @@ interface Application {
     class: string;
     cv_type: 'CV mẫu' | 'CV tự thiết kế';
     cv_link: string;
-    apply_date?: string; // ISO date string
+    apply_date?: string; 
     round?: number;
     application_status?: 'Pending' | 'Approved' | 'Rejected';
     department_name:
