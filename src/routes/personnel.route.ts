@@ -1,5 +1,4 @@
 import express from "express";
-
 import personnelController from "../controllers/personnel.controller";
 import validate from "../middlewares/validate.mdw";
 import { createPersonnelWithStatusSchema, updatePersonnelSchema } from "../entities/personnel.entity";

@@ -16,6 +16,7 @@ router.get('/:id', authGuard.verifyRoles(managePersonnelRole), authGuard.verifyD
 router.put('/restore', authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForManageApplication(), applicationController.restoreApplication);
 router.put('/approve', authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForManageApplication(), applicationController.approveApplication);
 router.put('/reject', authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForManageApplication(), applicationController.rejectApplication);
+router.put('/note/:id', authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForManageApplication(), applicationController.updateApplicationNote);
 router.delete('/bulk-delete', authGuard.verifyRoles(managePersonnelRole), authGuard.verifyDepartmentForManageApplication(), applicationController.deleteApplications);
 
 export default router;

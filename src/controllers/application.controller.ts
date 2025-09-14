@@ -296,7 +296,27 @@ export default {
             res.status(500).json({
                 message: 'Internal Server Error ' + error.message
             });
-            return; 
+            return;
+        }
+    },
+    updateApplicationNote: async (req: Request, res: Response) => {
+        const { note } = req.body;
+        const { id } = req.params;
+
+        try {
+            const updatedApplication = await applicationService.updateApplicationNote(note, id);
+            if (!updatedApplication || updatedApplication.length === 0) {
+                res.status(404).json({ message: 'No application found to update.' });
+                return;
+            }
+            res.status(200).json({
+                message: 'Note updated successfully.',
+                data: updatedApplication
+            })
+            return;
+        } catch (error) {
+            res.status(500).json({ message: 'Internal Server Error ' + error.message });
+            return;
         }
     }
 }
