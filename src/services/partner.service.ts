@@ -86,6 +86,7 @@ export default {
             throw new Error("Invalid Data");
         }
         console.log(partners);
+
         return db.transaction(async (trx) => {
             for (const partner of partners) {
                 await trx("partner")

@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
 
 import db from '../utils/db.util';
 import { Account } from '../types/account';
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
     createAccount: async (account: Account) => {

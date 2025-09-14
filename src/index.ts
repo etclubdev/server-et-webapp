@@ -1,10 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import YAML from 'yaml';
-import fs from 'fs';
-import path from 'path';
-import swaggerUi from 'swagger-ui-express';
 
 import validateOrigin from './utils/cors.util';
 import faqRoute from './routes/faq.route';
@@ -23,7 +19,10 @@ import searchRoute from './routes/search.route'
 import applicationRoute from './routes/application.route';
 import recruitmentRoute from './routes/recruitment.route';
 import authRoute from './routes/auth.route';
-
+import YAML from 'yaml';
+import fs from 'fs';
+import path from 'path';
+import swaggerUi from 'swagger-ui-express';
 
 dotenv.config();
 const app = express();
