@@ -2,28 +2,27 @@ import db from '../utils/db.util';
 import { ETNews } from '../types/etNews';
 
 export default {
-    deleteETNews: async ( id: string ) => {
-        return db('et_news')
-            .where('etnews_id', id)
-            .del()
+    deleteETNews: async (id: string) => {
+        const result = await db.raw(
+            `DELETE FROM et_news WHERE etnews_id = ? RETURNING etnews_id`,
+            [id]
+        );
+        return result.rows.length;
     },
 
     deleteMultipleEtNews: async (etNews: string[]) => {
         if (!etNews || !Array.isArray(etNews) || etNews.length === 0) {
             throw new Error("Invalid Data");
         }
-                
-        return db.transaction(async (trx) => {
-            let affectedRows = 0;
-            for (const etNewsId of etNews) {
-                const deletedEtNews = await trx("et_news")
-                    .where('etnews_id', etNewsId)
-                    .del();
-                affectedRows += deletedEtNews;
-            }
 
-            return affectedRows;
-        });
+        const result = await db.raw(
+            `DELETE FROM et_news
+             WHERE etnews_id = ANY(:etNews::uuid[])
+             RETURNING etnews_id`,
+            { etNews }
+        );
+
+        return result.rows.length;
     },
 
     updateETNews: async (id: string, news: ETNews) => {
@@ -36,32 +35,56 @@ export default {
         return updatedNews;
     },
 
-    createNews: async(news: ETNews) => {
-        return db('et_news')
-        .insert(news)
-        .returning('*');
+    createNews: async (news: ETNews) => {
+        const result = await db.raw(
+            `INSERT INTO et_news (title, etnews_category, meta_description, thumbnail_image_url, source, visible, content, view_count)
+            VALUES (:title, :etnews_category, :meta_description, :thumbnail_image_url, :source, :visible, :content, :view_count)
+            RETURNING *`,
+            {
+                title: news.title,
+                etnews_category: news.etnews_category,
+                meta_description: news.meta_description,
+                thumbnail_image_url: news.thumbnail_image_url,
+                source: news.source,
+                visible: news.visible,
+                content: news.content,
+                view_count: news.view_count || 0
+            }
+        );
+        return result.rows[0];
     },
 
-    getETNewsbyID: async(id: string) => {
-        const news = await db("et_news").select("*")
-            .where('etnews_id', id)
-
+    getETNewsbyID: async (id: string) => {
+        const result = await db.raw(
+            `SELECT * FROM et_news WHERE etnews_id = ?`,
+            [id]
+        );
+        const news = result.rows;
         if (news.length === 0) return null;
         return news[0];
     },
 
-    getAllNews: async () => {
+    getAllNews: async (categories?: string[]) => {
         try {
-            // Get all news
-            const news = await db("et_news").select("*");
+            let result;
+            if (Array.isArray(categories) && categories.length > 0) {
+                result = await db.raw(`SELECT * FROM et_news WHERE etnews_category = ANY(?)`, [categories]);
+            } else {
+                result = await db.raw(`SELECT * FROM et_news`);
+            }
+            const news = result.rows;
+
+            if (!news || news.length === 0) {
+                return null;
+            }
 
             // Group news by category
             const groupedNews = news.reduce((acc, item) => {
-                const category = item.etnews_category || "Uncategorized";
-                if (!acc[category]) {
-                    acc[category] = [];
+                const cat = item.etnews_category || "Uncategorized";
+                if (!acc[cat]) {
+                    acc[cat] = [];
                 }
-                acc[category].push(item);
+                acc[cat].push(item);
                 return acc;
             }, {} as Record<string, ETNews[]>);
 
@@ -77,4 +100,3 @@ export default {
         }
     }
 }
-

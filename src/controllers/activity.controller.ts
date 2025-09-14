@@ -34,7 +34,8 @@ export default {
 
     getAllActivities: async (req: Request, res: Response) => {
         try {
-            const activities = await activityService.getAllActivities();
+            const activity_category = req.query.activity_category as string[];
+            const activities = await activityService.getAllActivities(activity_category);
 
             if (!activities || (activities.ongoing.length === 0 && Object.keys(activities.completed).length === 0)) {
                 res.status(404).json({

@@ -107,10 +107,12 @@ export default {
   
   getAllETNews: async (req: Request, res: Response) => {
     try {
-      const news = await etNewsService.getAllNews();
+      const etnews_category = req.query.etnews_category as string[];
+      const news = await etNewsService.getAllNews(etnews_category);
 
       if (!news) {
-        res.status(404).json({ message: "News not found!" });
+        res.status(404).json({ message: "News not found!", data: news });
+        return;
       }
       res.status(200).json({
         message: "Successfully",

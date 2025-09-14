@@ -4,7 +4,7 @@ const updatePersonnelSchema = {
         "personnel": {
             "type": "object",
             "properties": {
-                "personnel_name": { "type": "string", "maxLength": 30 },
+                "personnel_name": { "type": "string"},
                 "email": { "type": "string", "format": "email", "maxLength": 320 },
                 "dob": { "type": "string", "format": "date" },
                 "gender": { "type": "string", "enum": ["Nam", "Nữ", "Khác"] },
@@ -27,7 +27,7 @@ const updatePersonnelSchema = {
         "status": {
             "type": "object",
             "properties": {
-                "term_id": { "type": "string", "pattern": "^TERM[0-9]{3}$" },
+                "term_id": { "type": "string" },
                 "department_name": {
                     "type": "string",
                     "enum": [
@@ -93,7 +93,7 @@ const createPersonnelWithStatusSchema = {
         "status": {
             "type": "object",
             "properties": {
-                "term_id": { "type": "string", "pattern": "^TERM[0-9]{3}$" },
+                "term_id": { "type": "string" },
                 "department_name": {
                     "type": "string",
                     "enum": [

@@ -36,7 +36,7 @@ export default {
 
             if (deletedBlogs === 0){
                 res.status(404).json({
-                    msg: "Not found"
+                    message: "Not found"
                 })
                 return;
             }
@@ -47,7 +47,7 @@ export default {
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                msg: 'Internal Server Error' + error.message
+                message: 'Internal Server Error' + error.message
             })
             return;
         }
@@ -108,16 +108,16 @@ export default {
             const blog = await EtBlogService.getEtBlogById(id);
 
             if (blog === null) {
-                res.status(404).json({ error: "The blog does not exist" });
+                res.status(404).json({ message: "The blog does not exist" });
                 return;
             }
 
-            res.status(200).json({ success: true, data: blog });
+            res.status(200).json({ message: "Successfully", data: blog });
             return;
 
         } catch (error) {
             console.log(error);         
-            res.status(500).json({ error: "Internal Server Error" });
+            res.status(500).json({ message: "Internal Server Error" });
             return;
         }
     },

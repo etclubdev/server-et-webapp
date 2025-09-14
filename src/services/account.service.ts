@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 import db from '../utils/db.util';
 import { Account } from '../types/account';
@@ -8,7 +9,7 @@ export default {
         return db.transaction(async (trx) => {
             const [newAccount] = await trx('account')
                 .insert(account)
-                .returning('*'); 
+                .returning('*');
 
             return trx('account')
                 .select('account.*', 'personnel.*', 'system_role.sysrole_name')
@@ -91,5 +92,33 @@ export default {
         await db('account').where('account_id', account_id).update({ password: hashedPassword });
 
         return { success: true, message: 'Successfully' };
+    },
+    resetPassword: async (account_id: string) => {
+        const user = await db.raw(`
+            SELECT account.username, personnel.personnel_name, system_role.sysrole_name 
+            FROM account
+            JOIN personnel ON personnel.personnel_id = account.personnel_id
+            JOIN system_role ON system_role.sysrole_id = account.sysrole_id
+            WHERE account.account_id = ?
+            `, [account_id]).then(res => res.rows[0]);
+
+        if (!user) {
+            return null;
+        }
+
+        const password = uuidv4().slice(0, 12);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        await db.raw("UPDATE account SET password = ? WHERE account_id = ?", [hashedPassword, account_id]);
+
+        return { 
+            success: true, 
+            message: 'Successfully', 
+            data: {
+                user,
+                newPassword: password
+            }
+        };
     }
 };
