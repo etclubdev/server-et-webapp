@@ -6,6 +6,7 @@ import { adminRole } from '../global/roles';
 
 const router = epress.Router();
 
-router.put('/', authGuard.verifyRoles(adminRole), recruitmentController.updateFirstRecruitment);
+router.get('/', recruitmentController.getStatusofFirstRecruitment);
+router.put('/:id', authGuard.verifyRoles(adminRole), recruitmentController.updateStatusOfRecruitment);
 
 export default router; 

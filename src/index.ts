@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 
 import validateOrigin from './utils/cors.util';
 import faqRoute from './routes/faq.route';
-import recruitmentRoute from './routes/recruitment.route';
 import healthRoute from './routes/health.route';
 import activityRoute from "./routes/activity.route";
 import etNewsRoute from './routes/etNews.route';
@@ -18,6 +17,7 @@ import accountRoute from './routes/account.route'
 import termRoute from './routes/term.route'
 import searchRoute from './routes/search.route'
 import applicationRoute from './routes/application.route';
+import recruitmentRoute from './routes/recruitment.route';
 import authRoute from './routes/auth.route';
 import YAML from 'yaml';
 import fs from 'fs';
@@ -46,7 +46,7 @@ app.use('/accounts', accountRoute);
 app.use('/auth', authRoute)
 app.use('/terms', termRoute)
 app.use('/search', searchRoute)
-app.use('/applications', applicationRoute)
+app.use('/applications', applicationRoute);
 app.use('/recruitment', recruitmentRoute);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
