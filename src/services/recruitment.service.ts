@@ -4,10 +4,10 @@ import { Recruitment } from '../types/recruitment';
 export default {
     getStatusofFirstRecruitment: async () => {
         const result = await db.raw(
-            `SELECT is_open FROM recruitment
-            ORDER BY created_at ASC LIMIT 1`
+            `SELECT recruitment_id, is_open FROM recruitment
+            ORDER BY created_on ASC LIMIT 1`
         );
-        return result.rows[0]?.is_open || null;
+        return result.rows[0] || null;
     },
     updateStatusOfRecruitment: async (
         id: string
