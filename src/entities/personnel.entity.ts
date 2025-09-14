@@ -5,15 +5,15 @@ const updatePersonnelSchema = {
             "type": "object",
             "properties": {
                 "personnel_name": { "type": "string"},
-                "email": { "type": "string", "format": "email", "maxLength": 320 },
+                "email": { "type": "string", "format": "email" },
                 "dob": { "type": "string", "format": "date" },
                 "gender": { "type": "string", "enum": ["Nam", "Nữ", "Khác"] },
-                "address": { "type": "string", "maxLength": 263 },
-                "student_id": { "type": "string", "maxLength": 20 },
-                "faculty": { "type": "string", "maxLength": 100 },
-                "university": { "type": "string", "maxLength": 50 },
-                "major": { "type": "string", "maxLength": 100 },
-                "class": { "type": "string", "maxLength": 10 },
+                "address": { "type": "string" },
+                "student_id": { "type": "string" },
+                "faculty": { "type": "string" },
+                "university": { "type": "string" },
+                "major": { "type": "string" },
+                "class": { "type": "string" },
                 "cv_type": { "type": "string", "enum": ["CV mẫu", "CV tự thiết kế"] },
                 "cv_link": { "type": "string", "format": "uri" },
                 "cohort_name": {
@@ -31,7 +31,7 @@ const updatePersonnelSchema = {
                 "department_name": {
                     "type": "string",
                     "enum": [
-                        "Ban Kỹ thuật - Công nghệ",
+                        "Ban Chuyên môn",
                         "Ban Truyền thông",
                         "Ban Nhân sự - Tổ chức",
                         "Ban Sự kiện",
@@ -67,16 +67,16 @@ const createPersonnelWithStatusSchema = {
         "personnel": {
             "type": "object",
             "properties": {
-                "personnel_name": { "type": "string", "maxLength": 30 },
-                "email": { "type": "string", "format": "email", "maxLength": 320 },
+                "personnel_name": { "type": "string"},
+                "email": { "type": "string", "format": "email" },
                 "dob": { "type": "string", "format": "date" },
                 "gender": { "type": "string", "enum": ["Nam", "Nữ", "Khác"] },
-                "address": { "type": "string", "maxLength": 263 },
-                "student_id": { "type": "string", "maxLength": 20 },
-                "faculty": { "type": "string", "maxLength": 100 },
-                "university": { "type": "string", "maxLength": 50 },
-                "major": { "type": "string", "maxLength": 100 },
-                "class": { "type": "string", "maxLength": 10 },
+                "address": { "type": "string" },
+                "student_id": { "type": "string" },
+                "faculty": { "type": "string" },
+                "university": { "type": "string" },
+                "major": { "type": "string" },
+                "class": { "type": "string" },
                 "cv_type": { "type": "string", "enum": ["CV mẫu", "CV tự thiết kế"] },
                 "cv_link": { "type": "string", "format": "uri" },
                 "cohort_name": {
@@ -97,7 +97,7 @@ const createPersonnelWithStatusSchema = {
                 "department_name": {
                     "type": "string",
                     "enum": [
-                        "Ban Kỹ thuật - Công nghệ",
+                        "Ban Chuyên môn",
                         "Ban Truyền thông",
                         "Ban Nhân sự - Tổ chức",
                         "Ban Sự kiện",
