@@ -8,7 +8,7 @@ const createNewsSchema: Schema = {
     properties: {
         "title": {
             "type": "string",
-            "maxLength": 60,
+            "maxLength": 250,
             "description": "News title with a maximum of 60 characters"
         },
         "etnews_category": {
@@ -18,6 +18,7 @@ const createNewsSchema: Schema = {
         },
         "meta_description": {
             "type": "string",
+            "maxLength": 160,
             "description": "Short meta description of the news"
         },
         "thumbnail_image_url": {
@@ -71,7 +72,7 @@ const updateNewsSchema: Schema = {
     properties: {
         "title": {
             "type": "string",
-            "maxLength": 60,
+            "maxLength": 250,
             "description": "News title with a maximum of 60 characters"
         },
         "etnews_category": {
@@ -81,6 +82,7 @@ const updateNewsSchema: Schema = {
         },
         "meta_description": {
             "type": "string",
+            "maxLength": 160,
             "description": "Short meta description of the news"
         },
         "thumbnail_image_url": {

@@ -216,7 +216,7 @@ CREATE TABLE IF NOT EXISTS partner (
     avatar_url TEXT,
     short_description TEXT,
     email VARCHAR(320) NOT NULL CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'),
-    phone_number VARCHAR(10) CHECK (phone_number ~ '^0[0-9]{9}$'),
+    phone_number VARCHAR(11) CHECK (phone_number ~ '^0[0-9]{9}$'),
     visible BOOLEAN NOT NULL,
     note TEXT,
     created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -226,7 +226,7 @@ CREATE TABLE IF NOT EXISTS partner (
 CREATE TABLE IF NOT EXISTS application (
     application_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     full_name TEXT NOT NULL,
-    phone_number VARCHAR(10) CHECK (phone_number ~ '^0[0-9]{9}$'),
+    phone_number VARCHAR(11) CHECK (phone_number ~ '^0[0-9]{9}$'),
     email VARCHAR(320) NOT NULL CHECK (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'),
     dob DATE NOT NULL DEFAULT '1990-01-01',
     gender gender_enum NOT NULL DEFAULT 'Nam',
