@@ -2,16 +2,20 @@ import db from '../utils/db.util';
 import { Partner } from '../types/partner'
 
 export default {
-    getPartnerByCategory: async (category: string) => {
-        const partners = await db('partner')
-            .select('*')
-            .where('partner_category_name', category);
+    getPartnerByCategory: async (category: string | string[] | undefined) => {
+        
+        let query = db("partner").select("*");
 
-        if (partners.length === 0) {
-            return null;
+        if (Array.isArray(category)) {
+            query = query.whereIn("partner_category_name", category);
+        } else if (typeof category === "string") {
+            query = query.where("partner_category_name", category);
         }
-        return partners;
+
+        const partners = await query;
+        return partners.length > 0 ? partners : null
     },
+
     deletePartner: async (id: string) => {
         return db('partner')
             .where('partner_id', id)
@@ -82,7 +86,6 @@ export default {
             throw new Error("Invalid Data");
         }
         console.log(partners);
-        
         return db.transaction(async (trx) => {
             for (const partner of partners) {
                 await trx("partner")

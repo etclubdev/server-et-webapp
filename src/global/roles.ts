@@ -24,13 +24,13 @@ const manageBannerRole: Role[] = [
     Role.Admin, Role.PR];
 
 const manageEtBlogRole: Role[] = [
-    Role.Admin, Role.PR, Role.MEM];
+    Role.Admin, Role.PR, Role.Tech, Role.MEM];
 
 const manageFAQRole: Role[] = [
     Role.Admin, Role.PR];
 
 const managePartnerRole: Role[] = [
-    Role.Admin, Role.PR, Role.EV, Role.FER];
+    Role.Admin, Role.FER];
 
 const managePersonnelRole: Role[] = [
     Role.Admin, Role.HR, Role.Tech, Role.PR, Role.EV, Role.FER];
@@ -44,7 +44,25 @@ const manangeEtNewsRole: Role[] = [
 const getByIDPersonnelRole: Role[] = [
     Role.Admin, Role.HR, Role.Tech, Role.PR, Role.EV, Role.FER, Role.MEM];
 
+const updatePersonnelRole: Role[] = [
+    Role.Admin, Role.HR, Role.Tech, Role.PR, Role.EV, Role.FER, Role.MEM];
 
+const changePasswordRole: Role[] = [
+    Role.Admin, Role.HR, Role.Tech, Role.PR, Role.EV, Role.FER, Role.MEM];
 
+const manageAccountRole: Role[] = [
+    Role.Admin, Role.Tech];
 
-export { manageAchivementRole, manageActivityRole, manageBannerRole, manageEtBlogRole, manageFAQRole, managePartnerRole, managePersonnelRole, adminRole, manangeEtNewsRole, getByIDPersonnelRole };
+const getPesonnelRole: Role[] = [
+    Role.Admin, Role.HR, Role.Tech, Role.PR, Role.EV, Role.FER];
+
+const getPartnerRole: Role[] = [
+    Role.Admin, Role.HR, Role.Tech, Role.PR, Role.EV, Role.FER];
+const getFAQRole: Role[] = [
+    Role.Admin, Role.HR, Role.Tech, Role.PR, Role.EV, Role.FER];
+
+export {
+    manageAchivementRole, manageActivityRole, manageBannerRole, manageEtBlogRole, manageFAQRole, managePartnerRole,
+    managePersonnelRole, adminRole, manangeEtNewsRole, getByIDPersonnelRole, updatePersonnelRole, changePasswordRole,
+    manageAccountRole, getPesonnelRole, getPartnerRole, getFAQRole
+};

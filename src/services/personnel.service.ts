@@ -197,7 +197,7 @@ export default {
         }
         return personnels;
     },
-    getPersonnelByStatus: async (status: string): Promise<Personnel[]> => {
+    getPersonnelByStatus: async (status: string[]): Promise<Personnel[]> => {
         if (!status) {
             throw new Error("Invalid Data: status is required");
         }
@@ -209,13 +209,13 @@ export default {
                 'personnel.*',
                 'personnel_status.*'
             )
-            .where('personnel_status.personnel_status', status);
+            .whereIn('personnel_status.personnel_status', status);
 
         return personnels;
     },
     getPersonnelByDepartmentAndStatus: async (
         departmentName: string,
-        status: string
+        status: string[]
     ): Promise<Personnel[]> => {
         if (!departmentName || !status) {
             throw new Error("Invalid Data: departmentName and status are required");
@@ -228,10 +228,21 @@ export default {
                 'personnel_status.*'
             )
             .where({
-                'personnel_status.department_name': departmentName,
-                'personnel_status.personnel_status': status
-            });
+                'personnel_status.department_name': departmentName
+            })
+            .whereIn('personnel_status.personnel_status', status);
     
         return personnels;
+    },
+    checkUniqueEmail: async (email: string): Promise<boolean> => {
+        const result = await db.raw(
+            `SELECT email FROM personnel
+            WHERE email = ?`, [email]
+        )
+        const uniqueEmail = result.rows[0];
+        
+        if (!uniqueEmail || uniqueEmail.length === 0) 
+            return true;
+        return false;
     }
 };

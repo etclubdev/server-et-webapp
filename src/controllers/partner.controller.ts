@@ -34,7 +34,7 @@ export default {
 
             if (!deletedPartners) {
                 res.status(404).json({
-                    msg: "Not found"
+                    message: "Not found"
                 })
                 return;
             }
@@ -44,7 +44,7 @@ export default {
         } catch (err) {
             console.log(err);
             res.status(500).json({
-                msg: 'Internal Server Error' + err.message
+                message: 'Internal Server Error' + err.message
             })
             return;
         }
@@ -104,7 +104,7 @@ export default {
     },
     getPartner: async (req: Request, res: Response) => {
         try {
-            const category = req.query.category as string;
+            const category = req.query.category as string | string[] | undefined;
             const partners = category ? await partnerService.getPartnerByCategory(category) : await partnerService.getAllPartner();
 
             if (!partners) {
@@ -161,7 +161,7 @@ export default {
             await partnerService.updateVisible(partners);
 
             res.status(200).json({
-                msg: "Successfully",
+                message: "Successfully",
                 updatedCount: partners.length
             })
             return;

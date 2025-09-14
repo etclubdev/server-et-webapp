@@ -10,6 +10,9 @@ import '../global/globalJWTPayload';
 const isAdministrator = (req: Request): boolean => {
     return req.user?.sysrole_name === 'Administrator';
 };
+const isHR = (req: Request): boolean => {
+    return req.user?.sysrole_name === 'Trưởng ban HR';
+};
 
 const checkUserRole = (req: Request, res: Response, requiredRoles: string[], next: NextFunction) => {
     const userRole = req.user?.sysrole_name;
@@ -57,6 +60,9 @@ const authGuard = {
                 if (isAdministrator(req)) {
                     return next();
                 }
+                else if (isHR(req)) {
+                    return next();
+                }
                 const userId1 = req.user?.personnel_id;
                 const userId2 = req.body['id'] || req.query['id'] || req.params['id'];
 
@@ -69,6 +75,40 @@ const authGuard = {
 
                 if (!isSameDepartment) {
                     res.status(403).json("You do not have permission to access this resource!");
+                    return;
+                }
+
+                next();
+            } catch (error) {
+                console.error('Error checking department match:', error);
+                res.status(500).json("Internal server error!");
+            }
+        };
+    },
+    verifyDepartmentForManageApplication: () => {
+        return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+            try {
+                if (isAdministrator(req)) {
+                    return next();
+                }
+                const userId = req.user?.personnel_id;
+                const applicationId = req.body.ids
+                    ? req.body.ids
+                    : req.query.ids
+                        ? (req.query.ids as string).split(",")
+                        : req.params.id
+                            ? [req.params.id]
+                            : [];
+                
+                if (!userId || applicationId.length === 0) {
+                    res.status(400).json("Missing user IDs for department verification!");
+                    return;
+                }
+
+                const { isMatched, message } = await departmentService.checkDepartmentMatchWithApplication(userId, applicationId);
+
+                if (!isMatched) {
+                    res.status(403).json(message);
                     return;
                 }
 

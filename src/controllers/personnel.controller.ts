@@ -140,27 +140,35 @@ export default {
         const { personnel, status } = req.body;
 
         try {
+            const isUnique = await personnelService.checkUniqueEmail(personnel.email)
+            if(!isUnique) {
+                res.status(409).json({
+                    message: "The email is not available"
+                })
+                return;
+            } 
             const created = await personnelService.createPersonnelWithStatus(personnel, status);
             res.status(201).json({
-                msg: "Personnel and status created successfully",
+                message: "Personnel and status created successfully",
                 data: created
             });
             return;
         } catch (error) {
             console.error("Error creating personnel with status:", error);
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
             });
         }
     },
     getPersonnels: async (req: Request, res: Response): Promise<void> => {
-        const { status, departmentName } = req.query;
+        const { departmentName } = req.query;
+        const status = req.query.status as string | string[] | undefined;
 
         try {
             let personnels;
 
             if (
-                status && typeof status === "string" &&
+                status && Array.isArray(status) &&
                 departmentName && typeof departmentName === "string"
             ) {
                 personnels = await personnelService.getPersonnelByDepartmentAndStatus(departmentName, status);
@@ -173,7 +181,7 @@ export default {
                     return;
                 }
             }
-            else if (status && typeof status === "string") {
+            else if (status && Array.isArray(status)) {
                 personnels = await personnelService.getPersonnelByStatus(status);
 
                 if (!personnels || personnels.length === 0) {
