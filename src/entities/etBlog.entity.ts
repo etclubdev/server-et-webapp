@@ -3,7 +3,7 @@ const createBlogSchema = {
   "properties": {
     "title": {
       "type": "string",
-      "maxLength": 60,
+      "maxLength": 250,
       "description": "Blog title with a maximum of 60 characters"
     },
     "thumbnail_image_url": {
@@ -53,7 +53,7 @@ const updateBlogSchema = {
   "properties": {
     "title": {
       "type": "string",
-      "maxLength": 60,
+      "maxLength": 250,
       "description": "Blog title with a maximum of 60 characters"
     },
     "thumbnail_image_url": {
