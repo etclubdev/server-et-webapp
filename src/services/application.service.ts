@@ -264,5 +264,15 @@ export default {
         if ((!uniquePersonnelEmail.rows[0] || uniquePersonnelEmail.length === 0) && (!uniqueApplicationEmail.rows[0] || uniqueApplicationEmail.length === 0))
             return true;
         return false;
+    },
+    updateApplicationNote: async (note: string, id: string) => {
+        const result = await db.raw(
+            `UPDATE application 
+            SET note = ? 
+            WHERE application_id = ? 
+            RETURNING *`,
+            [note, id]
+        );
+        return result.rows[0] || null;
     }
 }
