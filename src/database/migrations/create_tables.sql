@@ -41,9 +41,9 @@ BEGIN
     END IF;    
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'faq_category_enum') THEN
         CREATE TYPE faq_category_enum AS ENUM (
-            'Về ET Club',
-            'Về hoạt động và sự kiện',
-            'Về quy trình tham gia',
+            'ET Club',
+            'Hoạt động và sự kiện',
+            'Quy trình tham gia',
             'Khác'
         );
     END IF;
@@ -252,8 +252,8 @@ CREATE TABLE IF NOT EXISTS recruitment (
     title VARCHAR(255) NOT NULL,
     description TEXT,
     is_open BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 --Create trigger
