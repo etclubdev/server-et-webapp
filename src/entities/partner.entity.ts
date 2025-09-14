@@ -3,7 +3,6 @@ const createPartnerSchema = {
     "properties": {
         "partner_name": {
             "type": "string",
-            "maxLength": 100,
             "description": "Partner name with a maximum of 100 characters"
         },
         "partner_category_name": {
@@ -18,7 +17,6 @@ const createPartnerSchema = {
         },
         "short_description": {
             "type": "string",
-            "maxLength": 50,
             "description": "Short description of the partner"
         },
         "email": {
@@ -30,7 +28,7 @@ const createPartnerSchema = {
         "phone_number": {
             "type": "string",
             "pattern": "^0[0-9]{9,14}$",
-            "maxLength": 10,
+            "maxLength": 11,
             "description": "Phone number of the partner, must start with 0 and have 10 to 15 digits"
         },
         "visible": {
@@ -64,7 +62,6 @@ const updatePartnerSchema = {
     "properties": {
         "partner_name": {
             "type": "string",
-            "maxLength": 100,
             "description": "Partner name with a maximum of 100 characters"
         },
         "partner_category_name": {
@@ -79,7 +76,6 @@ const updatePartnerSchema = {
         },
         "short_description": {
             "type": "string",
-            "maxLength": 50,
             "description": "Short description of the partner"
         },
         "email": {
@@ -91,7 +87,7 @@ const updatePartnerSchema = {
         "phone_number": {
             "type": "string",
             "pattern": "^0[0-9]{9,14}$",
-            "maxLength": 10,
+            "maxLength": 11,
             "description": "Phone number of the partner, must start with 0 and have 10 to 15 digits"
         },
         "visible": {

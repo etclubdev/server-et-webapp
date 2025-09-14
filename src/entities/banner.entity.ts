@@ -3,7 +3,6 @@ const createBannerSchema = {
     "properties": {
         "banner_name": {
             "type": "string",
-            "maxLength": 30,
             "description": "Name of the banner"
         },
         "image_url": {
@@ -27,7 +26,6 @@ const updateBannerSchema = {
     "properties": {
         "banner_name": {
             "type": "string",
-            "maxLength": 30,
             "description": "Name of the banner"
         },
         "image_url": {

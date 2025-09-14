@@ -3,7 +3,7 @@ const createActivitySchema = {
     "properties": {
         "title": {
             "type": "string",
-            "maxLength": 60,
+            "maxLength": 250,
             "description": "Activity title, max 60 characters, cannot start with number or special character"
         },
         "activity_category": {
@@ -86,7 +86,7 @@ const updateActivitySchema = {
     "properties": {
         "title": {
             "type": "string",
-            "maxLength": 60,
+            "maxLength": 250,
             "pattern": "^[^0-9\\W].*",
             "description": "Activity title, max 60 characters, cannot start with number or special character"
         },
