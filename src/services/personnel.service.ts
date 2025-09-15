@@ -3,31 +3,35 @@ import { Personnel } from '../types/personnel';
 
 export default {
     getUnregisteredPersonnels: async () => {
-        const personnels = await db('personnel')
-            .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
-            .leftJoin('account', 'personnel.personnel_id', 'account.personnel_id')
-            .whereNull('account.personnel_id')
-            .select(
-                'personnel.*',
-                'personnel_status.*'
-            );
+        const result = await db.raw(
+            `SELECT p.*, ps.*
+        FROM personnel p
+        JOIN personnel_status ps ON p.personnel_id = ps.personnel_id
+        LEFT JOIN account a ON p.personnel_id = a.personnel_id
+        WHERE a.personnel_id IS NULL;
+    `);
+        const personnels = result.rows;
         return personnels;
-        },
-        getPersonnelByDepartment: async (departmentName: string): Promise<Personnel[]> => {
-        if (!departmentName) {
+    },
+
+    getPersonnelByDepartment: async (departmentName: string): Promise<Personnel[]> => {
+        if (!departmentName || departmentName.trim() === "") {
             throw new Error("Invalid Data: departmentName is required");
         }
 
-        const personnels = await db('personnel')
-            .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
-            .select(
-                'personnel.*',
-                'personnel_status.*'
-            )
-            .where('personnel_status.department_name', departmentName);
+        const result = await db.raw(
+            `
+        SELECT p.*, ps.*
+        FROM personnel p
+        JOIN personnel_status ps ON p.personnel_id = ps.personnel_id
+        WHERE ps.department_name = ?
+        `,
+            [departmentName]
+        );
 
-        return personnels;
+        return result.rows || [];
     },
+
     deleteMultiplePersonnels: async (personnelIds: string[]): Promise<number> => {
         if (!personnelIds || !Array.isArray(personnelIds) || personnelIds.length === 0) {
             throw new Error("Invalid Data: personnelIds must be a non-empty array");
@@ -37,48 +41,40 @@ export default {
             let affectedRows = 0;
 
             for (const personnelId of personnelIds) {
+                await trx.raw(`DELETE FROM account WHERE personnel_id = ?`, [personnelId]);
+                await trx.raw(`DELETE FROM personnel_status WHERE personnel_id = ?`, [personnelId]);
 
-                await trx('account')
-                    .where('personnel_id', personnelId)
-                    .del();
+                const deletedPersonnel = await trx.raw(
+                    `DELETE FROM personnel WHERE personnel_id = ? RETURNING *`,
+                    [personnelId]
+                );
 
-                await trx('personnel_status')
-                    .where('personnel_id', personnelId)
-                    .del();
-
-
-                const deletedPersonnel = await trx('personnel')
-                    .where('personnel_id', personnelId)
-                    .del();
-
-                affectedRows += deletedPersonnel;
+                const rows = deletedPersonnel.rows || [];
+                affectedRows += rows.length;
             }
 
             return affectedRows;
         });
     },
+
     deletePersonnel: async (id: string): Promise<boolean> => {
         const trx = await db.transaction();
 
         try {
+            await trx.raw(`DELETE FROM account WHERE personnel_id = ?`, [id]);
+            await trx.raw(`DELETE FROM personnel_status WHERE personnel_id = ?`, [id]);
 
-            await trx('account')
-                .where('personnel_id', id)
-                .del();
+            const deletedPersonnel = await trx.raw(
+                `DELETE FROM personnel WHERE personnel_id = ? RETURNING *`,
+                [id]
+            );
 
-            await trx('personnel_status')
-                .where('personnel_id', id)
-                .del();
-
-
-            const deletedPersonnel = await trx('personnel')
-                .where('personnel_id', id)
-                .del();
-
-            if (deletedPersonnel === 0) {
+            const rows = deletedPersonnel.rows || deletedPersonnel[0];
+            if (!rows || rows.length === 0) {
                 await trx.rollback();
                 return false;
             }
+
             await trx.commit();
             return true;
         } catch (error) {
@@ -99,53 +95,61 @@ export default {
         const trx = await db.transaction();
 
         try {
-            let updatedPersonnel;
-            let updatedStatus;
+            let updatedPersonnel: Personnel | null = null;
+            let updatedStatus: string | null = null;
 
-            if (personnelData) {
-                updatedPersonnel = await trx('personnel')
-                    .where('personnel_id', id)
-                    .update(personnelData)
-                    .returning('*');
 
-                if (updatedPersonnel.length === 0) {
+            if (personnelData.email) {
+                const checkEmail = await trx.raw(
+                    `SELECT personnel_id FROM personnel WHERE email = ? AND personnel_id <> ?`,
+                    [personnelData.email, id]
+                );
+                if (checkEmail.rows && checkEmail.rows.length > 0) {
                     await trx.rollback();
-                    return { personnel: null, status: null };
+                    throw new Error('Email already exists');
                 }
             }
 
-            if (statusData) {
-                updatedStatus = await trx('personnel_status')
-                    .where('personnel_id', id)
-                    .update(statusData)
+            // Update personnel nếu có data
+            if (Object.keys(personnelData).length > 0) {
+                const result = await trx('personnel')
+                    .where({ personnel_id: id })
+                    .update(personnelData)
                     .returning('*');
+                updatedPersonnel = result[0] || null;
+            }
 
-                if (updatedStatus && updatedStatus.length === 0) {
-                    await trx.rollback();
-                    return { personnel: null, status: null };
-                }
+            if (Object.keys(statusData).length > 0) {
+                const result = await trx('personnel_status')
+                    .where({ personnel_id: id })
+                    .update(statusData)
+                    .returning('personnel_status');
+                updatedStatus = result[0]?.personnel_status || null;
             }
 
             await trx.commit();
 
-            return {
-                personnel: updatedPersonnel?.[0] ?? null,
-                status: updatedStatus?.[0] ?? null,
-            };
-        } catch (error) {
+            if (!updatedPersonnel && !updatedStatus) {
+                return { personnel: null, status: null };
+            }
+
+            return { personnel: updatedPersonnel, status: updatedStatus };
+
+        } catch (err) {
             await trx.rollback();
-            throw error;
+            throw err;
         }
     },
+
     getPersonnelByID: async (id: string): Promise<Personnel | null> => {
-        const personnel: Personnel = await db('personnel')
-            .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
-            .select(
-                'personnel.*',
-                'personnel_status.*'
-            )
-            .where('personnel.personnel_id', id)
-            .first();
+        const result = await db.raw(
+            `SELECT * FROM personnel
+            JOIN personnel_status ON personnel.personnel_id = personnel_status.personnel_id
+            WHERE personnel.personnel_id = ?`,
+            [id]
+        );
+
+        const personnel = result.rows[0];
 
         if (!personnel) {
             return null;
@@ -162,21 +166,42 @@ export default {
         }
     ) => {
         return await db.transaction(async (trx) => {
-            // 1. Insert personnel
-            const [newPersonnel] = await trx("personnel")
-                .insert(personnel)
-                .returning("*");
+            // Pre-check unique email
+            const checkEmail = await trx.raw(
+                `SELECT personnel_id FROM personnel WHERE email = ?`,
+                [personnel.email]
+            );
+            if (checkEmail.rows && checkEmail.rows.length > 0) {
+                throw new Error('Email already exists');
+            }
+            const insertPersonnel = await trx.raw(
+                `INSERT INTO personnel (
+                personnel_name, phone_number, email, dob, gender, address, 
+                student_id, university, faculty, major, class, avatar_url, cv_type, cv_link, cohort_name
+            ) VALUES (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )
+            RETURNING *`,
+                [personnel.personnel_name, personnel.phone_number, personnel.email, personnel.dob, personnel.gender, personnel.address,
+                personnel.student_id, personnel.university, personnel.faculty, personnel.major, personnel.class, personnel.avatar_url, personnel.cv_type, personnel.cv_link, personnel.cohort_name]
+            );
+            const newPersonnel = insertPersonnel.rows[0];
 
-            // 2. Insert personnel_status
-            const [newStatus] = await trx("personnel_status")
-                .insert({
-                    personnel_id: newPersonnel.personnel_id,
-                    term_id: status.term_id,
-                    department_name: status.department_name,
-                    position_name: status.position_name,
-                    personnel_status: status.personnel_status
-                })
-                .returning("*");
+            const insertStatus = await trx.raw(
+                `INSERT INTO personnel_status (
+                personnel_id, term_id, department_name, position_name, personnel_status
+            ) VALUES (
+                ?, ?, ?, ?, ?
+            )
+            RETURNING *`,
+                [newPersonnel.personnel_id,
+                status.term_id,
+                status.department_name,
+                status.position_name,
+                status.personnel_status
+                ]
+            );
+            const newStatus = insertStatus.rows[0];
 
             return {
                 personnel: newPersonnel,
@@ -185,12 +210,11 @@ export default {
         });
     },
     getAllPersonnel: async () => {
-        const personnels = await db('personnel')
-            .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
-            .select(
-                'personnel.*',
-                'personnel_status.*'
-            );
+        const result = await db.raw(
+            `SELECT * FROM personnel
+            JOIN personnel_status ON personnel.personnel_id = personnel_status.personnel_id`);
+
+        const personnels = result.rows;
 
         if (personnels.length === 0) {
             return null;
@@ -202,14 +226,13 @@ export default {
             throw new Error("Invalid Data: status is required");
         }
 
-
-        const personnels: Personnel[] = await db('personnel')
-            .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
-            .select(
-                'personnel.*',
-                'personnel_status.*'
-            )
-            .whereIn('personnel_status.personnel_status', status);
+        const result = await db.raw(
+            `SELECT * FROM personnel
+            JOIN personnel_status ON personnel.personnel_id = personnel_status.personnel_id
+            WHERE personnel_status.personnel_status = ?`,
+            [status]
+        )
+        const personnels = result.rows;
 
         return personnels;
     },
@@ -220,18 +243,16 @@ export default {
         if (!departmentName || !status) {
             throw new Error("Invalid Data: departmentName and status are required");
         }
-    
-        const personnels:Personnel[] = await db('personnel')
-            .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
-            .select(
-                'personnel.*',
-                'personnel_status.*'
-            )
-            .where({
-                'personnel_status.department_name': departmentName
-            })
-            .whereIn('personnel_status.personnel_status', status);
-    
+
+        const result = await db.raw(
+            `SELECT * FROM personnel
+            JOIN personnel_status ON personnel.personnel_id = personnel_status.personnel_id
+            WHERE personnel_status.department_name = ? AND personnel_status.personnel_status = ?`,
+            [departmentName, status]
+        )
+
+        const personnels = result.rows;
+
         return personnels;
     },
     checkUniqueEmail: async (email: string): Promise<boolean> => {

@@ -102,6 +102,12 @@ export default {
             return;
         } catch (error) {
             console.error("Error updating personnel:", error);
+            if (error.message === 'Email already exists') {
+                res.status(409).json({
+                    message: "Email already exists"
+                });
+                return;
+            }
             res.status(500).json({
                 message: "Internal Server Error: " + error.message,
             });
@@ -155,9 +161,16 @@ export default {
             return;
         } catch (error) {
             console.error("Error creating personnel with status:", error);
-            res.status(500).json({
-                message: "Internal Server Error"
-            });
+            if (error.message === 'Email already exists') {
+                res.status(400).json({
+                    message: "Email already exists"
+                });
+            }
+            else {
+                res.status(500).json({
+                    message: "Internal Server Error"
+                });
+            }
         }
     },
     getPersonnels: async (req: Request, res: Response): Promise<void> => {
@@ -172,7 +185,7 @@ export default {
                 departmentName && typeof departmentName === "string"
             ) {
                 personnels = await personnelService.getPersonnelByDepartmentAndStatus(departmentName, status);
-    
+
                 if (!personnels || personnels.length === 0) {
                     res.status(404).json({
                         message: "No personnel found with the given department and status",
@@ -193,7 +206,7 @@ export default {
                 }
             } else if (departmentName && typeof departmentName === "string") {
                 personnels = await personnelService.getPersonnelByDepartment(departmentName);
-                
+
                 if (!personnels || personnels.length === 0) {
                     res.status(404).json({
                         message: "No personnel found in the given department",
