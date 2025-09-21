@@ -39,7 +39,7 @@ const authGuard = {
                     return res.status(403).json("Token is not valid!");
                 }
                 req.user = decoded;
-                console.log("Decoded Token:", decoded);
+                // console.log("Decoded Token:", decoded);
                 next();
             });
         } else {

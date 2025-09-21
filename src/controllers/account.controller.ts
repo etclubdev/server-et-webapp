@@ -65,7 +65,6 @@ export default {
 
         try {
             const account = await accountService.getAccountById(id);
-            console.log(account);
 
             if (!account) {
                 res.status(404).json({
