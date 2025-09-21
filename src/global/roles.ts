@@ -32,6 +32,9 @@ const manageFAQRole: Role[] = [
 const managePartnerRole: Role[] = [
     Role.Admin, Role.FER];
 
+const updatePartnerRole: Role[] = [
+    Role.Admin, Role.PR, Role.FER];
+
 const managePersonnelRole: Role[] = [
     Role.Admin, Role.HR, Role.Tech, Role.PR, Role.EV, Role.FER];
 
@@ -69,5 +72,5 @@ const getFAQRole: Role[] = [
 export {
     manageAchivementRole, manageActivityRole, manageBannerRole, manageEtBlogRole, manageFAQRole, managePartnerRole,
     managePersonnelRole, adminRole, manangeEtNewsRole, getByIDPersonnelRole, updatePersonnelRole, changePasswordRole,
-    getPesonnelRole, getPartnerRole, getFAQRole
+    getPesonnelRole, getPartnerRole, getFAQRole, updatePartnerRole
 };
