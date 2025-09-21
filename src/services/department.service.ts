@@ -18,7 +18,7 @@ const departmentService = {
             ]);
 
             if (user1 && user2 && user1.department_name === user2.department_name) {
-                console.log(`User ${userId1} and User ${userId2} are in the same department: ${user1.department_name}`);
+                // console.log(`User ${userId1} and User ${userId2} are in the same department: ${user1.department_name}`);
                 return true;
             }
             return false;
@@ -65,11 +65,11 @@ const departmentService = {
                 .first();
 
             if (user && user.department_name === targetDepartment) {
-                console.log(`User ${userId} belongs to department: ${user.department_name}`);
+                // console.log(`User ${userId} belongs to department: ${user.department_name}`);
                 return true;
             }
 
-            console.log(`User ${userId} does not belong to department: ${targetDepartment}`);
+            // console.log(`User ${userId} does not belong to department: ${targetDepartment}`);
             return false;
         } catch (error) {
             console.error('Error checking user department:', error);
