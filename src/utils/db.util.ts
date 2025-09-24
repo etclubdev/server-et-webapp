@@ -7,7 +7,7 @@ const config: { [key: string]: Knex.Config } = {
   development: {  
     client: 'pg', 
     connection: connectionConfig,
-    pool: { min: 0, max: 10 },
+    pool: { min: 0, max: 200 },
   }
 };  
 
