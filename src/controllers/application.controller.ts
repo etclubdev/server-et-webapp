@@ -232,10 +232,15 @@ export default {
                 { header: "Trường", key: "university", width: 30 },
                 { header: "Khoa", key: "faculty", width: 30 },
                 { header: "Ngành", key: "major", width: 25 },
+                { header: "Khóa", key: "cohort_name", width: 25 },
                 { header: "Lớp", key: "class", width: 15 },
                 { header: "Vòng", key: "round", width: 8 },
                 { header: "Trạng thái", key: "application_status", width: 15 },
                 { header: "Ban", key: "department_name", width: 20 },
+                { header: "Ngày đăng ký", key: "apply_date", width: 20, style: { numFmt: "dd-mm-yyyy" } },
+                { header: "Link CV", key: "cv_link", width: 20 },
+                { header: "Loại CV", key: "cv_type", width: 20 },
+                { header: "Ghi chú", key: "note", width: 20 },
             ];
 
             applications.forEach((app, index) => worksheet.addRow({
