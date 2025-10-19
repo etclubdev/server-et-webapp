@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import ExcelJS from 'exceljs';
+
 import applicationService from "../services/application.service";
 
 const isAdministrator = (sysrole_name) => {
@@ -10,9 +11,9 @@ export default {
     approveApplication: async (req: Request, res: Response) => {
         const reviewed_by = req.user?.personnel_id;
         const { ids } = req.body;
-        const { isUnique, updatedApplications } = await applicationService.approveApplication(reviewed_by, ids);
 
         try {
+            const { isUnique, updatedApplications } = await applicationService.approveApplication(reviewed_by, ids);
             if (!isUnique && (updatedApplications.length === 0 || !updatedApplications)) {
                 res.status(409).json({
                     message: "The email is not available"
