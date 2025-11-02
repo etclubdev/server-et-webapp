@@ -1,21 +1,18 @@
-import { updateActivitySchema } from "./activity.entity";
 
 const createFAQSchema = {
     "type": "object",
     "properties": {
         "faq_category": {
             "type": "string",
-            "enum": ["Về ET Club", "Về hoạt động và sự kiện", "Về quy trình tham gia", "Khác"],
+            "enum": ["ET Club", "Hoạt động và sự kiện", "Quy trình tham gia", "Khác"],
             "description": "Category of the FAQ"
         },
         "question": {
             "type": "string",
-            "maxLength": 255,
             "description": "The frequently asked question"
         },
         "answer": {
             "type": "string",
-            "minLength": 1,
             "description": "The answer to the question"
         },
         "visible": {
@@ -43,17 +40,15 @@ const updateFAQSchema = {
     "properties": {
         "faq_category": {
             "type": "string",
-            "enum": ["Về ET Club", "Về hoạt động và sự kiện", "Về quy trình tham gia", "Khác"],
+            "enum": ["ET Club", "Hoạt động và sự kiện", "Quy trình tham gia", "Khác"],
             "description": "Category of the FAQ"
         },
         "question": {
             "type": "string",
-            "maxLength": 255,
             "description": "The frequently asked question"
         },
         "answer": {
             "type": "string",
-            "minLength": 1,
             "description": "The answer to the question"
         },
         "visible": {

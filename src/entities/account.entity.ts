@@ -1,0 +1,56 @@
+const updateAccountPasswordSchema = {
+    "type": "object",
+    "properties": {
+        "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "Password must be at least 8 characters long",
+    },
+    "additionalProperties": false,
+}
+}
+
+const updateAccountSchema = {
+    "type": "object",
+    "properties": {
+        "sysrole_id": {
+            "type": "string",
+            "description": "System role ID of the Account"
+        },
+    },
+    "additionalProperties": false,
+}
+
+const createAccountSchema = {
+    "type": "object",
+    "properties": {
+        "sysrole_id": {
+            "type": "string",
+            "description": "System role ID"
+        },
+        "username": {
+            "type": "string",
+            "format": "email",
+            "description": "User email, must have the domain @st.ueh.edu.vn"
+        },
+        "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "User password"
+        },
+        "personnel_id": {
+            "type": "string",
+        },
+        "created_on": {
+            "type": "string",
+            "format": "date-time",
+        },
+        "last_modified_on": {
+            "type": "string",
+            "format": "date-time",
+        },
+    },
+    "required": ["username", "sysrole_id", "personnel_id"]
+}
+
+export { updateAccountSchema, updateAccountPasswordSchema, createAccountSchema };

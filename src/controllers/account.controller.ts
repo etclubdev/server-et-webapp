@@ -1,0 +1,239 @@
+import { Request, Response } from 'express';
+import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
+
+import accountService from '../services/account.service';
+import sendEmail from '../utils/email.util';
+import { sendingEmailContent } from '../constants';
+
+export default {
+    createAccount: async (req: Request, res: Response): Promise<void> => {
+        try {
+            const password = uuidv4().slice(0, 12);
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            const account = {
+                ...req.body,
+                password: hashedPassword,
+            };
+
+            const createdAccount = await accountService.createAccount(account);
+
+            const content = sendingEmailContent("create", createdAccount.personnel_name, createdAccount.username, password);
+            
+            sendEmail(createdAccount.username, content.title, content.body);
+
+            res.status(201).json({
+                message: "The account has been created successfully.",
+                data: {
+                    account_id: createdAccount.account_id,
+                    sysrole_id: createdAccount.sysrole_id,
+                    username: createdAccount.username,
+                    personnel_id: createdAccount.personnel_id,
+                    created_on: createdAccount.created_on,
+                    last_modified_on: createdAccount.last_modified_on,
+                    personnel_name: createdAccount.personnel_name,
+                    phone_number: createdAccount.phone_number,
+                    email: createdAccount.email,
+                    dob: createdAccount.dob,
+                    gender: createdAccount.gender,
+                    address: createdAccount.address,
+                    student_id: createdAccount.student_id,
+                    university: createdAccount.university,
+                    faculty: createdAccount.faculty,
+                    major: createdAccount.major,
+                    class: createdAccount.class,
+                    cv_type: createdAccount.cv_type,
+                    cv_link: createdAccount.cv_link,
+                    cohort_name: createdAccount.cohort_name,
+                    sysrole_name: createdAccount.sysrole_name,
+                },
+            });            
+            return;
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                message: "Internal Server Error" + error.message
+            });
+            return;
+        }
+    },
+    getAccountById: async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        try {
+            const account = await accountService.getAccountById(id);
+
+            if (!account) {
+                res.status(404).json({
+                    message: "Not found"
+                })
+                return;
+            }
+
+            res.status(200).json({
+                message: "Successfully",
+                data: account
+            })
+            return;
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                message: "Internal Server Error" + error.message
+            })
+            return;
+        }
+    },
+    getAllAccount: async (req: Request, res: Response) => {
+        try {
+            const accounts = await accountService.getAllAccount();
+
+            if (!accounts) {
+                res.status(404).json({
+                    message: "No accounts found"
+                })
+                return;
+            }
+
+            res.status(200).json({
+                message: "Successfully",
+                data: accounts
+            })
+            return;
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                message: "Internal Server Error" + error.message
+            })
+            return;
+        }
+    },
+    updateAccount: async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { sysrole_id } = req.body;
+
+        try {
+            const updatedAccount = await accountService.updateAccount(id, sysrole_id);
+
+            if (!updatedAccount) {
+                res.status(404).json({
+                    message: "Account not found or no changes applied"
+                })
+                return;
+            }
+
+            res.status(200).json({
+                message: "Successfully",
+                data: updatedAccount
+            })
+            return;
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                message: 'Internal Server Error' + err.message
+            })
+            return;
+        }
+    },
+    deleteAccount: async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        try {
+            const deletedAccount = await accountService.deleteAccount(id);
+
+            if (!deletedAccount) {
+                res.status(404).json({
+                    message: "Not found"
+                })
+                return;
+            }
+            res.status(204).json({
+                message: "Successfully",
+                data: deletedAccount
+            })
+            return;
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                message: 'Internal Server Error' + err.message
+            })
+            return;
+        }
+    },
+    deleteAccounts: async (req: Request, res: Response) => {
+        const { accounts } = req.body;
+
+        try {
+            const deletedAccounts = await accountService.deleteAccounts(accounts);
+
+            if (!deletedAccounts) {
+                res.status(404).json({
+                    message: "Not found"
+                })
+                return;
+            }
+            res.status(204).json({
+                message: "Successfully",
+                data: deletedAccounts
+            })
+            return;
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                message: 'Internal Server Error' + err.message
+            })
+            return;
+        }
+    },
+    updatePassword: async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const { oldPassword, newPassword } = req.body;
+
+            const result = await accountService.updatePassword(id, oldPassword, newPassword);
+
+            if (!result) {
+                res.status(404).json({ message: "Not found" });
+                return
+            }
+
+            if (result.success === false) {
+                res.status(401).json({ success: false, message: result.message });
+                return;
+            }
+
+            res.status(200).json({ success: true, message: result.message });
+            return;
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: "Internal server error" + error.message });
+            return;
+        }
+    },
+    resetPassword: async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            
+            const result = await accountService.resetPassword(id);
+
+            if (!result) {
+                res.status(404).json({ message: "Not found" });
+                return;
+            }
+
+            const { user, newPassword } = result.data;
+
+            const content = sendingEmailContent("reset", user.personnel_name, user.username, newPassword);
+            
+            sendEmail(user.username, content.title, content.body);
+
+            res.status(200).json({ success: true });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: "Internal server error" + error.message });
+            return;
+        }
+    }
+}
