@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-type LogLevel = "info" | "error" | "warning" | "debug";
+type LogLevel = "INFO" | "ERROR" | "WARNING" | "DEBUG";
 
 type LogEntry = {
     serviceName: string;
@@ -44,9 +44,23 @@ class LogUtil {
 
         console.log(JSON.stringify(logEntry, null, 2));
 
-        if (level !== "debug") {
+        if (level !== "DEBUG") {
             this.sendToDiscord(logEntry);
         }
+    }
+
+    private async logContent(logEntry: LogEntry): Promise<string> {
+        const content = `**Service:** ${logEntry.serviceName}\n
+        **Log Level:** ${logEntry.level.toUpperCase()}\n
+        **Trace-ID:** ${logEntry.traceId || "N/A"}\n
+        **Timestamp:** ${logEntry.timestamp}\n
+        **Message:** ${logEntry.httpStatus} ${logEntry.message}\n
+        **Error:** ${logEntry.error ? logEntry.error.message : "N/A"}\n
+        **Stack Trace:**
+\`\`\`
+${logEntry.error?.stack || "N/A"}
+\`\`\``
+        return content;
     }
 
     private async sendToDiscord(logEntry: LogEntry): Promise<void> {
@@ -55,11 +69,7 @@ class LogUtil {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    content: `**Service:** ${logEntry.serviceName}\n**Log Level:** ${logEntry.level.toUpperCase()}\n**Trace-ID:** ${logEntry.traceId || "N/A"}\n**Timestamp:** ${logEntry.timestamp}\n**Message:** ${logEntry.httpStatus} ${logEntry.message}\n**Error:** ${logEntry.error ? logEntry.error.message : "N/A"}\n**Stack Trace:**
-\`\`\`
-${logEntry.error?.stack || "N/A"}
-\`\`\``
-                })
+                    content: this.logContent(logEntry)})
             });
             if (!response.ok) {
                 console.error("Failed to send log to Discord", response.statusText);
@@ -70,19 +80,19 @@ ${logEntry.error?.stack || "N/A"}
     }
 
     public logError(serviceName: string, message: string, error: Error, httpStatus?: number, traceId?: string): void {
-        this.log("error", serviceName, message, httpStatus, traceId, error);
+        this.log("ERROR", serviceName, message, httpStatus, traceId, error);
     }
 
     public logInfo(serviceName: string, message: string, httpStatus?: number, traceId?: string): void {
-        this.log("info", serviceName, message, httpStatus, traceId);
+        this.log("INFO", serviceName, message, httpStatus, traceId);
     }
 
     public logWarning(serviceName: string, message: string, httpStatus?: number, traceId?: string): void {
-        this.log("warning", serviceName, message, httpStatus, traceId);
+        this.log("WARNING", serviceName, message, httpStatus, traceId);
     }
 
     public logDebug(serviceName: string, message: string, httpStatus?: number, traceId?: string): void {
-        this.log("debug", serviceName, message, httpStatus, traceId);
+        this.log("DEBUG", serviceName, message, httpStatus, traceId);
     }
 }
 
