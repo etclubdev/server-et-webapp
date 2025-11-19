@@ -188,8 +188,14 @@ export default {
         const personnels = await db('personnel')
             .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
             .select(
-                'personnel.*',
-                'personnel_status.*'
+                'personnel.personnel_id',
+                'personnel.personnel_name',
+                'personnel.dob',
+                'personnel.email',
+                'personnel.gender',
+                'personnel.major',
+                'personnel.cohort_name',
+                'personnel_status.position_name'
             );
 
         if (personnels.length === 0) {
@@ -206,8 +212,14 @@ export default {
         const personnels: Personnel[] = await db('personnel')
             .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
             .select(
-                'personnel.*',
-                'personnel_status.*'
+                'personnel.personnel_id',
+                'personnel.personnel_name',
+                'personnel.dob',
+                'personnel.email',
+                'personnel.gender',
+                'personnel.major',
+                'personnel.cohort_name',
+                'personnel_status.position_name'
             )
             .whereIn('personnel_status.personnel_status', status);
 
@@ -224,8 +236,14 @@ export default {
         const personnels:Personnel[] = await db('personnel')
             .join('personnel_status', 'personnel.personnel_id', 'personnel_status.personnel_id')
             .select(
-                'personnel.*',
-                'personnel_status.*'
+                'personnel.personnel_id',
+                'personnel.personnel_name',
+                'personnel.dob',
+                'personnel.email',
+                'personnel.gender',
+                'personnel.major',
+                'personnel.cohort_name',
+                'personnel_status.position_name'
             )
             .where({
                 'personnel_status.department_name': departmentName
