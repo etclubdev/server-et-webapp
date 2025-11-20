@@ -121,6 +121,8 @@ CREATE TABLE IF NOT EXISTS personnel (
     avatar_url TEXT,
     cv_type cv_type_enum,
     cv_link TEXT,
+    facebook_link TEXT,
+    association_id VARCHAR(20) CHECK (association_id ~ '^[A-Za-z0-9]+$'),
     cohort_name VARCHAR(10) NOT NULL DEFAULT 'K49'
 );
 
@@ -312,3 +314,8 @@ CREATE TRIGGER update_last_modified_on
 BEFORE UPDATE ON recruitment
 FOR EACH ROW
 EXECUTE FUNCTION update_last_modified_column();
+
+
+
+
+
