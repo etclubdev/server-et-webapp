@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS personnel (
     cv_type cv_type_enum,
     cv_link TEXT,
     facebook_link TEXT,
-    association_id VARCHAR(20) CHECK (association_id ~ '^[A-Za-z0-9]+$'),
+    association_id VARCHAR(20),
     cohort_name VARCHAR(10) NOT NULL DEFAULT 'K49'
 );
 
