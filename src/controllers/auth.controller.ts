@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'
 
+import { getPermissionsByRole } from '../utils/permission.util';
 
 import authService from '../services/auth.service';
 
@@ -36,6 +37,9 @@ export default {
                 return;
             }
 
+            const userRole = user.sysrole_name;
+            const permissions = getPermissionsByRole(userRole);
+
             const payload = {
                 account_id: user.account_id,
                 personnel_id: user.personnel_id,
@@ -43,7 +47,8 @@ export default {
                 sysrole_id: user.sysrole_id,
                 sysrole_name: user.sysrole_name,
                 department_name: user.department_name,
-            };
+                permissions
+            };            
 
             const accessToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '2m' });
             const refreshToken = jwt.sign(
@@ -96,6 +101,9 @@ export default {
                 return;
             }
 
+            const userRole = decoded.sysrole_name;
+            const permissions = getPermissionsByRole(userRole);
+
             const newAccessToken = jwt.sign(
                 {
                     account_id: decoded.account_id,
@@ -104,6 +112,7 @@ export default {
                     sysrole_id: decoded.sysrole_id,
                     sysrole_name: decoded.sysrole_name,
                     department_name: decoded.department_name,
+                    permissions
                 },
                 SECRET_KEY,
                 { expiresIn: '2m' }
@@ -117,6 +126,7 @@ export default {
                     sysrole_id: decoded.sysrole_id,
                     sysrole_name: decoded.sysrole_name,
                     department_name: decoded.department_name,
+                    permissions,
                     token_type: 'refresh'
                 },
                 SECRET_KEY,
