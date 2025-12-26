@@ -4,7 +4,7 @@ const updatePersonnelSchema = {
         "personnel": {
             "type": "object",
             "properties": {
-                "personnel_name": { "type": "string"},
+                "personnel_name": { "type": "string" },
                 "email": { "type": "string", "format": "email" },
                 "dob": { "type": "string", "format": "date" },
                 "gender": { "type": "string", "enum": ["Nam", "Nữ", "Khác"] },
@@ -38,6 +38,12 @@ const updatePersonnelSchema = {
                         "Ban Tài chính - Đối ngoại"
                     ]
                 },
+                "subteam_name": {
+                    "type": "string",
+                    "enum": [
+                        "Data",
+                        "Dev"]
+                },
                 "position_name": {
                     "type": "string",
                     "enum": [
@@ -52,13 +58,14 @@ const updatePersonnelSchema = {
                 },
                 "personnel_status": {
                     "type": "string",
-                    "enum": ["Đang hoạt động", "Cựu thành viên", "Ứng viên"]
+                    "enum": ["Đang hoạt động",
+                        "Cựu thành viên"]
                 }
             },
-            "required": [] // Không yêu cầu trường nào bắt buộc vì đây là cập nhật
+            "required": []
         }
     },
-    "required": [] // Không yêu cầu trường nào bắt buộc vì đây là cập nhật
+    "required": []
 };
 
 const createPersonnelWithStatusSchema = {
@@ -67,7 +74,7 @@ const createPersonnelWithStatusSchema = {
         "personnel": {
             "type": "object",
             "properties": {
-                "personnel_name": { "type": "string"},
+                "personnel_name": { "type": "string" },
                 "email": { "type": "string", "format": "email" },
                 "dob": { "type": "string", "format": "date" },
                 "gender": { "type": "string", "enum": ["Nam", "Nữ", "Khác"] },
@@ -104,6 +111,12 @@ const createPersonnelWithStatusSchema = {
                         "Ban Tài chính - Đối ngoại"
                     ]
                 },
+                "subteam_name": {
+                    "type": "string",
+                    "enum": [
+                        "Data",
+                        "Dev"]
+                },
                 "position_name": {
                     "type": "string",
                     "enum": [
@@ -118,7 +131,8 @@ const createPersonnelWithStatusSchema = {
                 },
                 "personnel_status": {
                     "type": "string",
-                    "enum": ["Đang hoạt động", "Cựu thành viên", "Ứng viên"]
+                    "enum": ["Đang hoạt động",
+                        "Cựu thành viên"]
                 }
             },
             "required": ["term_id", "department_name", "position_name", "personnel_status"]
